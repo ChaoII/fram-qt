@@ -1,0 +1,30 @@
+[
+  {
+    "file_path": "./templates/static/facelib/HR0585.jpg",
+    "id": 10,
+    "name": "\u5f90\u6587",
+    "staff_id": "HR0585",
+    "update_time": "2022-05-09 15:34:49"
+  },
+  {
+    "file_path": "./templates/static/facelib/HR0372.jpg",
+    "id": 11,
+    "name": "\u5f20\u65af\u96c5",
+    "staff_id": "HR0372",
+    "update_time": "2022-05-09 15:34:49"
+  },
+  {
+    "file_path": "./templates/static/facelib/HR0359.jpg",
+    "id": 12,
+    "name": "\u6c5f\u4e91",
+    "staff_id": "HR0359",
+    "update_time": "2022-05-09 15:34:49"
+  },
+  {
+    "file_path": "./templates/static/facelib/HR0308.jpg",
+    "id": 13,
+    "name": "\u5411\u6839",
+    "staff_id": "HR0308",
+    "update_time": "2022-05-09 15:34:49"
+  }
+]
