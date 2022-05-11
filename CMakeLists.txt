@@ -48,6 +48,6 @@ file(GLOB UI ${CMAKE_CURRENT_SOURCE_DIR}/ui/*)
 message(STATUS ${UI})
 
 
-add_executable(${PROJECT_NAME} ${SRC} ${HEAD} ${UI} main.cpp ui/seetafacethread.cpp ui/seetafacethread.h)
+add_executable(${PROJECT_NAME} ${SRC} ${HEAD} ${UI} main.cpp src/seetafacethread.cpp include/seetafacethread.h)
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 

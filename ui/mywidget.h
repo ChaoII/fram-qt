@@ -7,7 +7,7 @@
 
 #include <QWidget>
 #include "include/Utils.h"
-#include "ui/seetafacethread.h"
+#include "include/seetafacethread.h"
 
 
 QT_BEGIN_NAMESPACE

@@ -4,7 +4,7 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_SeetaFaceThread.h" resolved
 
-#include "seetafacethread.h"
+#include "include/seetafacethread.h"
 
 
 SeetaFaceThread::SeetaFaceThread() {
