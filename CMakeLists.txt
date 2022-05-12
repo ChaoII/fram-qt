@@ -27,7 +27,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${SeetaFaceDIR}/include)
 link_directories(${SeetaFaceDIR}/lib64)
 find_package(OpenCV REQUIRED)
-find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
+find_package(Qt6 COMPONENTS Core Gui Widgets Sql REQUIRED)
 # opencv
 list(APPEND LIBS ${OpenCV_LIBS})
 #seeta
@@ -39,7 +39,7 @@ list(APPEND LIBS
         SeetaFaceAntiSpoofingX600
         )
 #qt
-list(APPEND LIBS Qt::Core Qt::Gui Qt::Widgets)
+list(APPEND LIBS Qt::Core Qt::Gui Qt::Widgets Qt::Sql)
 
 file(GLOB HEAD ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 file(GLOB SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
@@ -47,7 +47,6 @@ file(GLOB UI ${CMAKE_CURRENT_SOURCE_DIR}/ui/*)
 
 message(STATUS ${UI})
 
-
-add_executable(${PROJECT_NAME} ${SRC} ${HEAD} ${UI} main.cpp src/seetafacethread.cpp include/seetafacethread.h)
+add_executable(${PROJECT_NAME} ${SRC} ${HEAD} ${UI} main.cpp)
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 

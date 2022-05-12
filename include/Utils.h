@@ -15,9 +15,9 @@ class Utils {
 public:
     static SeetaImageData cvMat_2_img(cv::Mat &img);
 
-    static cv::Mat crop_img(cv::Mat &img, cv::Size target_size = cv::Size(600, 1024));
+    static cv::Mat crop_img(const cv::Mat &img, cv::Size target_size = cv::Size(600, 1024));
 
-    static QImage cvMat_2_qimg(cv::Mat &img);
+    static QImage cvMat_2_qimg(const cv::Mat &img);
 };
 
 

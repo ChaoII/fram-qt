@@ -8,6 +8,7 @@
 #include <QWidget>
 #include "include/Utils.h"
 #include "include/seetafacethread.h"
+#include "include/recordthread.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -20,11 +21,20 @@ Q_OBJECT
 public:
     explicit MyWidget(QWidget *parent = nullptr);
 
-    void show_img(QImage qimg);
+    void update_frame(QImage qimg);
+
+    void on_face_rec(FaceInfoWrap rec_info);
+
+    void on_save_record(QVector<FaceInfoWrap> records);
+
+    void paintEvent(QPaintEvent *event) override;
 
     ~MyWidget() override;
 
 private:
+    QImage _img;
+    RecordThread *record_thread;
+    SeetaTrackingFaceInfo *_face_info;
     SeetaFaceThread *seeta_face_thread;
     Ui::MyWidget *ui;
 };

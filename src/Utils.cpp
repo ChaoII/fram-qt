@@ -14,7 +14,8 @@ SeetaImageData Utils::cvMat_2_img(cv::Mat &img) {
     return data;
 }
 
-cv::Mat Utils::crop_img(cv::Mat &img, cv::Size target_size) {
+cv::Mat Utils::crop_img(const cv::Mat &img, cv::Size target_size) {
+
     int h = img.rows;
     int w = img.cols;
     float rate_w = w * 1.0f / target_size.width;
@@ -39,11 +40,11 @@ cv::Mat Utils::crop_img(cv::Mat &img, cv::Size target_size) {
     return img_crop;
 }
 
-QImage Utils::cvMat_2_qimg(cv::Mat &img) {
+QImage Utils::cvMat_2_qimg(const cv::Mat &img) {
+
     int height = img.rows;
     int width = img.cols;
-    int channels = img.channels();
-    int step = channels * width;
+    int step = img.step;
     cv::Mat dst;
     cv::cvtColor(img, dst, cv::COLOR_BGR2RGB);
     QImage q_img = QImage(dst.data, width, height, step, QImage::Format_RGB888);

@@ -22,6 +22,7 @@
 #include <seeta/FaceTracker.h>
 #include <seeta/FaceAntiSpoofing.h>
 #include "include/Utils.h"
+#include "include/struct.h"
 
 using Status = seeta::FaceAntiSpoofing::Status;
 
@@ -29,18 +30,18 @@ class SeetaFace {
 
 public:
 
-    struct FaceLibInfo {
-        QString name;
-        QString staff_id;
-        float *feature;
-    };
-
-    struct FaceRecRes {
-        QString face_id;
-        QString name;
-        float score;
-
-    };
+//    struct FaceLibInfo {
+//        QString name;
+//        QString staff_id;
+//        std::shared_ptr<float> feature;
+//    };
+//
+//    struct FaceRecRet {
+//        QString face_id;
+//        QString name;
+//        float score;
+//
+//    };
 
     explicit SeetaFace();
 
@@ -50,19 +51,21 @@ public:
 
     bool extract_feature(cv::Mat &img, float *feature);
 
-    FaceRecRes face_recognition(cv::Mat &img, QVector<SeetaPointF> points);
+    SeetaTrackingFaceInfoArray face_track(cv::Mat &img);
 
-    QVector<SeetaPointF> face_marker(cv::Mat &img, SeetaRect &rect);
+    FaceRecRet face_recognition(cv::Mat &img, std::vector<SeetaPointF> points);
+
+    std::vector<SeetaPointF> face_marker(cv::Mat &img, SeetaRect &rect);
 
     bool face_quality_authorize(cv::Mat &img);
 
-    Status face_anti_spoofing(cv::Mat &img, SeetaRect &rect, QVector<SeetaPointF> points);
+    Status face_anti_spoofing(cv::Mat &img, SeetaRect &rect, std::vector<SeetaPointF> points);
 
 
 private:
     float m_threshold;
     std::string model_dir;
-    QVector<FaceLibInfo> face_lib;
+    std::vector<FaceLibInfo> face_lib;
     std::shared_ptr<seeta::FaceDetector> FD = nullptr;
     std::shared_ptr<seeta::FaceLandmarker> FL = nullptr;
     std::shared_ptr<seeta::FaceRecognizer> FR = nullptr;

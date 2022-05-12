@@ -38,6 +38,7 @@ SeetaFace::SeetaFace() {
     FT = std::make_shared<FaceTracker>(ft_setting, 640, 480);
     FS = std::make_shared<FaceAntiSpoofing>(fs_setting);
 
+
 }
 
 
@@ -74,7 +75,7 @@ bool SeetaFace::create_face_lib(const QString &image_path, const QString &name, 
     if (!rt) {
         return false;
     }
-    FaceLibInfo face_lib_info{staff_id, name, feature.get()};
+    FaceLibInfo face_lib_info{name, staff_id, feature};
 //    feature_db.emplace_back(pair<string, shared_ptr<float>>(json_name, feature));
     face_lib.emplace_back(face_lib_info);
     return true;
@@ -93,39 +94,45 @@ bool SeetaFace::extract_feature(cv::Mat &img, float *feature) {
     return true;
 }
 
+SeetaTrackingFaceInfoArray SeetaFace::face_track(cv::Mat &img) {
 
-SeetaFace::FaceRecRes SeetaFace::face_recognition(cv::Mat &img, QVector<SeetaPointF> points) {
+    SeetaImageData data = Utils::cvMat_2_img(img);
+    SeetaTrackingFaceInfoArray out = FT->Track(data);
+    return out;
+}
+
+
+FaceRecRet SeetaFace::face_recognition(cv::Mat &img, std::vector<SeetaPointF> points) {
     SeetaImageData data = Utils::cvMat_2_img(img);
     unique_ptr<float[]> feature(new float[FR->GetExtractFeatureSize()]);
     FR->Extract(data, points.data(), feature.get());
-    FaceRecRes faceRecRes;
+    FaceRecRet faceRecRet;
     int64_t target_index = -1;
     float max_sim = 0;
-#pragma omp parallel num_threads(m_thread_nums)
     for (int64_t index = 0; index < face_lib.size(); ++index) {
         auto &face_lb_info = face_lib[index];
-        float current_sim = FR->CalculateSimilarity(feature.get(), face_lb_info.feature);
+        float current_sim = FR->CalculateSimilarity(feature.get(), face_lb_info.feature.get());
         if (current_sim > max_sim) {
             max_sim = current_sim;
             target_index = index;
         }
     }
     if (max_sim > m_threshold) {
-        faceRecRes.face_id = face_lib[target_index].staff_id;
-        faceRecRes.name = face_lib[target_index].name;
-        faceRecRes.score = max_sim;
+        faceRecRet.face_id = face_lib[target_index].staff_id;
+        faceRecRet.name = face_lib[target_index].name;
+        faceRecRet.score = max_sim;
     } else {
-        faceRecRes.face_id = "-1";
-        faceRecRes.name = "unknown";
-        faceRecRes.score = max_sim;
+        faceRecRet.face_id = "-1";
+        faceRecRet.name = "unknown";
+        faceRecRet.score = max_sim;
     }
-    return faceRecRes;
+    return faceRecRet;
 }
 
-QVector<SeetaPointF> SeetaFace::face_marker(cv::Mat &img, SeetaRect &rect) {
+std::vector<SeetaPointF> SeetaFace::face_marker(cv::Mat &img, SeetaRect &rect) {
     SeetaImageData data = Utils::cvMat_2_img(img);
     int point_nums = FL->number();
-    QVector<SeetaPointF> points(point_nums);
+    std::vector<SeetaPointF> points(point_nums);
     FL->mark(data, rect, points.data());
     return points;
 }
@@ -139,7 +146,7 @@ bool SeetaFace::face_quality_authorize(cv::Mat &img) {
     return true;
 }
 
-Status SeetaFace::face_anti_spoofing(cv::Mat &img, SeetaRect &rect, QVector<SeetaPointF> points) {
+Status SeetaFace::face_anti_spoofing(cv::Mat &img, SeetaRect &rect, std::vector<SeetaPointF> points) {
     SeetaImageData data = Utils::cvMat_2_img(img);
     return FS->Predict(data, rect, points.data());
 }

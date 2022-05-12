@@ -7,7 +7,9 @@
 
 #include <QWidget>
 #include <QThread>
+#include "include/SeetaFace.h"
 #include "include/Utils.h"
+#include "include/facerecthread.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -23,7 +25,11 @@ public:
 
     void stop_thread();
 
-    virtual void run() override;
+    void on_update_ret(FaceInfoWrap rec_info);
+
+    void send_records();
+
+    void run() override;
 
     ~SeetaFaceThread() override;
 
@@ -31,7 +37,18 @@ signals:
 
     void img_send_signal(QImage);
 
+    void face_rec_signal(FaceInfoWrap);
+
+    void attend_record_signal(QVector<FaceInfoWrap>);
+
 private:
+
+    int _last_pid;
+    float _threshold;
+    QDateTime _last_record_time;
+    QVector<FaceInfoWrap> _records;
+    std::shared_ptr<FaceRecThread> face_rec_ptr = nullptr;
+    std::shared_ptr<SeetaFace> seetaface_ptr = nullptr;
     std::shared_ptr<cv::VideoCapture> cap = nullptr;
     bool t_start = true;
 };
