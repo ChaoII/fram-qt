@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.22)
 project(FRAM)
 set(CMAKE_CXX_STANDARD 14)
 
-set(CMAKE_BINARY_DIR ./build)
+set(CMAKE_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build)
 set(CMAKE_BUILD_TYPE Release)
 set(SeetaFaceDIR "/Users/aichao/Documents/GitHub/index/build")
 set(CMAKE_PREFIX_PATH "/Users/aichao/Qt6/6.3.0/macos/lib/cmake")
