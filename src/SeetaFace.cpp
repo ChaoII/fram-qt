@@ -44,13 +44,13 @@ SeetaFace::SeetaFace() {
 
 void SeetaFace::create_face_libs(const QString &json_path) {
 
+    qInfo() << "==================start register face library===================";
     QFile json_file(json_path);
     if (!json_file.open(QIODevice::ReadWrite)) {
 
-        qDebug() << "json file open failed.";
+        qWarning() << "json file open failed.";
         return;
     }
-    qDebug() << "file open successfully!";
     QByteArray data = json_file.readAll();
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonArray json_array = doc.array();
@@ -61,10 +61,11 @@ void SeetaFace::create_face_libs(const QString &json_path) {
         QString staff_id = json.value("staff_id").toString();
         bool ret = create_face_lib(file_path, name, staff_id);
         if (!ret) {
-            qDebug() << "添加人脸库失败【Name:" << name << "】";
+            qWarning() << "注册人脸失败【Name:" << qPrintable(name) << "】";
         }
-        qDebug() << "添加人脸成功【Name:" << name << "】";
+        qInfo() << "注册人脸成功【Name:" << qPrintable(name) << "】";
     }
+    qInfo() << "==================face register successfully!===================";
 }
 
 bool SeetaFace::create_face_lib(const QString &image_path, const QString &name, const QString &staff_id) {

@@ -28,6 +28,9 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     connect(seeta_face_thread, &SeetaFaceThread::face_rec_signal, this, &MyWidget::on_face_rec);
 
     connect(seeta_face_thread, &SeetaFaceThread::attend_record_signal, this, &MyWidget::on_save_record);
+
+    connect(seeta_face_thread, &SeetaFaceThread::det_face_signal, this, &MyWidget::on_det_face);
+
     seeta_face_thread->start();
 }
 
@@ -51,21 +54,33 @@ void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
         ui->lb_attend_time->setText(attend_time);
         ui->lb_pic->setPixmap(QPixmap(":img/signin_fail.png"));
         ui->widget->setStyleSheet("#widget{background-color: rgba(255, 0, 0,40);}");
-        qDebug() << "攻击人脸";
+        ui->widget_info->setStyleSheet("#widget_info{background-color: rgba(255, 0, 0,0);}");
+
     } else if (rec_info.code == 0) {
 
         ui->lb_name->setText("未知");
         ui->lb_attend_time->setText(attend_time);
         ui->lb_pic->setPixmap(QPixmap(":img/signin_fail.png"));
+        ui->widget->setStyleSheet("#widget{background-color: rgba(255, 0, 0,0);}");
         ui->widget_info->setStyleSheet("#widget_info{background-color: rgba(255, 0, 0,40);}");
-        qDebug() << "unknown";
+
     } else {
         ui->lb_name->setText(rec_info.ret.name);
         ui->lb_attend_time->setText(attend_time);
         ui->lb_pic->setPixmap(QPixmap(":/img/signin_success.png"));
+        ui->widget->setStyleSheet("#widget{background-color: rgba(255, 0, 0,0);}");
         ui->widget_info->setStyleSheet("#widget_info{background-color: rgba(0, 255, 0, 40);}");
     }
 
+}
+
+void MyWidget::on_det_face(bool detected) {
+
+    ui->widget_info->setVisible(detected);
+    if (!detected) {
+
+        ui->widget->setStyleSheet("#widget{background-color: rgba(255, 0, 0,0);}");
+    }
 }
 
 void MyWidget::on_save_record(QVector<FaceInfoWrap> records) {
@@ -82,5 +97,6 @@ void MyWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.drawImage(0, 0, _img);
 }
+
 
 

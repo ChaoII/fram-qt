@@ -39,6 +39,8 @@ signals:
 
     void face_rec_signal(FaceInfoWrap);
 
+    void det_face_signal(bool);
+
     void attend_record_signal(QVector<FaceInfoWrap>);
 
 private:

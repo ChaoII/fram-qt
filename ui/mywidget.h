@@ -27,6 +27,8 @@ public:
 
     void on_save_record(QVector<FaceInfoWrap> records);
 
+    void on_det_face(bool detected);
+
     void paintEvent(QPaintEvent *event) override;
 
     ~MyWidget() override;

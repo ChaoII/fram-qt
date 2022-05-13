@@ -15,14 +15,15 @@ SeetaFaceThread::SeetaFaceThread() {
     face_rec_ptr = std::make_shared<FaceRecThread>(seetaface_ptr);
 
     connect(face_rec_ptr.get(), &FaceRecThread::face_rec_signal, this, &SeetaFaceThread::on_update_ret);
+    cap = std::make_shared<cv::VideoCapture>(0);
+    cap->set(cv::CAP_PROP_FRAME_WIDTH, 640);
+    cap->set(cv::CAP_PROP_FRAME_HEIGHT, 480);
 
 }
 
 void SeetaFaceThread::run() {
     cv::Mat frame;
-    cap = std::make_shared<cv::VideoCapture>(0);
-    cap->set(cv::CAP_PROP_FRAME_WIDTH, 640);
-    cap->set(cv::CAP_PROP_FRAME_HEIGHT, 480);
+
     while (t_start) {
         if (cap->isOpened()) {
             cap->read(frame);
@@ -31,8 +32,9 @@ void SeetaFaceThread::run() {
             cv::Mat src_img = frame.clone();
             auto tracker_info = seetaface_ptr->face_track(frame);
             if (tracker_info.size > 0) {
+                det_face_signal(true);
+                // send det face signal
                 auto face_info = tracker_info.data[0];
-
                 cv::rectangle(frame,
                               cv::Rect(face_info.pos.x, face_info.pos.y, face_info.pos.width, face_info.pos.height),
                               cv::Scalar(255, 255, 0), 1, cv::LINE_AA);
@@ -45,6 +47,8 @@ void SeetaFaceThread::run() {
                         face_rec_ptr->start();
                     }
                 }
+            } else {
+                det_face_signal(false);
             }
             cv::Mat dst = Utils::crop_img(frame);
             QImage q_img = Utils::cvMat_2_qimg(dst);
