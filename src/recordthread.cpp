@@ -35,7 +35,6 @@ void RecordThread::run() {
         QString insert_sql = QString("insert into attend (staff_id,name,attend_time) values ('%1','%2','%3')").arg(
                 staff_id).arg(
                 name).arg(attend_time);
-        qDebug() << insert_sql;
         sql_helper.insert_data(insert_sql);
     }
     sql_helper.close_db();

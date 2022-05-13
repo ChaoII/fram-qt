@@ -7,6 +7,7 @@
 #include "mywidget.h"
 #include "ui_MyWidget.h"
 #include <QPainter>
+#include <QTimer>
 
 
 MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
@@ -14,6 +15,14 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     _face_info = nullptr;
     seeta_face_thread = new SeetaFaceThread();
     record_thread = new RecordThread();
+
+    auto timer = new QTimer(this);
+    timer->setInterval(1000);
+    connect(timer, &QTimer::timeout, this, [=] {
+
+        ui->label_2->setText(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+    });
+    timer->start();
     connect(seeta_face_thread, &SeetaFaceThread::img_send_signal, this, &MyWidget::update_frame,
             Qt::DirectConnection);
     connect(seeta_face_thread, &SeetaFaceThread::face_rec_signal, this, &MyWidget::on_face_rec);
@@ -40,6 +49,8 @@ void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
 
         qDebug() << "unknown";
     } else {
+//        ui->widget->activateWindow();
+        ui->widget_2->activateWindow();
 //        qDebug() << rec_info.time;
 //        qDebug() << rec_info.ret.name;
 //        qDebug() << rec_info.ret.score;
@@ -51,7 +62,7 @@ void MyWidget::on_save_record(QVector<FaceInfoWrap> records) {
     record_thread->update_info(records);
     if (!record_thread->isRunning()) {
         record_thread->start();
-        qDebug() << "---------------------------";
+        qInfo() << "-------------- saved split line --------------------";
     }
 }
 

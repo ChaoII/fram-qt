@@ -37,9 +37,9 @@ void SqliteOperator::create_table(const QString &creat_sql) {
     QSqlQuery sql_query;
     sql_query.prepare(creat_sql);
     if (!sql_query.exec()) {
-        qDebug() << "Error: Fail to create table." << sql_query.lastError();
+        qWarning() << "Error: Fail to create table." << sql_query.lastError();
     } else {
-        qDebug() << "Table created!";
+        qInfo() << "Table created!";
     }
 }
 
@@ -47,9 +47,9 @@ void SqliteOperator::insert_data(const QString &insert_sql) {
     QSqlQuery sql_query;
     sql_query.prepare(insert_sql);
     if (!sql_query.exec()) {
-        qDebug() << sql_query.lastError();
+        qWarning() << sql_query.lastError();
     } else {
-        qDebug() << "inserted Wang!";
+        qInfo() << "record insert successfully!";
     }
 }
 
