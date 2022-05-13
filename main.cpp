@@ -3,8 +3,9 @@
 //
 #include <QMutex>
 #include <QApplication>
-#include <QGuiApplication>
-#include "ui/mywidget.h"
+#include <QFile>
+#include <QDateTime>
+#include "ui/mainwidget.h"
 
 void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
     static QMutex mutex;
@@ -52,10 +53,9 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 
 
 int main(int argc, char *argv[]) {
-    QGuiApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
     QApplication a(argc, argv);
     qInstallMessageHandler(outputMessage);
-    auto widget = MyWidget();
+    auto widget = MainWidget();
     widget.show();
     return QApplication::exec();
 }

@@ -67,7 +67,7 @@ void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
     } else {
         ui->lb_name->setText(rec_info.ret.name);
         ui->lb_attend_time->setText(attend_time);
-        ui->lb_pic->setPixmap(QPixmap(":/img/signin_success.png"));
+        ui->lb_pic->setPixmap(QPixmap(":img/signin_success.png"));
         ui->widget->setStyleSheet("#widget{background-color: rgba(255, 0, 0,0);}");
         ui->widget_info->setStyleSheet("#widget_info{background-color: rgba(0, 255, 0, 40);}");
     }
