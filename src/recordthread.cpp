@@ -16,6 +16,7 @@ RecordThread::RecordThread() {
 
 void RecordThread::update_info(QVector<FaceInfoWrap> &face_info) {
 
+
     _face_infos = face_info;
 
 }
@@ -24,7 +25,7 @@ void RecordThread::run() {
 
     SqliteOperator sql_helper("attend.db");
     sql_helper.create_db();
-
+    unique_record(_face_infos);
     for (auto &face_info: _face_infos) {
         auto ret = face_info.ret;
         QString name = ret.name;
@@ -40,6 +41,19 @@ void RecordThread::run() {
     sql_helper.close_db();
 }
 
+void RecordThread::unique_record(QVector<FaceInfoWrap> &vec) {
+    std::sort(vec.begin(), vec.end(), [](FaceInfoWrap &vec1, FaceInfoWrap &vec2) {
+        return vec1.ret.face_id < vec2.ret.face_id;
+    });
+    for (int i = 0; i < vec.size(); i++) {
+        for (int j = i + 1; j < vec.size(); j++) {
+            if (vec[i].ret.face_id == vec[j].ret.face_id) {
+                vec.remove(j);
+                j--;
+            }
+        }
+    }
+}
 
 RecordThread::~RecordThread() {
 

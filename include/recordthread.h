@@ -6,6 +6,7 @@
 #define FRAM_RECORDTHREAD_H
 
 #include "include/struct.h"
+#include "include/Utils.h"
 #include "include/SqliteOperator.h"
 #include <QThread>
 
@@ -19,6 +20,8 @@ public:
     void update_info(QVector<FaceInfoWrap> &face_info);
 
     void run() override;
+
+    void unique_record(QVector<FaceInfoWrap> &vec);
 
     ~RecordThread();
 

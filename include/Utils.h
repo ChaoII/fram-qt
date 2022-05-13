@@ -7,6 +7,7 @@
 
 #include <QImage>
 #include <QDebug>
+#include "include/struct.h"
 #include <seeta/Struct.h>
 #include <opencv2/opencv.hpp>
 
@@ -18,7 +19,11 @@ public:
     static cv::Mat crop_img(const cv::Mat &img, cv::Size target_size = cv::Size(600, 1024));
 
     static QImage cvMat_2_qimg(const cv::Mat &img);
+
+
 };
+
+
 
 
 #endif //FRAM_UTILS_H

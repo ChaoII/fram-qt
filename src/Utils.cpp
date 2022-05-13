@@ -52,3 +52,4 @@ QImage Utils::cvMat_2_qimg(const cv::Mat &img) {
 }
 
 
+

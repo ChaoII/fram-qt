@@ -2,8 +2,6 @@
 // Created by aichao on 2022/5/11.
 //
 
-// You may need to build the project (run Qt uic code generator) to get "ui_SeetaFaceThread.h" resolved
-
 #include "include/seetafacethread.h"
 
 
@@ -62,21 +60,21 @@ void SeetaFaceThread::stop_thread() {
 void SeetaFaceThread::on_update_ret(FaceInfoWrap rec_info) {
 
     face_rec_signal(rec_info);
-    _records.emplace_back(rec_info);
-//    _rec_inf = rec_info;
+    if (rec_info.code == 1) {
+        _records.emplace_back(rec_info);
+    }
 }
 
 void SeetaFaceThread::send_records() {
 
     QDateTime cur_time = QDateTime::currentDateTime();
-    qDebug() << _last_record_time.secsTo(cur_time);
     if (_last_record_time.secsTo(cur_time) > 5) {
 
         if (!_records.empty()) {
             attend_record_signal(_records);
             _records.clear();
         }
-        _last_record_time = QDateTime::currentDateTime();
+        _last_record_time = cur_time;
     }
 }
 
