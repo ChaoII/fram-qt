@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="img">
+    <file>face_region.gif</file>
+    <file>face_region.png</file>
+    <file>signin_fail.png</file>
+    <file>signin_success.png</file>
+  </qresource>
+</RCC>

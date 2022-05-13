@@ -61,12 +61,12 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QLabel" name="label_2">
+     <widget class="QLabel" name="lb_cur_time">
       <property name="styleSheet">
-       <string notr="true">font: 30pt &quot;.AppleSystemUIFont&quot;;</string>
+       <string notr="true">font: 500 24pt &quot;Futura&quot;;</string>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string>2022-05-13 13:35:00</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -87,7 +87,7 @@
      </spacer>
     </item>
     <item>
-     <widget class="QWidget" name="widget_2" native="true">
+     <widget class="QWidget" name="widget_info" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -110,10 +110,25 @@
        <string notr="true"/>
       </property>
       <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>20</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>20</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label_3">
          <property name="styleSheet">
-          <string notr="true">font: 30pt &quot;.AppleSystemUIFont&quot;;</string>
+          <string notr="true">font: 500 24pt &quot;Futura&quot;;</string>
          </property>
          <property name="text">
           <string>姓名:</string>
@@ -124,9 +139,9 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLabel" name="label_5">
+        <widget class="QLabel" name="lb_name">
          <property name="styleSheet">
-          <string notr="true">font: 30pt &quot;.AppleSystemUIFont&quot;;</string>
+          <string notr="true">font: 500 24pt &quot;Futura&quot;;</string>
          </property>
          <property name="text">
           <string/>
@@ -134,11 +149,11 @@
         </widget>
        </item>
        <item row="0" column="2" rowspan="2">
-        <widget class="QLabel" name="label_7">
+        <widget class="QLabel" name="lb_pic">
          <property name="minimumSize">
           <size>
-           <width>100</width>
-           <height>100</height>
+           <width>200</width>
+           <height>200</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -148,17 +163,23 @@
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(213, 255, 199);</string>
+          <string notr="true"/>
          </property>
          <property name="text">
           <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="qrc.qrc">:/img/signin_success.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_4">
          <property name="styleSheet">
-          <string notr="true">font: 30pt &quot;.AppleSystemUIFont&quot;;</string>
+          <string notr="true">font: 500 24pt &quot;Futura&quot;;</string>
          </property>
          <property name="text">
           <string>打卡时间:</string>
@@ -169,9 +190,9 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLabel" name="label_6">
+        <widget class="QLabel" name="lb_attend_time">
          <property name="styleSheet">
-          <string notr="true">font: 30pt &quot;.AppleSystemUIFont&quot;;</string>
+          <string notr="true">font: 500 24pt &quot;Futura&quot;;</string>
          </property>
          <property name="text">
           <string/>
@@ -200,6 +221,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="qrc.qrc"/>
+ </resources>
  <connections/>
 </ui>
