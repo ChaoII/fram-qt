@@ -11,41 +11,40 @@
 
 
 MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
+
     ui->setupUi(this);
-    _face_info = nullptr;
-    seeta_face_thread = new SeetaFaceThread();
-    record_thread = new RecordThread();
+    this->setAttribute(Qt::WA_DeleteOnClose);
 
+    seeta_face_thread = new SeetaFaceThread(this);
+    record_thread = new RecordThread(this);
     auto timer = new QTimer(this);
-    timer->setInterval(1000);
-    connect(timer, &QTimer::timeout, this, [=] {
 
-        ui->lb_cur_time->setText(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
-    });
-    timer->start();
-    connect(seeta_face_thread, &SeetaFaceThread::img_send_signal, this, &MyWidget::update_frame,
-            Qt::DirectConnection);
+
+    connect(seeta_face_thread, &SeetaFaceThread::img_send_signal, this, &MyWidget::update_frame);
     connect(seeta_face_thread, &SeetaFaceThread::face_rec_signal, this, &MyWidget::on_face_rec);
-
     connect(seeta_face_thread, &SeetaFaceThread::attend_record_signal, this, &MyWidget::on_save_record);
-
     connect(seeta_face_thread, &SeetaFaceThread::det_face_signal, this, &MyWidget::on_det_face);
+    connect(timer, &QTimer::timeout, this, &MyWidget::on_update_time);
 
-    seeta_face_thread->start();
+    timer->setInterval(1000);
+    timer->start();
 }
 
 
 MyWidget::~MyWidget() {
+
+    std::cout << "----mywidget---" << std::endl;
     delete ui;
 }
 
 void MyWidget::update_frame(QImage qimg) {
+
+
     _img = qimg.scaled(ui->label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     update();
 }
 
 void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
-
 
     QString attend_time = rec_info.time.split(" ")[1].split(".")[0];
 
@@ -75,10 +74,8 @@ void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
 }
 
 void MyWidget::on_det_face(bool detected) {
-
     ui->widget_info->setVisible(detected);
     if (!detected) {
-
         ui->widget->setStyleSheet("#widget{background-color: rgba(255, 0, 0,0);}");
     }
 }
@@ -92,11 +89,27 @@ void MyWidget::on_save_record(QVector<FaceInfoWrap> records) {
     }
 }
 
+void MyWidget::on_update_time() {
+    ui->lb_cur_time->setText(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+}
+
+void MyWidget::closeEvent(QCloseEvent *event) {
+
+    seeta_face_thread->stop_thread();
+    seeta_face_thread->wait();
+    seeta_face_thread->deleteLater();
+}
+
 void MyWidget::paintEvent(QPaintEvent *event) {
     if (_img.isNull()) return;
     QPainter painter(this);
     painter.drawImage(0, 0, _img);
+
 }
 
 
-
+void MyWidget::start_thread() {
+    if (seeta_face_thread && !seeta_face_thread->isRunning()) {
+        seeta_face_thread->start();
+    }
+}

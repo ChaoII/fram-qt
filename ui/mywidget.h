@@ -9,11 +9,14 @@
 #include "include/Utils.h"
 #include "include/seetafacethread.h"
 #include "include/recordthread.h"
+#include <QMutex>
+#include <QMutexLocker>
 
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MyWidget; }
 QT_END_NAMESPACE
+
 
 class MyWidget : public QWidget {
 Q_OBJECT
@@ -29,15 +32,21 @@ public:
 
     void on_det_face(bool detected);
 
+    void on_update_time();
+
+    void start_thread();
+
+    void closeEvent(QCloseEvent *event) override;
+
     void paintEvent(QPaintEvent *event) override;
 
     ~MyWidget() override;
 
+
 private:
     QImage _img;
-    RecordThread *record_thread;
-    SeetaTrackingFaceInfo *_face_info;
-    SeetaFaceThread *seeta_face_thread;
+    RecordThread *record_thread = nullptr;
+    SeetaFaceThread *seeta_face_thread = nullptr;
     Ui::MyWidget *ui;
 };
 

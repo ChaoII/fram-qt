@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/FRAM.iml" filepath="$PROJECT_DIR$/.idea/FRAM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/FRAM2.iml" filepath="$PROJECT_DIR$/.idea/FRAM2.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/FRAM_QT.iml" filepath="$PROJECT_DIR$/.idea/FRAM_QT.iml" />
     </modules>
   </component>

@@ -11,17 +11,19 @@ MainWidget::MainWidget(QWidget *parent) :
         QWidget(parent), ui(new Ui::MainWidget) {
     ui->setupUi(this);
     QMetaObject::connectSlotsByName(this);
-
-    attend_widget = new MyWidget();
-
-}
-
-MainWidget::~MainWidget() {
-    delete ui;
+    attend_widget = new MyWidget;
 }
 
 void MainWidget::on_attend_clicked() {
 
     attend_widget->show();
-
+    attend_widget->start_thread();
+    this->setVisible(false);
 }
+
+MainWidget::~MainWidget() {
+
+    delete ui;
+}
+
+

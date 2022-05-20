@@ -51,5 +51,6 @@ void FaceRecThread::run() {
 
 FaceRecThread::~FaceRecThread() {
 
+    std::cout << "---face_rec_thread---" << std::endl;
 
 }

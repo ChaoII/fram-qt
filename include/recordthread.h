@@ -15,7 +15,7 @@ class RecordThread : public QThread {
 Q_OBJECT
 
 public:
-    explicit RecordThread();
+    explicit RecordThread(QWidget *parent = nullptr);
 
     void update_info(QVector<FaceInfoWrap> &face_info);
 

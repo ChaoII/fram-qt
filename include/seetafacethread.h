@@ -7,6 +7,8 @@
 
 #include <QWidget>
 #include <QThread>
+#include <QMutex>
+#include <QMutexLocker>
 #include "include/SeetaFace.h"
 #include "include/Utils.h"
 #include "include/facerecthread.h"
@@ -16,18 +18,20 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class SeetaFaceThread; }
 QT_END_NAMESPACE
 
+
 class SeetaFaceThread : public QThread {
 Q_OBJECT
 
 
 public:
-    explicit SeetaFaceThread();
+    explicit SeetaFaceThread(QWidget *parent = nullptr);
 
     void stop_thread();
 
     void on_update_ret(FaceInfoWrap rec_info);
 
     void send_records();
+    QMutex *mutex;
 
     void run() override;
 
@@ -39,7 +43,7 @@ signals:
 
     void face_rec_signal(FaceInfoWrap);
 
-    void det_face_signal(bool);
+    void det_face_signal(bool detected = true);
 
     void attend_record_signal(QVector<FaceInfoWrap>);
 

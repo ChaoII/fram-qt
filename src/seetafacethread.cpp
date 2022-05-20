@@ -5,13 +5,19 @@
 #include "include/seetafacethread.h"
 
 
-SeetaFaceThread::SeetaFaceThread() {
+SeetaFaceThread::SeetaFaceThread(QWidget *parent) {
 
     _last_pid = -1;
     _threshold = 0.6;
+
+    mutex = new QMutex();
+
     _last_record_time = QDateTime::currentDateTime();
+
     seetaface_ptr = std::make_shared<SeetaFace>();
+
     seetaface_ptr->create_face_libs("templates/static/facelib/facelib.json");
+
     face_rec_ptr = std::make_shared<FaceRecThread>(seetaface_ptr);
 
     connect(face_rec_ptr.get(), &FaceRecThread::face_rec_signal, this, &SeetaFaceThread::on_update_ret);
@@ -25,13 +31,15 @@ void SeetaFaceThread::run() {
     cv::Mat frame;
 
     while (t_start) {
-        if (cap->isOpened()) {
+        if (cap && cap->isOpened()) {
             cap->read(frame);
             if (frame.empty()) continue;
             send_records();
             cv::Mat src_img = frame.clone();
             auto tracker_info = seetaface_ptr->face_track(frame);
+
             if (tracker_info.size > 0) {
+
                 det_face_signal(true);
                 // send det face signal
                 auto face_info = tracker_info.data[0];
@@ -55,6 +63,7 @@ void SeetaFaceThread::run() {
             img_send_signal(q_img);
         }
     }
+//    cap->release();
 }
 
 void SeetaFaceThread::stop_thread() {
@@ -84,6 +93,7 @@ void SeetaFaceThread::send_records() {
 
 SeetaFaceThread::~SeetaFaceThread() {
 
+    std::cout << "---seetafacethread--"<<std::endl;
 }
 
 

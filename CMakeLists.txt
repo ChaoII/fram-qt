@@ -45,8 +45,6 @@ file(GLOB HEAD ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 file(GLOB SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 file(GLOB UI ${CMAKE_CURRENT_SOURCE_DIR}/ui/*)
 
-message(STATUS ${UI})
-
 add_executable(${PROJECT_NAME} ${SRC} ${HEAD} ${UI} main.cpp)
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 

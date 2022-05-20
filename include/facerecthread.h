@@ -22,8 +22,6 @@ class FaceRecThread : public QThread {
 Q_OBJECT
 
 public:
-
-
     explicit FaceRecThread(std::shared_ptr<SeetaFace> seetaface_ptr);
 
     void init_params(const cv::Mat &frame, const SeetaTrackingFaceInfo &face_info);
@@ -40,7 +38,7 @@ signals:
 private:
     float _threshold;
     cv::Mat _frame;
-    std::shared_ptr<SeetaFace> _seetaface_ptr = nullptr;
+    std::shared_ptr<SeetaFace> _seetaface_ptr;
     SeetaTrackingFaceInfo _face_info;
     Ui::FaceRecThread *ui;
 };
