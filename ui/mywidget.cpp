@@ -33,7 +33,6 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 
 MyWidget::~MyWidget() {
 
-    std::cout << "----mywidget---" << std::endl;
     delete ui;
 }
 
