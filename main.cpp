@@ -5,8 +5,8 @@
 #include <QApplication>
 #include <QFile>
 #include <QDateTime>
-//#include "ui/mainwidget.h"
-#include "ui/mywidget.h"
+#include "ui/mainwidget.h"
+//#include "ui/mywidget.h"
 
 void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
     static QMutex mutex;
@@ -56,7 +56,7 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     qInstallMessageHandler(outputMessage);
-    auto widget = MyWidget();
+    auto widget = MainWidget();
     widget.show();
     return QApplication::exec();
 }

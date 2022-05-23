@@ -37,7 +37,6 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 
 void MyWidget::update_frame(QImage qimg) {
 
-
     _img = qimg.scaled(ui->label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     if (!this->isVisible()) return;
     update();

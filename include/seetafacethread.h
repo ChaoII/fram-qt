@@ -26,14 +26,13 @@ Q_OBJECT
 public:
     explicit SeetaFaceThread(QObject *parent = nullptr);
 
-    void stop_thread();
+    void stop_thread(); //线程关闭外部接口
 
     void on_update_ret(FaceInfoWrap rec_info);
 
-    void send_records();
-    QMutex *mutex;
+    void send_records(); // 发送打卡记录
 
-    void run() override;
+    void run() override; //
 
     ~SeetaFaceThread() override;
 
@@ -49,14 +48,15 @@ signals:
 
 private:
 
-    int _last_pid;
-    float _threshold;
-    QDateTime _last_record_time;
-    QVector<FaceInfoWrap> _records;
+    bool _tstart;   //线程开启标志
+    int _last_pid;  //人脸跟踪pid
+    float _threshold;       // 人脸识别阈值
+    int _record_interval;   // 打卡记录存储间隔s
+    QDateTime _last_record_time;    // 上次打卡记录时间
+    QVector<FaceInfoWrap> _records; // 打卡记录缓存
     std::shared_ptr<FaceRecThread> face_rec_ptr = nullptr;
     std::shared_ptr<SeetaFace> seetaface_ptr = nullptr;
     std::shared_ptr<cv::VideoCapture> cap = nullptr;
-    bool t_start = true;
 };
 
 

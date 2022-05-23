@@ -7,12 +7,14 @@
 
 #include "include/Utils.h"
 
+// 人脸库
 struct FaceLibInfo {
     QString name;
     QString staff_id;
     std::shared_ptr<float> feature;
 };
 
+// 人脸识别结果
 struct FaceRecRet {
     QString face_id;
     QString name;
@@ -20,6 +22,7 @@ struct FaceRecRet {
 
 };
 
+// 人脸识别结果封装
 struct FaceInfoWrap {
     int code;
     QString time;

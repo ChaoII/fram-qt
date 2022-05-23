@@ -31,17 +31,17 @@ void FaceRecThread::run() {
         FaceRecRet ret{"-1", "攻击人脸", 0.0};
         FaceInfoWrap info{-1, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss zzzzzzz"), ret};
         qCritical() << "攻击人脸";
-        face_rec_signal(info);
+        emit face_rec_signal(info);
     } else {
         //人脸识别
         auto ret = _seetaface_ptr->face_recognition(_frame, points);
         if (ret.score < _threshold) {
             FaceInfoWrap info{0, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss zzzzzz"), ret};
-            face_rec_signal(info);
+            emit face_rec_signal(info);
             qWarning() << "未知人脸: " << "score: " << qPrintable(QString::asprintf("%.2f", ret.score));
         } else {
             FaceInfoWrap info{1, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss zzzzzz"), ret};
-            face_rec_signal(info);
+            emit face_rec_signal(info);
             qInfo() << "打卡成功 name: " << qPrintable(ret.name) << "score: "
                     << qPrintable(QString::asprintf("%.2f", ret.score));
         }

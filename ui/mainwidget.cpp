@@ -18,8 +18,8 @@ MainWidget::MainWidget(QWidget *parent) :
 void MainWidget::on_attend_clicked() {
 
     attend_widget->show();
-    attend_widget->start_thread();
-//    this->hide();
+//    attend_widget->start_thread();
+    this->hide();
 }
 
 MainWidget::~MainWidget() {

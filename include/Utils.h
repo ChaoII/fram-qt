@@ -20,10 +20,7 @@ public:
 
     static QImage cvMat_2_qimg(const cv::Mat &img);
 
-
 };
-
-
 
 
 #endif //FRAM_UTILS_H
