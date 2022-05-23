@@ -5,7 +5,7 @@
 #include "include/seetafacethread.h"
 
 
-SeetaFaceThread::SeetaFaceThread(QWidget *parent) {
+SeetaFaceThread::SeetaFaceThread(QObject *parent) : QThread(parent) {
 
     _last_pid = -1;
     _threshold = 0.6;
@@ -18,7 +18,7 @@ SeetaFaceThread::SeetaFaceThread(QWidget *parent) {
 
     seetaface_ptr->create_face_libs("templates/static/facelib/facelib.json");
 
-    face_rec_ptr = std::make_shared<FaceRecThread>(seetaface_ptr);
+    face_rec_ptr = std::make_shared<FaceRecThread>(seetaface_ptr, this);
 
     connect(face_rec_ptr.get(), &FaceRecThread::face_rec_signal, this, &SeetaFaceThread::on_update_ret);
     cap = std::make_shared<cv::VideoCapture>(0);
@@ -63,7 +63,6 @@ void SeetaFaceThread::run() {
             img_send_signal(q_img);
         }
     }
-//    cap->release();
 }
 
 void SeetaFaceThread::stop_thread() {
@@ -93,7 +92,11 @@ void SeetaFaceThread::send_records() {
 
 SeetaFaceThread::~SeetaFaceThread() {
 
-    std::cout << "---seetafacethread--"<<std::endl;
+    face_rec_ptr->quit();
+    face_rec_ptr->wait();
+    face_rec_ptr->deleteLater();
+    std::cout << "---seetafacethread--" << std::endl;
+
 }
 
 

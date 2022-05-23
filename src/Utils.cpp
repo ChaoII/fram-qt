@@ -47,7 +47,7 @@ QImage Utils::cvMat_2_qimg(const cv::Mat &img) {
     int step = img.step;
     cv::Mat dst;
     cv::cvtColor(img, dst, cv::COLOR_BGR2RGB);
-    QImage q_img = QImage(dst.data, width, height, step, QImage::Format_RGB888);
+    QImage q_img = QImage(dst.data, width, height, step, QImage::Format_RGB888).copy();
     return q_img;
 }
 

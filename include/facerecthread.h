@@ -22,7 +22,7 @@ class FaceRecThread : public QThread {
 Q_OBJECT
 
 public:
-    explicit FaceRecThread(std::shared_ptr<SeetaFace> seetaface_ptr);
+    explicit FaceRecThread(std::shared_ptr<SeetaFace> seetaface_ptr, QObject *parent = nullptr);
 
     void init_params(const cv::Mat &frame, const SeetaTrackingFaceInfo &face_info);
 

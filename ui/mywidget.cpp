@@ -13,7 +13,7 @@
 MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 
     ui->setupUi(this);
-    this->setAttribute(Qt::WA_DeleteOnClose);
+    this->setAttribute(Qt::WA_QuitOnClose);
 
     seeta_face_thread = new SeetaFaceThread(this);
     record_thread = new RecordThread(this);
@@ -28,18 +28,18 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 
     timer->setInterval(1000);
     timer->start();
-}
 
-
-MyWidget::~MyWidget() {
-
-    delete ui;
+    QTimer::singleShot(1500, this, [=]() {
+        seeta_face_thread->start();
+    });
+//    seeta_face_thread->start();
 }
 
 void MyWidget::update_frame(QImage qimg) {
 
 
     _img = qimg.scaled(ui->label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    if (!this->isVisible()) return;
     update();
 }
 
@@ -73,6 +73,7 @@ void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
 }
 
 void MyWidget::on_det_face(bool detected) {
+
     ui->widget_info->setVisible(detected);
     if (!detected) {
         ui->widget->setStyleSheet("#widget{background-color: rgba(255, 0, 0,0);}");
@@ -96,14 +97,13 @@ void MyWidget::closeEvent(QCloseEvent *event) {
 
     seeta_face_thread->stop_thread();
     seeta_face_thread->wait();
-    seeta_face_thread->deleteLater();
+//    seeta_face_thread->deleteLater();
 }
 
 void MyWidget::paintEvent(QPaintEvent *event) {
     if (_img.isNull()) return;
     QPainter painter(this);
     painter.drawImage(0, 0, _img);
-
 }
 
 
@@ -111,4 +111,10 @@ void MyWidget::start_thread() {
     if (seeta_face_thread && !seeta_face_thread->isRunning()) {
         seeta_face_thread->start();
     }
+}
+
+
+MyWidget::~MyWidget() {
+    std::cout << "mywidget" << std::endl;
+    delete ui;
 }

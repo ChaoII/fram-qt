@@ -6,7 +6,7 @@
 #include "include/recordthread.h"
 
 
-RecordThread::RecordThread(QWidget *parent) {
+RecordThread::RecordThread(QObject *parent) : QThread(parent) {
 
 //    _sql_helper = std::make_shared<SqliteOperator>("attend.db");
 //    _sql_helper->create_db();

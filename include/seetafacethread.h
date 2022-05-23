@@ -24,7 +24,7 @@ Q_OBJECT
 
 
 public:
-    explicit SeetaFaceThread(QWidget *parent = nullptr);
+    explicit SeetaFaceThread(QObject *parent = nullptr);
 
     void stop_thread();
 

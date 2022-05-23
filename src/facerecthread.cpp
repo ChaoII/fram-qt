@@ -7,7 +7,7 @@
 #include "include/facerecthread.h"
 
 
-FaceRecThread::FaceRecThread(std::shared_ptr<SeetaFace> seetaface_ptr) {
+FaceRecThread::FaceRecThread(std::shared_ptr<SeetaFace> seetaface_ptr, QObject *parent) : QThread(parent) {
 
     _seetaface_ptr = seetaface_ptr;
     _threshold = 0.6;

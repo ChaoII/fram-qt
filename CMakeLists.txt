@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
 
-
 project(FRAM)
 set(CMAKE_CXX_STANDARD 14)
 
@@ -12,7 +11,6 @@ set(CMAKE_PREFIX_PATH "/Users/aichao/Qt6/6.3.0/macos/lib/cmake")
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-
 
 set(CMAKE_THREAD_LIBS_INIT "-lpthread")
 #set(CMAKE_HAVE_THREADS_LIBRARY 1)
