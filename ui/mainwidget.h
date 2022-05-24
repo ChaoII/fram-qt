@@ -27,7 +27,7 @@ private slots:
 
 private:
 
-    MyWidget *attend_widget;
+    MyWidget *attend_widget = nullptr;
     Ui::MainWidget *ui;
 };
 

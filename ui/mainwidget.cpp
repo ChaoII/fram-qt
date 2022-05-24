@@ -25,6 +25,10 @@ void MainWidget::on_attend_clicked() {
 MainWidget::~MainWidget() {
 
     std::cout << "mainwidget" << std::endl;
+    if (attend_widget != nullptr) {
+        delete attend_widget;
+        attend_widget = nullptr;
+    }
     delete ui;
 }
 
