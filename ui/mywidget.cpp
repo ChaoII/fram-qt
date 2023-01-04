@@ -105,6 +105,17 @@ void MyWidget::paintEvent(QPaintEvent *event) {
     painter.drawImage(0, 0, _img);
 }
 
+void MyWidget::keyPressEvent(QKeyEvent *event) {
+
+    if (event->key() == Qt::Key_F) {
+        if (this->isFullScreen()) {
+            this->showNormal();
+        } else {
+            this->showFullScreen();
+        }
+    }
+}
+
 
 void MyWidget::start_thread() {
     if (seeta_face_thread && !seeta_face_thread->isRunning()) {

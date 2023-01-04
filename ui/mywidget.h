@@ -11,6 +11,7 @@
 #include "include/recordthread.h"
 #include <QMutex>
 #include <QMutexLocker>
+#include <QKeyEvent>
 
 
 QT_BEGIN_NAMESPACE
@@ -39,6 +40,8 @@ public:
     void closeEvent(QCloseEvent *event) override;
 
     void paintEvent(QPaintEvent *event) override;
+
+    void keyPressEvent(QKeyEvent *event) override;
 
     ~MyWidget() override;
 

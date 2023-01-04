@@ -47,16 +47,14 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
     text_stream << message << "\r\n";
     file.flush();
     file.close();
-
     mutex.unlock();
-
 }
 
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     qInstallMessageHandler(outputMessage);
-    auto widget = MainWidget();
+    MainWidget widget;
     widget.show();
     return QApplication::exec();
 }
