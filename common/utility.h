@@ -20,6 +20,8 @@ QImage fit_screen(const QImage &img, QSize screen_size);
 qint64 get_uuid();
 QStringList get_file_lists(const QString &dirPath);
 std::vector<float> L2Normalize(const std::vector<float>& values);
+QByteArray mat2ByteArray(const cv::Mat &image);
+cv::Mat byteArray2Mat(const QByteArray & byteArray);
 } // namespace Utility
 
 #endif // UTILITY_H
