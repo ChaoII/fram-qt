@@ -19,7 +19,7 @@ FaceHelper::FaceHelper() {
         dir.mkdir(file_info.absoluteFilePath());
     }
     QFileInfo index_info(INDEX_FILE);
-    if (!file_info.exists()) {
+    if (!index_info.exists()) {
         refresh_faceindex();
     }
 }
@@ -37,18 +37,13 @@ void FaceHelper::refresh_faceindex() {
             QString name = staff->name;
             QVector<float> feature = Utility::byteArray2Vectorf(staff->feature);
             ids.push_back(id);
-
-            all_data_temp.insert(all_data_temp.end());
-
-            VectorSearch::getInstance()->add_feature(id, feature.data());
+            all_data_temp.append(feature);
             m_facelibs[id].uid=uid;
             m_facelibs[id].name = name;
             m_facelibs[id].feature = feature;
         }
-
-
+        VectorSearch::getInstance()->add_features(ids, all_data_temp.data());
     }
-
 }
 
 QMap<qint64, FaceInfo> FaceHelper::get_facelibs()
