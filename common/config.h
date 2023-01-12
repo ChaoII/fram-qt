@@ -20,7 +20,7 @@
 #define ATTEND_RECORD_TABLE "attend"
 
 struct FaceInfo {
-    int uid;
+    QString uid;
     QString name;
     QVector<float> feature;
     friend QDataStream &operator<<(QDataStream &output,

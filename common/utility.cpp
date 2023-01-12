@@ -49,7 +49,6 @@ cv::Mat CropImage(cv::Mat &mat, std::vector<int> box) {
         .clone();
 }
 
-
 cv::Mat fit_screen(const cv::Mat &mat, QSize screen_size) {
     cv::Mat crop_image;
     if (mat.rows == 0) {
@@ -65,16 +64,16 @@ cv::Mat fit_screen(const cv::Mat &mat, QSize screen_size) {
         float rate = static_cast<float>(i_h) / s_h;
         float scaled_h = i_h / rate;
         float scaled_w = i_w / rate;
-        cv::Mat scaled_img ;
-        cv::resize(mat,scaled_img, cv::Size(scaled_w, scaled_h));
+        cv::Mat scaled_img;
+        cv::resize(mat, scaled_img, cv::Size(scaled_w, scaled_h));
         int gap_w = (scaled_w - s_w) / 2;
         crop_image = scaled_img(cv::Rect(gap_w, 0, s_w, s_h)).clone();
     } else {
         float rate = static_cast<float>(i_w) / s_w;
         float scaled_h = i_h / rate;
         float scaled_w = i_w / rate;
-        cv::Mat scaled_img ;
-        cv::resize(mat,scaled_img, cv::Size(scaled_w, scaled_h));
+        cv::Mat scaled_img;
+        cv::resize(mat, scaled_img, cv::Size(scaled_w, scaled_h));
         int gap_h = (scaled_h - s_h) / 2;
         crop_image = scaled_img(cv::Rect(0, gap_h, s_w, s_h)).clone();
     }
@@ -132,7 +131,7 @@ QStringList get_file_lists(const QString &dirPath) {
     return file_list;
 }
 
-std::vector<float> L2Normalize(const std::vector<float>& values) {
+std::vector<float> L2Normalize(const std::vector<float> &values) {
     size_t num_val = values.size();
     if (num_val == 0) {
         return {};
@@ -150,21 +149,20 @@ std::vector<float> L2Normalize(const std::vector<float>& values) {
     return norm;
 }
 
-QByteArray mat2ByteArray(const cv::Mat &image)
-{
+QByteArray mat2ByteArray(const cv::Mat &image) {
     QByteArray byteArray;
-    QDataStream stream( &byteArray, QIODevice::WriteOnly );
+    QDataStream stream(&byteArray, QIODevice::WriteOnly);
     stream << image.type();
     stream << image.rows;
     stream << image.cols;
     const size_t data_size = image.cols * image.rows * image.elemSize();
-    QByteArray data = QByteArray::fromRawData( (const char*)image.ptr(), data_size );
+    QByteArray data =
+        QByteArray::fromRawData((const char *)image.ptr(), data_size);
     stream << data;
     return byteArray;
 }
 
-cv::Mat byteArray2Mat(const QByteArray & byteArray)
-{
+cv::Mat byteArray2Mat(const QByteArray &byteArray) {
     QDataStream stream(byteArray);
     int matType, rows, cols;
     QByteArray data;
@@ -172,8 +170,23 @@ cv::Mat byteArray2Mat(const QByteArray & byteArray)
     stream >> rows;
     stream >> cols;
     stream >> data;
-    cv::Mat mat( rows, cols, matType, (void*)data.data() );
+    cv::Mat mat(rows, cols, matType, (void *)data.data());
     return mat.clone();
+}
+
+QByteArray vectorf2ByteArray(const QVector<float> &vec) {
+    QByteArray array;
+    int vec_len = sizeof(float) * vec.size(); //(一个float占4个字节)
+    array.resize(vec_len);
+    memcpy(array.data(), vec.data(), vec_len);
+    return array;
+}
+
+QVector<float> byteArray2Vectorf(const QByteArray &bytes) {
+    QVector<float> vec;
+    int bytes_len = sizeof(bytes) / sizeof(float);
+    memcpy(vec.data(), bytes.data(), bytes_len);
+    return vec;
 }
 
 } // namespace Utility

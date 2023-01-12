@@ -12,15 +12,15 @@ class FaceHelper {
 
 public:
     /// initial_facelibs
-    void initial_facelibs();
-    QMap<qint64, FaceInfo> get_facelibs();
-    void add_database(cv::Mat img, QString uid, QString name);
-    void delete_face(QString uid);
+    void refresh_faceindex();
+    void add_database(cv::Mat img, const QString& uid, const QString& name);
+    void delete_face(const QString& uid);
     cv::Rect get_face_box(cv::Mat img);
     cv::Mat get_face_roi(cv::Mat img);
     std::vector<float> get_face_feature(cv::Mat img);
     static FaceHelper *getInstance();
     void delete_instance();
+
 
 private:
     explicit FaceHelper();
@@ -29,7 +29,7 @@ private:
     fastdeploy::vision::faceid::ArcFace *face_rec_;
     static QMutex mutex_;
     static FaceHelper *face_helpher_instance_;
-    QMap<qint64, FaceInfo> face_libs_;
+    QMap<qint64,FaceInfo> m_facelibs;
 };
 
 #endif // FACEHELPER_H

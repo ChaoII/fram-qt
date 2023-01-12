@@ -41,7 +41,7 @@ public:
     /// \param index 索引index
     /// \param feature 向量
     ///
-    void add_feature(qint64 index, float *feature);
+    void add_features(const QVector<qint64>& ids, float* features);
     ///
     /// \brief search 向量查找
     /// \param feature 特征向量
@@ -73,6 +73,8 @@ public:
     void delete_instance();
 
     void build_index();
+
+    void delete_ids();
 
 private:
     /// pInstance 全局静态实例

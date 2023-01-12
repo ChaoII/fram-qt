@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <faiss/IndexIDMap.h>
 #include <faiss/index_factory.h>
+#include <impl/IDSelector.h>
 #include <fstream>
 #include <iostream>
 #include <regex>
@@ -58,8 +59,9 @@ const SearchResult &VectorSearch::search(float *feature, int query_number) {
 
 const int VectorSearch::get_index_length() { return this->index_->ntotal; }
 
-void VectorSearch::add_feature(qint64 index, float *feature) {
-    this->index_->add_with_ids(1, feature, &index);
+void VectorSearch::add_features(const QVector<qint64>& ids, float* features) {
+    int nums = ids.size();
+    this->index_->add_with_ids(nums,features, ids.data());
     save_index();
 }
 
@@ -85,6 +87,11 @@ void VectorSearch::build_index()
         faiss::index_factory(VECTOR_DIMENSION, "HNSW32", faiss::METRIC_INNER_PRODUCT);
     this->index_ = new faiss::IndexIDMap(index);
     save_index();
+}
+
+void VectorSearch::delete_ids()
+{
+
 }
 
 void VectorSearch::create_index(QMap<qint64, FaceInfo> libs) {

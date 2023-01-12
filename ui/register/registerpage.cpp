@@ -2,12 +2,14 @@
 #include "common/config.h"
 #include "core/facehelper.h"
 #include "ui_registerpage.h"
+#include "core/staff.h"
 
 RegisterPage::RegisterPage(QWidget *parent)
     : QWidget(parent), ui(new Ui::RegisterPage) {
     ui->setupUi(this);
     ui->lw_icon->setStyleSheet("QListWidget{background-color: transparent; }");
-    ui->lb_no->setStyleSheet("QLabel{font: 30px ;color: rgb(255, 255, 255);}");
+//    ui->le_staffno->setStyleSheet("QLineEdit{font: 30px ;color: rgb(255, 255, 255);}");
+//    ui->le_name->setStyleSheet("QLineEdit{font: 30px ;color: rgb(255, 255, 255);}");
     init_lw();
 }
 
@@ -19,37 +21,14 @@ void RegisterPage::update_frame(cv::Mat &mat) {
 
 RegisterPage::~RegisterPage() { delete ui; }
 
-void RegisterPage::on_pb_1_clicked() { press_num(1); }
-
-void RegisterPage::on_pb_2_clicked() { press_num(2); }
-
-void RegisterPage::on_pb_3_clicked() { press_num(3); }
-
-void RegisterPage::on_pb_4_clicked() { press_num(4); }
-
-void RegisterPage::on_pb_5_clicked() { press_num(5); }
-
-void RegisterPage::on_pb_6_clicked() { press_num(6); }
-
-void RegisterPage::on_pb_7_clicked() { press_num(7); }
-
-void RegisterPage::on_pb_8_clicked() { press_num(8); }
-
-void RegisterPage::on_pb_9_clicked() { press_num(9); }
-
-void RegisterPage::on_pb_0_clicked() { press_num(0); }
-
 void RegisterPage::on_pb_ensure_clicked() {
 
-    if (this->m_str_content.count() < INPUT_MAX_COUNT) {
+    if (ui->le_staffno->text().count() < INPUT_MAX_COUNT) {
         qDebug() << "staff no length must be" << INPUT_MAX_COUNT;
         return;
     }
     QListWidgetItem *item = new QListWidgetItem;
-    if (this->m_str_content == "请输入工号") {
-        item->setText("");
-    }
-    item->setText(this->m_str_content);
+    item->setText(ui->le_staffno->text());
     auto img = Utility::Mat2QImage(m_img);
     item->setIcon(QIcon(QPixmap::fromImage(img)));
     ui->lw_icon->addItem(item);
@@ -58,29 +37,7 @@ void RegisterPage::on_pb_ensure_clicked() {
         delete item;
     }
 
-    FaceHelper::getInstance()->add_database(m_img, this->m_str_content, "");
-}
-
-void RegisterPage::on_pb_delete_clicked() {
-    m_is_first_key = true;
-    m_str_content.clear();
-    m_str_content += QString("请输入工号");
-    ui->lb_no->setText(m_str_content);
-}
-
-void RegisterPage::press_num(int num) {
-
-    if (m_is_first_key) {
-        m_is_first_key = false;
-        m_str_content.clear();
-        m_str_content += QString::number(num);
-    } else {
-        if (m_str_content.count() >= INPUT_MAX_COUNT) {
-            return;
-        }
-        m_str_content += QString::number(num);
-    }
-    ui->lb_no->setText(m_str_content);
+    FaceHelper::getInstance()->add_database(m_img, ui->le_staffno->text(),ui->le_name->text());
 }
 
 void RegisterPage::init_lw() {
