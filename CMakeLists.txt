@@ -15,15 +15,26 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets Sql)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 
+set(EXTERN_DEPS "")
+
 # 添加FastDeploy依赖头文件
 include(/Users/aichao/Documents/GitHub/FastDeploy/build/install/FastDeploy.cmake)
 include_directories(${FASTDEPLOY_INCS})
+list(APPEND EXTERN_DEPS ${FASTDEPLOY_LIBS})
+
 
 # 添加faiss
 set(FAISS_DIR /Users/aichao/CLionProjects/third/faiss)
 find_package(faiss REQUIRED PATHS ${FAISS_DIR}/share/faiss NO_DEFAULT_PATH)
 include_directories("${FAISS_DIR}/include")
 link_directories("${FAISS_DIR}/lib")
+list(APPEND EXTERN_DEPS faiss.dylib)
+
+# 添加QxOrm库
+set(QxOrm_DIR /Users/aichao/CLionProjects/third/QxOrm)
+include_directories("${QxOrm_DIR}/include")
+link_directories("${QxOrm_DIR}/lib")
+list(APPEND EXTERN_DEPS libQxOrm.dylib)
 
 # 添加opencv，在fastdeploy中已经有opencv
 #set(OpenCV_DIR "/Users/aichao/CLionProjects/third/opencv/release/lib64/cmake/opencv4" CACHE PATH "opencv path" FORCE)
@@ -40,7 +51,7 @@ list(APPEND ALL_SOURCES ${UI_SOURCE} ${COMMON_SOURCE} ${RESOURCE_FILE} ${CORE_SO
 
 add_executable(FRAM ${ALL_SOURCES})
 
-target_link_libraries(FRAM PUBLIC Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Sql  ${FASTDEPLOY_LIBS} faiss.dylib)
+target_link_libraries(FRAM PUBLIC Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Sql  ${EXTERN_DEPS})
 
 
 install(TARGETS FRAM
