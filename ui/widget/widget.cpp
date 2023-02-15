@@ -160,7 +160,7 @@ void Widget::show_result(const FaceResult &result) {
     if (m_notify_page) {
         m_notify_page->setTipsColor(QString("FFFFFF"));
         m_notify_page->setUserHeadImg(QString(""));
-        m_notify_page->setUserId(QString::number(result.uid));
+        m_notify_page->setUserId(result.uid);
         m_notify_page->setUserName(QString(result.name));
         m_notify_page->setTipsContent(QString("通知: 识别成功"));
         m_notify_page->setTipsBarBg(1);

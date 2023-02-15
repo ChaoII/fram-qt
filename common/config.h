@@ -43,7 +43,7 @@ enum ResultType{
 };
 struct FaceResult {
     ResultType type;
-    int uid;
+    QString uid;
     QString name;
     float score;
 };

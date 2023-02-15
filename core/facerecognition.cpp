@@ -16,7 +16,7 @@ void FaceRecognitinThread::run() {
     qint64 index = r.I[0];
     float score = r.D[0];
     if (score >= REC_THRESHOLD) {
-        int uid = FaceHelper::getInstance()->get_facelibs()[index].uid;
+        QString uid = FaceHelper::getInstance()->get_facelibs()[index].uid;
         QString name = FaceHelper::getInstance()->get_facelibs()[index].name;
         emit rec_result({ResultType::Normal, uid, name, score});
         } else {

@@ -17,9 +17,10 @@ public:
     void delete_face(const QString& uid);
     cv::Rect get_face_box(cv::Mat img);
     cv::Mat get_face_roi(cv::Mat img);
-    std::vector<float> get_face_feature(cv::Mat img);
+    std::vector<float> get_face_feature(const cv::Mat &img);
     static FaceHelper *getInstance();
     void delete_instance();
+    QMap<qint64, FaceInfo> get_facelibs();
 
 
 private:
