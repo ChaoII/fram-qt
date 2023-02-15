@@ -39,7 +39,11 @@ endif()
 
 
 # 添加FastDeploy依赖头文件
-include(${EXT_DIR}/fastdeploy/FastDeploy.cmake)
+if (WIN32)
+    include(${EXT_DIR}/fastdeploy/FastDeploy.cmake)
+else()
+    include(${EXT_DIR}/fastdeploy/FastDeploy.cmake)
+endif()
 include_directories(${FASTDEPLOY_INCS})
 list(APPEND EXTERN_DEPS ${FASTDEPLOY_LIBS})
 

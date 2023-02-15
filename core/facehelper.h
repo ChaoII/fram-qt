@@ -21,7 +21,6 @@ public:
     std::vector<float> get_face_feature(const cv::Mat &img);
     static FaceHelper *getInstance();
     void delete_instance();
-    QMap<qint64, FaceInfo> get_facelibs();
 
 
 private:

@@ -1,15 +1,8 @@
 #include "core/vectorsearch.h"
 #include <cstdio>
 #include <faiss/IndexIDMap.h>
-#include <faiss/index_factory.h>
-<<<<<<< HEAD
-=======
-#ifdef WIN32
 #include <faiss/impl/IDSelector.h>
-#else
-#include <impl/IDSelector.h>
-#endif
->>>>>>> 5d2893818564fc01c047624751f665467ba46625
+#include <faiss/index_factory.h>
 #include <fstream>
 #include <iostream>
 #include <regex>
@@ -19,11 +12,12 @@
 #else
 #include <unistd.h>
 #endif
+
 VectorSearch *VectorSearch::pInstance = nullptr;
 
 VectorSearch::VectorSearch() {
     // IndexProcess
-    if(!load_index_file()){
+    if (!load_index_file()) {
         build_index();
     };
     this->I_.resize(TOP_K * MAX_QUERY);
@@ -45,10 +39,9 @@ VectorSearch *VectorSearch::getInstance() {
     return pInstance;
 }
 
-
 bool VectorSearch::load_index_file() {
     QFileInfo fileInfo(INDEX_FILE);
-    if (!fileInfo.isFile()){
+    if (!fileInfo.isFile()) {
         qDebug("index file path is not existed!");
         return false;
     }
@@ -69,9 +62,9 @@ const SearchResult &VectorSearch::search(float *feature, int query_number) {
 
 const int VectorSearch::get_index_length() { return this->index_->ntotal; }
 
-void VectorSearch::add_features(const QVector<qint64>& ids, float* features) {
+void VectorSearch::add_features(const QVector<qint64> &ids, float *features) {
     int nums = ids.size();
-    this->index_->add_with_ids(nums,features, ids.data());
+    this->index_->add_with_ids(nums, features, ids.data());
     save_index();
 }
 
@@ -80,9 +73,7 @@ void VectorSearch::save_index() {
     faiss::write_index(this->index_, INDEX_FILE);
 }
 
-
 void VectorSearch::clear_feature() { this->index_->reset(); }
-
 
 void VectorSearch::delete_instance() {
     delete index_;
@@ -91,22 +82,18 @@ void VectorSearch::delete_instance() {
     pInstance = nullptr;
 }
 
-void VectorSearch::build_index()
-{
-    auto index =
-        faiss::index_factory(VECTOR_DIMENSION, "HNSW32", faiss::METRIC_INNER_PRODUCT);
+void VectorSearch::build_index() {
+    auto index = faiss::index_factory(VECTOR_DIMENSION, "HNSW32",
+                                      faiss::METRIC_INNER_PRODUCT);
     this->index_ = new faiss::IndexIDMap(index);
     save_index();
 }
 
-void VectorSearch::delete_ids()
-{
-
-}
+void VectorSearch::delete_ids() {}
 
 void VectorSearch::create_index(QMap<qint64, FaceInfo> libs) {
 
-    if(this->index_ == nullptr){
+    if (this->index_ == nullptr) {
         build_index();
     }
     if (!libs.empty()) {
