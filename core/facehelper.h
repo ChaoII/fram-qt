@@ -13,6 +13,7 @@ class FaceHelper {
 public:
     /// initial_facelibs
     void refresh_faceindex();
+    QMap<qint64,FaceInfo> get_facelibs();
     void add_database(cv::Mat img, const QString& uid, const QString& name);
     void delete_face(const QString& uid);
     cv::Rect get_face_box(cv::Mat img);

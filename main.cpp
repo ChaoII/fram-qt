@@ -2,6 +2,8 @@
 #include "plugin/plugin.h"
 #include <QApplication>
 
+#pragma warning(disable:4996)
+
 int main(int argc, char *argv[])
 {
     qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));

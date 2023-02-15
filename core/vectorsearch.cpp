@@ -2,7 +2,6 @@
 #include <cstdio>
 #include <faiss/IndexIDMap.h>
 #include <faiss/index_factory.h>
-#include <impl/IDSelector.h>
 #include <fstream>
 #include <iostream>
 #include <regex>
