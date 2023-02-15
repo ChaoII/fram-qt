@@ -2,12 +2,23 @@
 #include <cstdio>
 #include <faiss/IndexIDMap.h>
 #include <faiss/index_factory.h>
+<<<<<<< HEAD
+=======
+#ifdef WIN32
+#include <faiss/impl/IDSelector.h>
+#else
+#include <impl/IDSelector.h>
+#endif
+>>>>>>> 5d2893818564fc01c047624751f665467ba46625
 #include <fstream>
 #include <iostream>
 #include <regex>
 #include <sys/stat.h>
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <unistd.h>
-
+#endif
 VectorSearch *VectorSearch::pInstance = nullptr;
 
 VectorSearch::VectorSearch() {

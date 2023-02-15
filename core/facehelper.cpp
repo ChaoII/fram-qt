@@ -103,9 +103,9 @@ cv::Mat FaceHelper::get_face_roi(cv::Mat img) {
     return roi;
 }
 
-std::vector<float> FaceHelper::get_face_feature(cv::Mat img) {
+std::vector<float> FaceHelper::get_face_feature(const cv::Mat &img) {
     fastdeploy::vision::FaceRecognitionResult rec_result;
-    face_rec_->Predict(&img, &rec_result);
+    face_rec_->Predict(img, &rec_result);
     std::vector<float> feature = rec_result.embedding;
     std::vector<float> feature_normalize = Utility::L2Normalize(feature);
     return feature_normalize;
