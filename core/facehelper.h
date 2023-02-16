@@ -14,6 +14,7 @@ public:
     /// initial_facelibs
     void refresh_faceindex();
     QMap<qint64,FaceInfo> get_facelibs();
+    FaceInfo get_face_info_from_id(qint64 id);
     void add_database(cv::Mat img, const QString& uid, const QString& name);
     void delete_face(const QString& uid);
     cv::Rect get_face_box(cv::Mat img);

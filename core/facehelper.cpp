@@ -25,7 +25,6 @@ FaceHelper::FaceHelper() {
 }
 
 void FaceHelper::refresh_faceindex() {
-
     QVector<StaffPtr> staffs;
     QSqlError sql_error = qx::dao::fetch_all(staffs);
     if(!sql_error.isValid()){
@@ -38,9 +37,6 @@ void FaceHelper::refresh_faceindex() {
             QVector<float> feature = Utility::byteArray2Vectorf(staff->feature);
             ids.push_back(id);
             all_data_temp.append(feature);
-            m_facelibs[id].uid=uid;
-            m_facelibs[id].name = name;
-            m_facelibs[id].feature = feature;
         }
         VectorSearch::getInstance()->add_features(ids, all_data_temp.data());
     }
@@ -49,6 +45,21 @@ void FaceHelper::refresh_faceindex() {
 QMap<qint64, FaceInfo> FaceHelper::get_facelibs()
 {
     return m_facelibs;
+}
+
+FaceInfo FaceHelper::get_face_info_from_id(qint64 id)
+{
+    FaceInfo face_info;
+    StaffPtr staff(new Staff());
+    qx_query query;
+    query.where("id").isEqualTo(id);
+    QSqlError sql_error = qx::dao::fetch_by_query(query,staff);
+    if(!sql_error.isValid()){
+        face_info.uid = staff->uid;
+        face_info.name = staff->name;
+        face_info.feature = Utility::byteArray2Vectorf(staff->feature);
+    }
+    return face_info;
 }
 
 void FaceHelper::add_database(cv::Mat img, const QString &uid,
@@ -69,10 +80,6 @@ void FaceHelper::add_database(cv::Mat img, const QString &uid,
     staff->feature = Utility::vectorf2ByteArray(
         QVector<float>(feature.begin(), feature.end()));
     qx::dao::insert(staff);
-    m_facelibs[uuid].uid=uid;
-    m_facelibs[uuid].name = name;
-    m_facelibs[uuid].feature = QVector<float>(feature.begin(), feature.end());
-
 }
 
 void FaceHelper::delete_face(const QString &uid) {
