@@ -176,16 +176,21 @@ cv::Mat byteArray2Mat(const QByteArray &byteArray) {
 
 QByteArray vectorf2ByteArray(const QVector<float> &vec) {
     QByteArray array;
-    int vec_len = sizeof(float) * vec.size(); //(一个float占4个字节)
-    array.resize(vec_len);
-    memcpy(array.data(), vec.data(), vec_len);
+    // 计算vec的字节数
+    int vec_byte_count = sizeof(float) * vec.size();
+    // 分配内存
+    array.resize(vec_byte_count);
+    // 内存拷贝
+    memcpy(array.data(), vec.data(), vec_byte_count);
     return array;
 }
 
 QVector<float> byteArray2Vectorf(const QByteArray &bytes) {
     QVector<float> vec;
-    int bytes_len = sizeof(bytes) / sizeof(float);
-    memcpy(vec.data(), bytes.data(), bytes_len);
+    int vec_size = bytes.size() / sizeof(float);
+    vec.resize(vec_size);
+    // 拷贝的字节数
+    memcpy(vec.data(), bytes.data(), bytes.size());
     return vec;
 }
 

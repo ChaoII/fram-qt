@@ -14,7 +14,7 @@
 #define VECTOR_DIMENSION    512
 #define TOP_K               5
 #define MAX_QUERY           6
-#define REC_THRESHOLD       0.8
+#define REC_THRESHOLD       0.75
 #define DB_FILE             "faceinfo.db"
 #define FACE_INFO_TABLE     "faceinfo"
 #define ATTEND_RECORD_TABLE "attend"

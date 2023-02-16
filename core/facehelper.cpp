@@ -50,14 +50,15 @@ QMap<qint64, FaceInfo> FaceHelper::get_facelibs()
 FaceInfo FaceHelper::get_face_info_from_id(qint64 id)
 {
     FaceInfo face_info;
-    StaffPtr staff(new Staff());
+//    StaffPtr staff(new Staff());
+    QVector<StaffPtr> staffs;
     qx_query query;
     query.where("id").isEqualTo(id);
-    QSqlError sql_error = qx::dao::fetch_by_query(query,staff);
+    QSqlError sql_error = qx::dao::fetch_by_query(query,staffs);
     if(!sql_error.isValid()){
-        face_info.uid = staff->uid;
-        face_info.name = staff->name;
-        face_info.feature = Utility::byteArray2Vectorf(staff->feature);
+        face_info.uid = staffs[0]->uid;
+        face_info.name = staffs[0]->name;
+        face_info.feature = Utility::byteArray2Vectorf(staffs[0]->feature);
     }
     return face_info;
 }
