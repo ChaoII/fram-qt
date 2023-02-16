@@ -69,6 +69,10 @@ void FaceHelper::add_database(cv::Mat img, const QString &uid,
     staff->feature = Utility::vectorf2ByteArray(
         QVector<float>(feature.begin(), feature.end()));
     qx::dao::insert(staff);
+    m_facelibs[uuid].uid=uid;
+    m_facelibs[uuid].name = name;
+    m_facelibs[uuid].feature = QVector<float>(feature.begin(), feature.end());
+
 }
 
 void FaceHelper::delete_face(const QString &uid) {

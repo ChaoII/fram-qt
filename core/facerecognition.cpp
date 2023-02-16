@@ -19,6 +19,7 @@ void FaceRecognitinThread::run() {
         QString uid = FaceHelper::getInstance()->get_facelibs()[index].uid;
         QString name = FaceHelper::getInstance()->get_facelibs()[index].name;
         emit rec_result({ResultType::Normal, uid, name, score});
+        qDebug() << "uid: " << uid << "name:" << name;
         } else {
         emit rec_result({
                          ResultType::Normal,

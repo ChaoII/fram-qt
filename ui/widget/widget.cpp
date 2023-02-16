@@ -158,7 +158,6 @@ void Widget::show_result(const FaceResult &result) {
         switchToNotifyPage();
     }
     if (m_notify_page) {
-
         m_notify_page->setTipsColor("FFFFFF");
         m_notify_page->setUserHeadImg("");
         m_notify_page->setUserId(result.uid);
