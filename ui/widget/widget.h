@@ -55,7 +55,7 @@ private:
 
     // Pages Manager
     cv::Mat m_img;
-    QHBoxLayout *m_layout = nullptr;
+    QVBoxLayout *m_layout = nullptr;
     int m_current_page_flag;
     StandbyPage *m_standby_page = nullptr;
     InputPage *m_input_page = nullptr;

@@ -30,7 +30,7 @@ void Widget::update_image(cv::Mat &mat) {
 }
 
 void Widget::initWidget() {
-    m_layout = new QHBoxLayout();
+    m_layout = new QVBoxLayout;
     m_layout->setContentsMargins(0, 0, 0, 0); //注意这里设置了所有参数页面的边框
     // left
     ui->mpDateLab->setStyleSheet("QLabel { font: 20px ; color: rgb(245, 245, "
