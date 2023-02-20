@@ -10,9 +10,9 @@
 *.dll
 *.dylib
 .DS_Store
+.DS_Store_copy
 build
 .idea
-
 # Qt-es
 object_script.*.Release
 object_script.*.Debug

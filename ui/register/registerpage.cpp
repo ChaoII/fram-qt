@@ -7,9 +7,10 @@
 RegisterPage::RegisterPage(QWidget *parent)
     : QWidget(parent), ui(new Ui::RegisterPage) {
     ui->setupUi(this);
-    ui->lw_icon->setStyleSheet("QListWidget{background-color: transparent; }");
 //    ui->le_staffno->setStyleSheet("QLineEdit{font: 30px ;color: rgb(255, 255, 255);}");
 //    ui->le_name->setStyleSheet("QLineEdit{font: 30px ;color: rgb(255, 255, 255);}");
+
+    this->setStyleSheet(this->styleSheet() + "#RegisterPage{background-color:rgb(0,8,22)}");
     init_lw();
 }
 
@@ -30,6 +31,9 @@ void RegisterPage::on_pb_ensure_clicked() {
     QListWidgetItem *item = new QListWidgetItem;
     item->setText(ui->le_staffno->text());
     auto img = Utility::Mat2QImage(m_img);
+    QPainter painter(&img);
+    QPixmap pixmap(":/image/icon_113x183.png");
+    painter.drawPixmap(0,0,img.width(),img.height(),pixmap);
     item->setIcon(QIcon(QPixmap::fromImage(img)));
     ui->lw_icon->addItem(item);
     if (ui->lw_icon->count() > MAX_FACE) {

@@ -8,3 +8,7 @@ FRAM for Qt C++，采用qt编写界面，主要特性：
 # todo
 - 添加人脸矫正
 - 优化注册界面
+
+
+界面样式：
+<img src="./img.png">

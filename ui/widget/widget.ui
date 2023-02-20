@@ -17,6 +17,10 @@
    <string notr="true">QWidget{
 	border: 0px;	
 	outline: none;
+}
+#Widget{
+background-color:rgb(0,8,22);
+
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">

@@ -26,6 +26,8 @@
         <file>image/img_tipsbar_bg_warning.png</file>
         <file>image/img_tipsbar_bg_error.png</file>
         <file>image/img_tipsbar_bg_normal.png</file>
-        <file>image/register.png</file>
+        <file>image/icon_113x183.png</file>
+        <file>image/上部标题栏480X24.png</file>
+        <file>image/注册摄像头界面240x360.png</file>
     </qresource>
 </RCC>
