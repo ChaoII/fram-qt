@@ -32,9 +32,22 @@
 }
 
 #bar_cover{
+color:rgb(28,235,235);
+font-size:20px;
 border-image:url(:/image/上部标题栏480X24.png);
 }
-</string>
+
+
+#pb_ensure{
+color:rgb(28,235,235);
+font-size:20px;
+border-image:url(:/image/添加按钮.png);
+}
+.QLineEdit{
+border-image:url(:/image/用户名样式.png);
+color:rgb(16,115,115);
+font-size:18px;
+}</string>
   </property>
   <widget class="QListWidget" name="lw_icon">
    <property name="geometry">
@@ -59,16 +72,6 @@ border-image:url(:/image/上部标题栏480X24.png);
      <y>60</y>
      <width>220</width>
      <height>320</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QWidget" name="bar_cover" native="true">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>10</y>
-     <width>480</width>
-     <height>40</height>
     </rect>
    </property>
   </widget>
@@ -100,56 +103,48 @@ border-image:url(:/image/上部标题栏480X24.png);
   <widget class="QLineEdit" name="le_staffno">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>50</y>
-     <width>171</width>
-     <height>24</height>
+     <x>20</x>
+     <y>130</y>
+     <width>221</width>
+     <height>40</height>
     </rect>
    </property>
-  </widget>
-  <widget class="QLabel" name="lb_name">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>81</y>
-     <width>34</width>
-     <height>20</height>
-    </rect>
+   <property name="inputMask">
+    <string/>
    </property>
    <property name="text">
-    <string>姓名:</string>
+    <string/>
    </property>
-  </widget>
-  <widget class="QLabel" name="lb_staffno">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>50</y>
-     <width>34</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>工号:</string>
+   <property name="placeholderText">
+    <string>请输入工号</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="le_name">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>81</y>
-     <width>171</width>
-     <height>24</height>
+     <x>20</x>
+     <y>240</y>
+     <width>221</width>
+     <height>40</height>
     </rect>
+   </property>
+   <property name="inputMask">
+    <string/>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="placeholderText">
+    <string>请输入用户名</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pb_ensure">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>360</y>
-     <width>93</width>
-     <height>29</height>
+     <x>20</x>
+     <y>347</y>
+     <width>221</width>
+     <height>32</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -158,28 +153,36 @@ border-image:url(:/image/上部标题栏480X24.png);
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <property name="maximumSize">
-    <size>
-     <width>120</width>
-     <height>40</height>
-    </size>
-   </property>
    <property name="text">
-    <string>确认</string>
+    <string>添加</string>
    </property>
    <property name="flat">
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QLabel" name="bar_cover">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>480</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>人脸注册</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
   <zorder>lb_picture</zorder>
   <zorder>lw_icon</zorder>
   <zorder>pic_cover</zorder>
-  <zorder>bar_cover</zorder>
   <zorder>le_staffno</zorder>
-  <zorder>lb_name</zorder>
-  <zorder>lb_staffno</zorder>
   <zorder>le_name</zorder>
   <zorder>pb_ensure</zorder>
+  <zorder>bar_cover</zorder>
  </widget>
  <resources/>
  <connections/>
