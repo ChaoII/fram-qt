@@ -63,10 +63,13 @@ FaceInfo FaceHelper::get_face_info_from_id(qint64 id)
     return face_info;
 }
 
-void FaceHelper::add_database(cv::Mat img, const QString &uid,
+bool FaceHelper::add_database(cv::Mat img, const QString &uid,
                               const QString &name) {
 
     cv::Mat roi = get_face_roi(img);
+    if (roi.empty()){
+        return false;
+    }
     std::vector<float> feature = get_face_feature(roi);
     qint64 uuid = Utility::get_uuid();
     //写入索引文件
@@ -81,6 +84,7 @@ void FaceHelper::add_database(cv::Mat img, const QString &uid,
     staff->feature = Utility::vectorf2ByteArray(
         QVector<float>(feature.begin(), feature.end()));
     qx::dao::insert(staff);
+    return true;
 }
 
 void FaceHelper::delete_face(const QString &uid) {

@@ -70,7 +70,7 @@ font-size:18px;
     <rect>
      <x>260</x>
      <y>60</y>
-     <width>220</width>
+     <width>192</width>
      <height>320</height>
     </rect>
    </property>
@@ -80,7 +80,7 @@ font-size:18px;
     <rect>
      <x>260</x>
      <y>60</y>
-     <width>220</width>
+     <width>192</width>
      <height>320</height>
     </rect>
    </property>
@@ -103,7 +103,7 @@ font-size:18px;
   <widget class="QLineEdit" name="le_staffno">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>30</x>
      <y>130</y>
      <width>221</width>
      <height>40</height>
@@ -122,7 +122,7 @@ font-size:18px;
   <widget class="QLineEdit" name="le_name">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>30</x>
      <y>240</y>
      <width>221</width>
      <height>40</height>
@@ -141,7 +141,7 @@ font-size:18px;
   <widget class="QPushButton" name="pb_ensure">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>30</x>
      <y>347</y>
      <width>221</width>
      <height>32</height>

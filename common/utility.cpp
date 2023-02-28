@@ -13,7 +13,7 @@ QImage Mat2QImage(cv::Mat &mat) {
         return image.rgbSwapped(); // r与b调换
     } else {
         std::runtime_error(
-            "un supported image type only support CV_8UC1 and CV_8UC3");
+                    "un supported image type only support CV_8UC1 and CV_8UC3");
         return QImage();
     }
 }
@@ -22,10 +22,10 @@ QImage Mat2QImage(cv::Mat &mat) {
 cv::Mat QImage2Mat(QImage image) {
     cv::Mat mat;
     switch (image.format()) {
-    case QImage::Format_RGB32: //一般Qt读入彩色图后为此格式
+    case QImage::Format_RGB32: // 一般Qt读入彩色图后为此格式
         mat = cv::Mat(image.height(), image.width(), CV_8UC4,
                       (void *)image.constBits(), image.bytesPerLine());
-        cv::cvtColor(mat, mat, cv::COLOR_BGRA2BGR); //转3通道
+        cv::cvtColor(mat, mat, cv::COLOR_BGRA2BGR); // 转3通道
         break;
     case QImage::Format_RGB888:
         mat = cv::Mat(image.height(), image.width(), CV_8UC3,
@@ -46,7 +46,7 @@ cv::Mat QImage2Mat(QImage image) {
 cv::Mat CropImage(cv::Mat &mat, std::vector<int> box) {
 
     return mat(cv::Rect(box[0], box[1], box[2] - box[0], box[3] - box[1]))
-        .clone();
+            .clone();
 }
 
 cv::Mat fit_screen(const cv::Mat &mat, QSize screen_size) {
@@ -65,7 +65,8 @@ cv::Mat fit_screen(const cv::Mat &mat, QSize screen_size) {
         float scaled_h = i_h / rate;
         float scaled_w = i_w / rate;
         cv::Mat scaled_img;
-        cv::resize(mat, scaled_img, cv::Size(scaled_w, scaled_h));
+        // if don't +1 maybe convert to dst size less than s_w or s_h. Sometimes, tt may be cause some error
+        cv::resize(mat, scaled_img, cv::Size(scaled_w+1, scaled_h+1));
         int gap_w = (scaled_w - s_w) / 2;
         crop_image = scaled_img(cv::Rect(gap_w, 0, s_w, s_h)).clone();
     } else {
@@ -73,7 +74,7 @@ cv::Mat fit_screen(const cv::Mat &mat, QSize screen_size) {
         float scaled_h = i_h / rate;
         float scaled_w = i_w / rate;
         cv::Mat scaled_img;
-        cv::resize(mat, scaled_img, cv::Size(scaled_w, scaled_h));
+        cv::resize(mat, scaled_img, cv::Size(scaled_w+1, scaled_h+1));
         int gap_h = (scaled_h - s_h) / 2;
         crop_image = scaled_img(cv::Rect(0, gap_h, s_w, s_h)).clone();
     }
@@ -119,7 +120,7 @@ QStringList get_file_lists(const QString &dirPath) {
     QStringList file_list;
     QDir dir(dirPath);
     QFileInfoList fileInfoList =
-        dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot | QDir::Dirs);
+            dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot | QDir::Dirs);
     for (auto &fileInfo : fileInfoList) {
         if (fileInfo.isDir()) {
             get_file_lists(fileInfo.absoluteFilePath());
@@ -157,7 +158,7 @@ QByteArray mat2ByteArray(const cv::Mat &image) {
     stream << image.cols;
     const size_t data_size = image.cols * image.rows * image.elemSize();
     QByteArray data =
-        QByteArray::fromRawData((const char *)image.ptr(), data_size);
+            QByteArray::fromRawData((const char *)image.ptr(), data_size);
     stream << data;
     return byteArray;
 }

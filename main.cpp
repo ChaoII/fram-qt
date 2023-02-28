@@ -6,7 +6,8 @@
 
 int main(int argc, char *argv[])
 {
-    qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
+    // close this code for test
+//    qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
     //注册orm
     Plugin::register_orm();
     Plugin::register_facehelper();

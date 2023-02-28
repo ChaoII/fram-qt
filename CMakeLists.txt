@@ -21,6 +21,10 @@ if(WIN32)
     set(EXT_DIR E:/develop)
 elseif(APPLE)
     set(EXT_DIR /Users/aichao/CLionProjects/third)
+elseif(UNIX)
+    set(EXT_DIR /home/aichao/third)
+    # resolve convert long int to long long
+    add_compile_options(-fpermissive)
 else()
     message(FATAL "only supported by windows and macos")
 endif()
@@ -37,13 +41,9 @@ endif()
 
 
 
-
+message(STATUS ${EXT_DIR})
 # 添加FastDeploy依赖头文件
-if (WIN32)
-    include(${EXT_DIR}/fastdeploy/FastDeploy.cmake)
-else()
-    include(${EXT_DIR}/fastdeploy/FastDeploy.cmake)
-endif()
+include(${EXT_DIR}/fastdeploy/FastDeploy.cmake)
 include_directories(${FASTDEPLOY_INCS})
 list(APPEND EXTERN_DEPS ${FASTDEPLOY_LIBS})
 

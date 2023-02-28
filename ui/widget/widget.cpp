@@ -7,13 +7,14 @@
 Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget) {
     setWindowFlag(Qt::FramelessWindowHint, true);
     ui->setupUi(this);
-    m_camera_thread = new CameraReaderThread(this->size());
+    m_camera_thread = new CameraReaderThread(this->size(), 0);
     m_camera_thread->start();
     m_rec_thread = new FaceRecognitinThread();
+    // in linux platform the 'Qt::BlockingQueuedConnection' cant not be ommited
     connect(m_camera_thread, &CameraReaderThread::decodeimage, this,
-            &Widget::update_image);
+            &Widget::update_image, Qt::BlockingQueuedConnection);
     connect(m_rec_thread, &FaceRecognitinThread::rec_result, this,
-            &Widget::show_result);
+            &Widget::show_result, Qt::BlockingQueuedConnection);
     initWidget();
 }
 
@@ -31,7 +32,7 @@ void Widget::update_image(cv::Mat &mat) {
 
 void Widget::initWidget() {
     m_layout = new QVBoxLayout;
-    m_layout->setContentsMargins(0, 0, 0, 0); //注意这里设置了所有参数页面的边框
+    m_layout->setContentsMargins(0, 0, 0, 0); // 注意这里设置了所有参数页面的边框
     // left
     ui->mpDateLab->setStyleSheet("QLabel { font: 20px ; color: rgb(245, 245, "
                                  "245); background-color: transparent; }");
@@ -41,12 +42,12 @@ void Widget::initWidget() {
     ui->mpTimeLab->setStyleSheet("QLabel { font: 26px ; color: rgb(245, 245, "
                                  "245); background-color: transparent; }");
     ui->pb_register->setStyleSheet(
-        "QPushButton { font: 26px ; color: rgb(245, 245, 245); background-color: "
-        "transparent; }\n"
-        "QPushButton:hover { font: 26px ; color: rgb(245, 245, 245); "
-        "background-color: #181d24ff; }\n"
-        "QPushButton:pressed { font: 26px ; color: rgb(245, 245, 245); "
-        "background-color: #18dd24ff; }");
+                "QPushButton { font: 26px ; color: rgb(245, 245, 245); background-color: "
+                "transparent; }\n"
+                "QPushButton:hover { font: 26px ; color: rgb(245, 245, 245); "
+                "background-color: #181d24ff; }\n"
+                "QPushButton:pressed { font: 26px ; color: rgb(245, 245, 245); "
+                "background-color: #18dd24ff; }");
 
     m_pTimer = new QTimer(this);
     connect(m_pTimer, &QTimer::timeout, this, &Widget::updateDateTime);
@@ -146,7 +147,7 @@ void Widget::updateDateTime() {
     auto data_time = QDateTime::currentDateTime();
     QString date = data_time.toString("yyyy-MM-dd");
     QString time = data_time.toString("HH:mm:ss");
-    //指定中文显示
+    // 指定中文显示
     QLocale locale = QLocale::Chinese;
     ui->mpDateLab->setText(date);
     ui->mpWeekLab->setText(locale.toString(data_time, QString("dddd")));
