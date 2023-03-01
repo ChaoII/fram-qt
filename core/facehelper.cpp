@@ -5,14 +5,15 @@
 
 QMutex FaceHelper::mutex_;
 FaceHelper *FaceHelper::face_helpher_instance_ = nullptr;
+
 FaceHelper::FaceHelper() {
     fastdeploy::RuntimeOption option;
     option.UseOrtBackend();
     option.SetCpuThreadNum(1);
     face_det_ = new fastdeploy::vision::facedet::SCRFD(
-        "./models/scrfd_2.5g_bnkps_shape640x640.onnx", "", option);
+                "./models/scrfd_2.5g_bnkps_shape640x640.onnx", "", option);
     face_rec_ = new fastdeploy::vision::faceid::ArcFace(
-        "./models/ms1mv3_arcface_r50.onnx", "", option);
+                "./models/ms1mv3_arcface_r50.onnx", "", option);
     QFileInfo file_info(FACE_IMAGE_DIR);
     if (!file_info.exists()) {
         QDir dir;
@@ -27,14 +28,12 @@ FaceHelper::FaceHelper() {
 void FaceHelper::refresh_faceindex() {
     QVector<StaffPtr> staffs;
     QSqlError sql_error = qx::dao::fetch_all(staffs);
-    if(!sql_error.isValid()){
+    if (!sql_error.isValid()) {
         QVector<qint64> ids;
         QVector<float> all_data_temp;
         for (auto &staff : staffs) {
             qint64 id = staff->id;
-            QString uid = staff->uid;
-            QString name = staff->name;
-            QVector<float> feature = Utility::byteArray2Vectorf(staff->feature);
+            QVector<float> feature = Utility::byteArray2Vector<float>(staff->feature);
             ids.push_back(id);
             all_data_temp.append(feature);
         }
@@ -42,23 +41,19 @@ void FaceHelper::refresh_faceindex() {
     }
 }
 
-QMap<qint64, FaceInfo> FaceHelper::get_facelibs()
-{
-    return m_facelibs;
-}
+QMap<qint64, FaceInfo> FaceHelper::get_facelibs() { return m_facelibs; }
 
-FaceInfo FaceHelper::get_face_info_from_id(qint64 id)
-{
+FaceInfo FaceHelper::get_face_info_from_id(qint64 id) {
     FaceInfo face_info;
-//    StaffPtr staff(new Staff());
+    //    StaffPtr staff(new Staff());
     QVector<StaffPtr> staffs;
     qx_query query;
     query.where("id").isEqualTo(id);
-    QSqlError sql_error = qx::dao::fetch_by_query(query,staffs);
-    if(!sql_error.isValid()){
+    QSqlError sql_error = qx::dao::fetch_by_query(query, staffs);
+    if (!sql_error.isValid()) {
         face_info.uid = staffs[0]->uid;
         face_info.name = staffs[0]->name;
-        face_info.feature = Utility::byteArray2Vectorf(staffs[0]->feature);
+        face_info.feature = Utility::byteArray2Vector<float>(staffs[0]->feature);
     }
     return face_info;
 }
@@ -67,12 +62,12 @@ bool FaceHelper::add_database(cv::Mat img, const QString &uid,
                               const QString &name) {
 
     cv::Mat roi = get_face_roi(img);
-    if (roi.empty()){
+    if (roi.empty()) {
         return false;
     }
     std::vector<float> feature = get_face_feature(roi);
     qint64 uuid = Utility::get_uuid();
-    //写入索引文件
+    // 写入索引文件
     VectorSearch::getInstance()->add_features({uuid}, feature.data());
     // 写入数据库
     StaffPtr staff;
@@ -80,9 +75,9 @@ bool FaceHelper::add_database(cv::Mat img, const QString &uid,
     staff->id = uuid;
     staff->uid = uid;
     staff->name = name;
-    staff->picture = Utility::mat2ByteArray(img);
-    staff->feature = Utility::vectorf2ByteArray(
-        QVector<float>(feature.begin(), feature.end()));
+    staff->picture = Utility::matJPG2ByteArray<unsigned char>(img);
+    staff->feature = Utility::vector2ByteArray<float>(
+                QVector<float>(feature.begin(), feature.end()));
     qx::dao::insert(staff);
     return true;
 }
@@ -93,8 +88,7 @@ void FaceHelper::delete_face(const QString &uid) {
     qx_query query;
     query.where("uid").isEqualTo(uid);
     QSqlError sql_error = qx::dao::delete_by_query<Staff>(query);
-    if(!sql_error.isValid()){
-        // 删除图片
+    if (!sql_error.isValid()) {
         // 更新索引
         refresh_faceindex();
     }
@@ -122,9 +116,7 @@ cv::Mat FaceHelper::get_face_roi(cv::Mat img) {
 std::vector<float> FaceHelper::get_face_feature(const cv::Mat &img) {
     fastdeploy::vision::FaceRecognitionResult rec_result;
     face_rec_->Predict(img, &rec_result);
-    std::vector<float> feature = rec_result.embedding;
-    std::vector<float> feature_normalize = Utility::L2Normalize(feature);
-    return feature_normalize;
+    return Utility::L2Normalize(rec_result.embedding);
 }
 
 FaceHelper *FaceHelper::getInstance() {

@@ -28,23 +28,36 @@
 	color:rgb(255,255,255);
 }
 #pic_cover{
-	border-image: url(:/image/注册摄像头界面240x360.png);
+	border-image: url(:/image/preview.png);
 }
 
 #bar_cover{
 color:rgb(28,235,235);
-font-size:20px;
-border-image:url(:/image/上部标题栏480X24.png);
+font-size:25px;
+padding-bottom:7px;
+border-image:url(:/image/title.png);
 }
 
 
+#pb_add{
+color:rgb(28,235,235);
+font-size:20px;
+border-image:url(:/image/add.png);
+}
 #pb_ensure{
 color:rgb(28,235,235);
 font-size:20px;
-border-image:url(:/image/添加按钮.png);
+border-image:url(:/image/ensurebutton.png);
 }
+#pb_cancel{
+color:rgb(28,235,235);
+font-size:20px;
+border-image:url(:/image/ensurebutton.png);
+}
+
+
 .QLineEdit{
-border-image:url(:/image/用户名样式.png);
+border-image:url(:/image/input.png);
 color:rgb(16,115,115);
 font-size:18px;
 }</string>
@@ -138,7 +151,7 @@ font-size:18px;
     <string>请输入用户名</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pb_ensure">
+  <widget class="QPushButton" name="pb_add">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -164,9 +177,9 @@ font-size:18px;
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>0</y>
-     <width>480</width>
-     <height>60</height>
+     <y>10</y>
+     <width>481</width>
+     <height>47</height>
     </rect>
    </property>
    <property name="text">
@@ -176,13 +189,41 @@ font-size:18px;
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
+  <widget class="QPushButton" name="pb_ensure">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>70</y>
+     <width>80</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>确认</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pb_cancel">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>70</y>
+     <width>80</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>取消</string>
+   </property>
+  </widget>
   <zorder>lb_picture</zorder>
   <zorder>lw_icon</zorder>
   <zorder>pic_cover</zorder>
   <zorder>le_staffno</zorder>
   <zorder>le_name</zorder>
-  <zorder>pb_ensure</zorder>
+  <zorder>pb_add</zorder>
   <zorder>bar_cover</zorder>
+  <zorder>pb_ensure</zorder>
+  <zorder>pb_cancel</zorder>
  </widget>
  <resources/>
  <connections/>

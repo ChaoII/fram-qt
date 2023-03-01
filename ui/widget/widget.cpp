@@ -70,6 +70,12 @@ void Widget::initWidget() {
             switchToStandbyPage();
         }
     });
+    connect(m_register_page, &RegisterPage::send_closed_signal, this, [=]() {
+        if (m_current_page_flag != PageStandby) {
+            this->m_draw_image = true;
+            switchToStandbyPage();
+        }
+    });
 }
 
 int Widget::hide_all_windows() {
