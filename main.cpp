@@ -5,28 +5,22 @@
 #include <QApplication>
 #include <QFile>
 #include <QDateTime>
-#include "ui/mainwidget.h"
-//#include "ui/mywidget.h"
+#include "mainwidget.h"
 
 void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
     static QMutex mutex;
     mutex.lock();
-
     QString text;
-
     switch (type) {
         case QtDebugMsg:
             text = QString("Debug");
             break;
-
         case QtWarningMsg:
             text = QString("Warning");
             break;
-
         case QtCriticalMsg:
             text = QString("Critical");
             break;
-
         case QtFatalMsg:
             text = QString("Fatal");
             break;
@@ -47,16 +41,13 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
     text_stream << message << "\r\n";
     file.flush();
     file.close();
-
     mutex.unlock();
-
 }
-
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     qInstallMessageHandler(outputMessage);
-    auto widget = MainWidget();
-    widget.show();
-    return QApplication::exec();
+    MainWidget w;
+    w.show();
+    return a.exec();
 }

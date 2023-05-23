@@ -3,8 +3,7 @@
 //
 
 
-#include "include/recordthread.h"
-
+#include "recordthread.h"
 
 RecordThread::RecordThread(QObject *parent) : QThread(parent) {
 
@@ -12,7 +11,6 @@ RecordThread::RecordThread(QObject *parent) : QThread(parent) {
 //    _sql_helper->create_db();
 
 }
-
 
 void RecordThread::update_info(QVector<FaceInfoWrap> &face_info) {
 

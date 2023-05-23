@@ -2,7 +2,7 @@
 // Created by aichao on 2022/5/11.
 //
 
-#include "include/Utils.h"
+#include "Utils.h"
 
 
 SeetaImageData Utils::cvMat_2_img(cv::Mat &img) {

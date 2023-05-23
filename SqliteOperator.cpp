@@ -2,7 +2,7 @@
 // Created by aichao on 2022/5/12.
 //
 
-#include "include/SqliteOperator.h"
+#include "SqliteOperator.h"
 
 SqliteOperator::SqliteOperator(const QString &db_name) {
     _db_name = db_name;
@@ -24,7 +24,6 @@ bool SqliteOperator::open_db() {
         qDebug() << "Error: Failed to connect database." << _db.lastError();
         return false;
     }
-
     return true;
 }
 

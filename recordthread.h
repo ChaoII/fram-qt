@@ -5,9 +5,9 @@
 #ifndef FRAM_RECORDTHREAD_H
 #define FRAM_RECORDTHREAD_H
 
-#include "include/struct.h"
-#include "include/Utils.h"
-#include "include/SqliteOperator.h"
+#include "struct.h"
+#include "Utils.h"
+#include "SqliteOperator.h"
 #include <QThread>
 
 

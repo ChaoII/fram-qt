@@ -6,9 +6,9 @@
 #define FRAM_MYWIDGET_H
 
 #include <QWidget>
-#include "include/Utils.h"
-#include "include/seetafacethread.h"
-#include "include/recordthread.h"
+#include "Utils.h"
+#include "seetafacethread.h"
+#include "recordthread.h"
 #include <QMutex>
 #include <QMutexLocker>
 

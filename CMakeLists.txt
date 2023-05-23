@@ -1,48 +1,60 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.5)
 
-project(FRAM)
-set(CMAKE_CXX_STANDARD 14)
+project(FRAM VERSION 0.1 LANGUAGES CXX)
 
-set(CMAKE_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build)
-set(CMAKE_BUILD_TYPE Release)
-set(SeetaFaceDIR "/Users/aichao/Documents/GitHub/index/build")
-set(CMAKE_PREFIX_PATH "/Users/aichao/Qt6/6.3.0/macos/lib/cmake")
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_THREAD_LIBS_INIT "-lpthread")
-#set(CMAKE_HAVE_THREADS_LIBRARY 1)
-#set(CMAKE_USE_WIN32_THREADS_INIT 0)
-#set(CMAKE_USE_PTHREADS_INIT 1)
-#set(THREADS_PREFER_PTHREAD_FLAG ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOUIC_SEARCH_PATHS .)
 
+set(DEPENDS "")
+# add_qt
+find_package(Qt5 COMPONENTS Widgets Sql REQUIRED)
+list(APPEND DEPENDS Qt5::Widgets Qt5::Sql)
 
-find_package(jsoncpp CONFIG REQUIRED)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${SeetaFaceDIR}/include)
-link_directories(${SeetaFaceDIR}/lib64)
+#add opencv
 find_package(OpenCV REQUIRED)
-find_package(Qt6 COMPONENTS Core Gui Widgets Sql REQUIRED)
-# opencv
-list(APPEND LIBS ${OpenCV_LIBS})
-#seeta
-list(APPEND LIBS
-        SeetaFaceLandmarker600
-        SeetaFaceRecognizer610
-        SeetaFaceDetector600
-        SeetaFaceTracking600
-        SeetaFaceAntiSpoofingX600
-        )
-#qt
-list(APPEND LIBS Qt::Core Qt::Gui Qt::Widgets Qt::Sql)
+list(APPEND DEPENDS ${OpenCV_LIBS})
 
-file(GLOB HEAD ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
-file(GLOB SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-file(GLOB UI ${CMAKE_CURRENT_SOURCE_DIR}/ui/*)
+# add seetaface
+set(SEETAFACE_DIR "/home/orangepi/my/seeta-face6/build/")
+include_directories(${SEETAFACE_DIR}/include)
+link_directories(${SEETAFACE_DIR}/lib/aarch64)
+list(APPEND DEPENDS
+    SeetaFaceLandmarker600
+    SeetaFaceRecognizer610
+    SeetaFaceDetector600
+    SeetaFaceTracking600
+    SeetaFaceAntiSpoofingX600)
 
-add_executable(${PROJECT_NAME} ${SRC} ${HEAD} ${UI} main.cpp)
-target_link_libraries(${PROJECT_NAME} ${LIBS})
+# add source code
+set(PROJECT_SOURCES
+    seetafacethread.h
+    seetafacethread.cpp
+    mainwidget.h
+    mainwidget.cpp
+    mainwidget.ui
+    mywidget.h
+    mywidget.cpp
+    mywidget.ui
+    recordthread.h
+    recordthread.cpp
+    SeetaFace.h
+    SeetaFace.cpp
+    SqliteOperator.h
+    SqliteOperator.cpp
+    struct.h
+    Utils.h
+    Utils.cpp
+    main.cpp
+    qrc.qrc)
+
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+target_link_libraries(${PROJECT_NAME} ${DEPENDS})
+
 

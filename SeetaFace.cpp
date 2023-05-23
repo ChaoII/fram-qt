@@ -2,15 +2,12 @@
 // Created by aichao on 2022/5/11.
 //
 
-#include "include/SeetaFace.h"
+#include "SeetaFace.h"
 
 using namespace std;
 using namespace seeta;
 
 SeetaFace::SeetaFace() {
-
-    model_dir = string("/Users/aichao/Documents/GitHub/index/model/");
-    m_threshold = 0.6;
 
     ModelSetting fd_setting;
     fd_setting.append(model_dir + "face_detector.csta");
@@ -23,10 +20,6 @@ SeetaFace::SeetaFace() {
     ModelSetting fr_setting;
     fr_setting.append(model_dir + "face_recognizer.csta");
     fr_setting.set_device(ModelSetting::CPU);
-    //face_tractor
-    ModelSetting ft_setting;
-    ft_setting.append(model_dir + "face_detector.csta");
-    ft_setting.set_device(ModelSetting::CPU);
     // face_anti_spoofing
     seeta::ModelSetting fs_setting;
     fs_setting.append(model_dir + "fas_first.csta");
@@ -35,19 +28,14 @@ SeetaFace::SeetaFace() {
     FD = std::make_shared<FaceDetector>(fd_setting);
     FL = std::make_shared<FaceLandmarker>(pd_setting);
     FR = std::make_shared<FaceRecognizer>(fr_setting);
-    FT = std::make_shared<FaceTracker>(ft_setting, 640, 480);
     FS = std::make_shared<FaceAntiSpoofing>(fs_setting);
-
-
 }
 
 
 void SeetaFace::create_face_libs(const QString &json_path) {
-
     qInfo() << "==================start register face library===================";
     QFile json_file(json_path);
     if (!json_file.open(QIODevice::ReadWrite)) {
-
         qWarning() << "json file open failed.";
         return;
     }
@@ -80,8 +68,8 @@ bool SeetaFace::create_face_lib(const QString &image_path, const QString &name, 
 //    feature_db.emplace_back(pair<string, shared_ptr<float>>(json_name, feature));
     face_lib.emplace_back(face_lib_info);
     return true;
-
 }
+
 
 bool SeetaFace::extract_feature(cv::Mat &img, float *feature) {
     SeetaImageData data = Utils::cvMat_2_img(img);
@@ -95,13 +83,11 @@ bool SeetaFace::extract_feature(cv::Mat &img, float *feature) {
     return true;
 }
 
-SeetaTrackingFaceInfoArray SeetaFace::face_track(cv::Mat &img) {
-
+SeetaFaceInfoArray SeetaFace::face_detection(cv::Mat &img)
+{
     SeetaImageData data = Utils::cvMat_2_img(img);
-    SeetaTrackingFaceInfoArray out = FT->Track(data);
-    return out;
+    return FD->detect(data);
 }
-
 
 FaceRecRet SeetaFace::face_recognition(cv::Mat &img, std::vector<SeetaPointF> points) {
     SeetaImageData data = Utils::cvMat_2_img(img);
@@ -151,5 +137,6 @@ Status SeetaFace::face_anti_spoofing(cv::Mat &img, SeetaRect &rect, std::vector<
     SeetaImageData data = Utils::cvMat_2_img(img);
     return FS->Predict(data, rect, points.data());
 }
+
 
 

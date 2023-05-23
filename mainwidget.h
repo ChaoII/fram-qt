@@ -7,7 +7,7 @@
 
 
 #include <QWidget>
-#include "ui/mywidget.h"
+#include "mywidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWidget; }

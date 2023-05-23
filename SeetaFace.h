@@ -14,6 +14,7 @@
 #include <QFile>
 #include <QVector>
 #include <QDebug>
+#include <QMutex>
 #include <QJsonDocument>
 #include <opencv2/opencv.hpp>
 #include <seeta/FaceDetector.h>
@@ -21,8 +22,8 @@
 #include <seeta/FaceRecognizer.h>
 #include <seeta/FaceTracker.h>
 #include <seeta/FaceAntiSpoofing.h>
-#include "include/Utils.h"
-#include "include/struct.h"
+#include "Utils.h"
+#include "struct.h"
 
 using Status = seeta::FaceAntiSpoofing::Status;
 
@@ -30,20 +31,14 @@ class SeetaFace {
 
 public:
 
-//    struct FaceLibInfo {
-//        QString name;
-//        QString staff_id;
-//        std::shared_ptr<float> feature;
-//    };
-//
-//    struct FaceRecRet {
-//        QString face_id;
-//        QString name;
-//        float score;
-//
-//    };
-
-    explicit SeetaFace();
+    static SeetaFace* getInstance(){
+        mutex_.lock();
+        if(seetaFacePtr == nullptr){
+            seetaFacePtr = new SeetaFace();
+        }
+        mutex_.unlock();
+        return seetaFacePtr;
+    }
 
     void create_face_libs(const QString &json_path);
 
@@ -51,7 +46,7 @@ public:
 
     bool extract_feature(cv::Mat &img, float *feature);
 
-    SeetaTrackingFaceInfoArray face_track(cv::Mat &img);
+    SeetaFaceInfoArray face_detection(cv::Mat &img);
 
     FaceRecRet face_recognition(cv::Mat &img, std::vector<SeetaPointF> points);
 
@@ -63,14 +58,16 @@ public:
 
 
 private:
-    float m_threshold;
-    std::string model_dir;
+    SeetaFace();
+    float m_threshold = 0.6;
+    std::string model_dir= "/home/orangepi/my/seeta-face6/build/models/";
     std::vector<FaceLibInfo> face_lib;
     std::shared_ptr<seeta::FaceDetector> FD = nullptr;
     std::shared_ptr<seeta::FaceLandmarker> FL = nullptr;
     std::shared_ptr<seeta::FaceRecognizer> FR = nullptr;
-    std::shared_ptr<seeta::FaceTracker> FT = nullptr;
     std::shared_ptr<seeta::FaceAntiSpoofing> FS = nullptr;
+    inline static QMutex mutex_;
+    inline static SeetaFace* seetaFacePtr = nullptr;
 };
 
 

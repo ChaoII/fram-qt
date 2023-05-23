@@ -5,21 +5,17 @@
 // You may need to build the project (run Qt uic code generator) to get "ui_MyWidget.h" resolved
 
 #include "mywidget.h"
-#include "ui_MyWidget.h"
+#include "ui_mywidget.h"
 #include <QPainter>
 #include <QTimer>
 
 
 MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
-
     ui->setupUi(this);
     this->setAttribute(Qt::WA_QuitOnClose);
-
     seeta_face_thread = new SeetaFaceThread(this);
     record_thread = new RecordThread(this);
     auto timer = new QTimer(this);
-
-
     connect(seeta_face_thread, &SeetaFaceThread::img_send_signal, this, &MyWidget::update_frame);
     connect(seeta_face_thread, &SeetaFaceThread::face_rec_signal, this, &MyWidget::on_face_rec);
     connect(seeta_face_thread, &SeetaFaceThread::attend_record_signal, this, &MyWidget::on_save_record);

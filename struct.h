@@ -5,7 +5,7 @@
 #ifndef FRAM_STRUCT_H
 #define FRAM_STRUCT_H
 
-#include "include/Utils.h"
+#include "Utils.h"
 
 // 人脸库
 struct FaceLibInfo {

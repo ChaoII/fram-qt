@@ -4,7 +4,7 @@
 
 #include <QMetaObject>
 #include "mainwidget.h"
-#include "ui_MainWidget.h"
+#include "ui_mainwidget.h"
 
 
 MainWidget::MainWidget(QWidget *parent) :
