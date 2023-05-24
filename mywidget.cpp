@@ -14,14 +14,27 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     ui->setupUi(this);
     this->setAttribute(Qt::WA_QuitOnClose);
     seeta_face_thread = new SeetaFaceThread(this);
+    face_recognition_thread = new FaceRecognitionThread();
+    face_recognition_thread->moveToThread(&worker_thread);
+    connect(&worker_thread,&QThread::finished,face_recognition_thread,&QObject::deleteLater);
+    connect(this,&MyWidget::send_img_signal,face_recognition_thread,&FaceRecognitionThread::face_recognition,Qt::QueuedConnection);
+//    connect(face_recognition_thread,&FaceRecognitionThread::face_rec_signal,this,[](FaceInfoWrap face_info){
+//        qDebug()<<face_info.code;
+//        qDebug()<<face_info.ret.face_id;
+//        qDebug()<<face_info.time;
+//    });
+    worker_thread.start();
+
     record_thread = new RecordThread(this);
     auto timer = new QTimer(this);
     connect(seeta_face_thread, &SeetaFaceThread::img_send_signal, this, &MyWidget::update_frame);
     connect(seeta_face_thread, &SeetaFaceThread::face_rec_signal, this, &MyWidget::on_face_rec);
     connect(seeta_face_thread, &SeetaFaceThread::attend_record_signal, this, &MyWidget::on_save_record);
     connect(seeta_face_thread, &SeetaFaceThread::det_face_signal, this, &MyWidget::on_det_face);
-    connect(timer, &QTimer::timeout, this, &MyWidget::on_update_time);
 
+
+
+    connect(timer, &QTimer::timeout, this, &MyWidget::on_update_time);
     timer->setInterval(1000);
     timer->start();
 
@@ -31,8 +44,18 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 //    seeta_face_thread->start();
 }
 
-void MyWidget::update_frame(QImage qimg) {
-
+void MyWidget::update_frame(QImage qimg,QRect rect) {
+    if(!rect.isEmpty()){
+        QDateTime cur_time = QDateTime::currentDateTime();
+        if(last_rec_time.msecsTo(cur_time)>1000){
+            qDebug()<<"主线程id："<<QThread::currentThreadId();
+            emit send_img_signal(qimg,rect);
+            last_rec_time = cur_time;
+        }
+        QPainter painter(&qimg);
+        painter.setPen(QPen(QColor(Qt::green)));
+        painter.drawRect(rect);
+    }
     _img = qimg.scaled(ui->label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     if (!this->isVisible()) return;
     update();

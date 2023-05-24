@@ -20,62 +20,60 @@ SeetaFaceThread::SeetaFaceThread(QObject *parent) : QThread(parent) {
  * 函数核心方法，重载函数，线程函数，开启线程，读取摄像头帧进行人脸检测，跟踪，活体检测，识别
  */
 void SeetaFaceThread::run() {
-    cv::Mat frame;
+
+    cv::Mat frame_src;
     while (thread_start_) {
         if (cap_ && cap_->isOpened()) {
-            cap_->read(frame);
-            if (frame.empty()) continue;
+            cap_->read(frame_src);
+            if (frame_src.empty()) continue;
             //发送打卡记录存储信号
             send_records();
-            cv::Mat src_img = frame.clone();
+            qDebug()<<"检测线程："<<QThread::currentThreadId();
+            cv::Mat frame = Utils::crop_img(frame_src);
+            QRect rect;
             auto faces = SeetaFace::getInstance()->face_detection(frame);
-            if (faces.size > 0) {
+            if (faces.size() > 0) {                  
                 //-----------发送检测到人脸的信号----------
                 emit det_face_signal(true);
-                auto face_info = faces.data[0];
-                cv::rectangle(frame,
-                              cv::Rect(face_info.pos.x, face_info.pos.y,
-                                       face_info.pos.width, face_info.pos.height),
-                                       cv::Scalar(255, 255, 0), 1, cv::LINE_AA);
-                face_rec(src_img,face_info);
+                rect = Utils::SRect2QRect(faces[0].pos);
+//                face_rec(frame,faces[0].pos);
             }
             else {
                 //----------发送人脸离开信号-------------
                 det_face_signal(false);
             }
-            cv::Mat dst = Utils::crop_img(frame);
-            QImage q_img = Utils::cvMat_2_qimg(dst);
             // ----------发送图像去主线程------------
-            img_send_signal(q_img);
+            QImage q_img = Utils::CvMat2QImage(frame);
+            emit img_send_signal(q_img,rect);
         }
     }
 }
 
-void SeetaFaceThread::face_rec(cv::Mat &img, const SeetaFaceInfo &face_info){
+void SeetaFaceThread::face_rec(cv::Mat &img, const SeetaRect &s_rect){
 
-    auto face_rect = face_info.pos;
-    auto points = SeetaFace::getInstance()->face_marker(img, face_rect);
+    auto points = SeetaFace::getInstance()->face_marker(img, s_rect);
     //人脸活体检测
-//    auto status = SeetaFace::getInstance()->face_anti_spoofing(img, face_rect, points);
-    auto status = Status::REAL;
+        auto status = Status::REAL;
+    status = SeetaFace::getInstance()->face_anti_spoofing(img, s_rect, points);
+
     if (status == Status::SPOOF) {
         FaceRecRet ret{"-1", "攻击人脸", 0.0};
         FaceInfoWrap info{-1, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss zzzzzzz"), ret};
         qCritical() << "攻击人脸";
-        emit face_rec_signal(info);
+//        emit face_rec_signal(info);
     } else {
         //人脸识别
         auto ret = SeetaFace::getInstance()->face_recognition(img, points);
-        if (ret.score < threshold_) {
-            FaceInfoWrap info{0, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss zzzzzz"), ret};
-            emit face_rec_signal(info);
-            qWarning() << "未知人脸: " << "score: " << qPrintable(QString::asprintf("%.2f", ret.score));
-        } else {
-            FaceInfoWrap info{1, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss zzzzzz"), ret};
-            emit face_rec_signal(info);
-            qInfo() << "打卡成功 name: " << qPrintable(ret.name) << "score: "
-                    << qPrintable(QString::asprintf("%.2f", ret.score));
-        }
+//        if (ret.score < 0.6) {
+//            FaceInfoWrap info{0, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss zzzzzz"), ret};
+////            emit face_rec_signal(info);
+//            qWarning() << "未知人脸: " << "score: " << qPrintable(QString::asprintf("%.2f", ret.score));
+//        } else {
+//            FaceInfoWrap info{1, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss zzzzzz"), ret};
+////            emit face_rec_signal(info);
+//            qInfo() << "打卡成功 name: " << qPrintable(ret.name) << "score: "
+//                    << qPrintable(QString::asprintf("%.2f", ret.score));
+//        }
     }
 }
 

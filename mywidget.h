@@ -7,6 +7,7 @@
 
 #include <QWidget>
 #include "Utils.h"
+#include "facerecognitionthread.h"
 #include "seetafacethread.h"
 #include "recordthread.h"
 #include <QMutex>
@@ -24,7 +25,7 @@ Q_OBJECT
 public:
     explicit MyWidget(QWidget *parent = nullptr);
 
-    void update_frame(QImage qimg);
+    void update_frame(QImage qimg,QRect rect);
 
     void on_face_rec(FaceInfoWrap rec_info);
 
@@ -42,11 +43,15 @@ public:
 
     ~MyWidget() override;
 
-
+signals:
+    void send_img_signal(QImage qimg,QRect rect);
 private:
     QImage _img;
+    QDateTime last_rec_time = QDateTime::currentDateTime();
+    QThread worker_thread;
     RecordThread *record_thread = nullptr;
     SeetaFaceThread *seeta_face_thread = nullptr;
+    FaceRecognitionThread* face_recognition_thread = nullptr;
     Ui::MyWidget *ui;
 };
 

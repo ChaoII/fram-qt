@@ -27,7 +27,7 @@ public:
 
     void on_update_ret(FaceInfoWrap rec_info);
 
-    void face_rec(cv::Mat &img, const SeetaFaceInfo &face_info);
+    static void face_rec(cv::Mat &img, const SeetaRect &face_info);
 
     void send_records(); // 发送打卡记录
 
@@ -37,7 +37,7 @@ public:
 
 signals:
 
-    void img_send_signal(QImage);
+    void img_send_signal(QImage, QRect);
 
     void face_rec_signal(FaceInfoWrap);
 

@@ -32,11 +32,12 @@ class SeetaFace {
 public:
 
     static SeetaFace* getInstance(){
-        mutex_.lock();
         if(seetaFacePtr == nullptr){
-            seetaFacePtr = new SeetaFace();
+            std::lock_guard<std::mutex> lock(mutex_);
+            if(seetaFacePtr == nullptr){
+                seetaFacePtr = new SeetaFace();
+            }
         }
-        mutex_.unlock();
         return seetaFacePtr;
     }
 
@@ -46,27 +47,30 @@ public:
 
     bool extract_feature(cv::Mat &img, float *feature);
 
-    SeetaFaceInfoArray face_detection(cv::Mat &img);
+    std::vector<SeetaFaceInfo> face_detection(cv::Mat &img);
 
-    FaceRecRet face_recognition(cv::Mat &img, std::vector<SeetaPointF> points);
+    QPair<int,float> face_recognition(cv::Mat &img, std::vector<SeetaPointF> points);
 
-    std::vector<SeetaPointF> face_marker(cv::Mat &img, SeetaRect &rect);
+    std::vector<SeetaPointF> face_marker(cv::Mat &img, const SeetaRect &rect);
 
     bool face_quality_authorize(cv::Mat &img);
 
-    Status face_anti_spoofing(cv::Mat &img, SeetaRect &rect, std::vector<SeetaPointF> points);
-
+    Status face_anti_spoofing(cv::Mat &img, const SeetaRect &rect, std::vector<SeetaPointF> points);
 
 private:
     SeetaFace();
-    float m_threshold = 0.6;
+    SeetaFace(const SeetaFace&);
+    SeetaFace& operator=(const SeetaFace&);
+
+private:
+    int global_thread_nums = 1;
     std::string model_dir= "/home/orangepi/my/seeta-face6/build/models/";
     std::vector<FaceLibInfo> face_lib;
     std::shared_ptr<seeta::FaceDetector> FD = nullptr;
     std::shared_ptr<seeta::FaceLandmarker> FL = nullptr;
     std::shared_ptr<seeta::FaceRecognizer> FR = nullptr;
     std::shared_ptr<seeta::FaceAntiSpoofing> FS = nullptr;
-    inline static QMutex mutex_;
+    inline static std::mutex mutex_;
     inline static SeetaFace* seetaFacePtr = nullptr;
 };
 

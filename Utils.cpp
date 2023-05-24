@@ -5,7 +5,7 @@
 #include "Utils.h"
 
 
-SeetaImageData Utils::cvMat_2_img(cv::Mat &img) {
+SeetaImageData Utils::CvMat2Simg(cv::Mat &img) {
     SeetaImageData data;
     data.width = img.cols;
     data.height = img.rows;
@@ -40,8 +40,11 @@ cv::Mat Utils::crop_img(const cv::Mat &img, cv::Size target_size) {
     return img_crop;
 }
 
-QImage Utils::cvMat_2_qimg(const cv::Mat &img) {
-
+QImage Utils::CvMat2QImage(const cv::Mat &img) {
+    if(img.channels()!=3){
+        qDebug()<<"unsupported cv image chich channel is:" <<img.channels();
+        return QImage();
+    }
     int height = img.rows;
     int width = img.cols;
     int step = img.step;
@@ -49,6 +52,39 @@ QImage Utils::cvMat_2_qimg(const cv::Mat &img) {
     cv::cvtColor(img, dst, cv::COLOR_BGR2RGB);
     QImage q_img = QImage(dst.data, width, height, step, QImage::Format_RGB888).copy();
     return q_img;
+}
+
+cv::Mat Utils::QImage2CvMat(const QImage &img){
+    if(img.format()!=QImage::Format_RGB888){
+        qDebug()<<"QImage only support Format_RGB888,but the QImage format is:"<<img.format();
+        return cv::Mat();
+    }
+    auto swap = img.rgbSwapped();
+    return cv::Mat(swap.height(),swap.width(),CV_8UC3,(unsigned char*)swap.bits(),(size_t)swap.bytesPerLine()).clone();
+}
+
+SeetaRect Utils::QRect2SRect(const QRect& rect){
+    SeetaRect s_rect;
+    s_rect.x = rect.x();
+    s_rect.y = rect.y();
+    s_rect.width = rect.width();
+    s_rect.height = rect.height();
+    return s_rect;
+}
+
+QRect Utils::SRect2QRect(const SeetaRect& s_rect){
+    QRect q_rect;
+    q_rect.setX(s_rect.x);
+    q_rect.setY(s_rect.y);
+    q_rect.setWidth(s_rect.width);
+    q_rect.setHeight(s_rect.height);
+    return q_rect;
+}
+
+qint64 Utils::get_uuid()
+{
+    uuid.init(1,1);
+    return uuid.nextid();
 }
 
 

@@ -14,8 +14,8 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS .)
 
 set(DEPENDS "")
 # add_qt
-find_package(Qt5 COMPONENTS Widgets Sql REQUIRED)
-list(APPEND DEPENDS Qt5::Widgets Qt5::Sql)
+find_package(Qt5 COMPONENTS Widgets Sql Concurrent REQUIRED)
+list(APPEND DEPENDS Qt5::Widgets Qt5::Sql Qt5::Concurrent)
 
 #add opencv
 find_package(OpenCV REQUIRED)
@@ -32,8 +32,18 @@ list(APPEND DEPENDS
     SeetaFaceTracking600
     SeetaFaceAntiSpoofingX600)
 
+#add QxOrm
+set(QxOrm_DIR "/home/orangepi/my/QxOrm/build/install/")
+include_directories(${QxOrm_DIR}/include)
+link_directories(${QxOrm_DIR}/lib)
+list(APPEND DEPENDS QxOrm)
+
 # add source code
 set(PROJECT_SOURCES
+    models.h
+    models.cpp
+    facerecognitionthread.h
+    facerecognitionthread.cpp
     seetafacethread.h
     seetafacethread.cpp
     mainwidget.h
@@ -52,7 +62,10 @@ set(PROJECT_SOURCES
     Utils.h
     Utils.cpp
     main.cpp
-    qrc.qrc)
+    qrc.qrc
+    databasehelper.h
+    databasehelper.cpp
+    snowflake.hpp)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${DEPENDS})
