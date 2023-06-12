@@ -8,6 +8,7 @@
 
 #include <QWidget>
 #include "mywidget.h"
+#include "registerwidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWidget; }
@@ -25,9 +26,12 @@ private slots:
 
     void on_attend_clicked();
 
+    void on_setting_clicked();
+
 private:
 
     MyWidget *attend_widget = nullptr;
+
     Ui::MainWidget *ui;
 };
 

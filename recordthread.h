@@ -7,27 +7,24 @@
 
 #include "struct.h"
 #include "Utils.h"
-#include "SqliteOperator.h"
-#include <QThread>
+#include <QObject>
 
 
-class RecordThread : public QThread {
+class RecordThread : public QObject {
 Q_OBJECT
 
 public:
-    explicit RecordThread(QObject *parent = nullptr);
-
-    void update_info(QVector<FaceInfoWrap> &face_info);
-
-    void run() override;
-
-    void unique_record(QVector<FaceInfoWrap> &vec);
+    explicit RecordThread(QObject *parent = nullptr): QObject(parent){};
 
     ~RecordThread();
 
+public slots:
+    void record(QVector<FaceInfoWrap>);
+
+
 private:
-    QSqlDatabase _db;
-    QVector<FaceInfoWrap> _face_infos;
+    void unique_record(QVector<FaceInfoWrap> &vec);
+
 };
 
 

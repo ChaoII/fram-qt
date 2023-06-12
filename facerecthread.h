@@ -6,24 +6,28 @@
 
 using Status = seeta::FaceAntiSpoofing::Status;
 
-class FaceRecognitionThread : public QObject
+class FaceRecThread : public QObject
 {
     Q_OBJECT
 public:
-    explicit FaceRecognitionThread(QObject *parent = nullptr);
+    explicit FaceRecThread(QObject *parent = nullptr):QObject(parent){};
 
-    void update_params(const cv::Mat &img, const SeetaRect &rect);
 
-    void update_params(const QImage &img, const QRect &rect);
+private:
+    void send_records();
 
 signals:
     void face_rec_signal(FaceInfoWrap);
+
+    void record_signal(QVector<FaceInfoWrap>);
+
 
 public slots:
     void face_recognition(const QImage &img, const QRect &rect);
 
 private:
-    float threshold_ = 0.6;
+    QDateTime last_record_time_ = QDateTime::currentDateTime();    // 上次打卡记录时间
+    QVector<FaceInfoWrap> records_; // 打卡记录缓存
 
 };
 

@@ -21,6 +21,13 @@ list(APPEND DEPENDS Qt5::Widgets Qt5::Sql Qt5::Concurrent)
 find_package(OpenCV REQUIRED)
 list(APPEND DEPENDS ${OpenCV_LIBS})
 
+#add faiss
+find_package(OpenMP REQUIRED)
+list(APPEND DEPENDS OpenMP::OpenMP_CXX)
+
+find_package(faiss REQUIRED)
+list(APPEND DEPENDS faiss)
+
 # add seetaface
 set(SEETAFACE_DIR "/home/orangepi/my/seeta-face6/build/")
 include_directories(${SEETAFACE_DIR}/include)
@@ -42,10 +49,10 @@ list(APPEND DEPENDS QxOrm)
 set(PROJECT_SOURCES
     models.h
     models.cpp
-    facerecognitionthread.h
-    facerecognitionthread.cpp
-    seetafacethread.h
-    seetafacethread.cpp
+    facerecthread.h
+    facerecthread.cpp
+    facedetthread.h
+    facedetthread.cpp
     mainwidget.h
     mainwidget.cpp
     mainwidget.ui
@@ -63,9 +70,19 @@ set(PROJECT_SOURCES
     Utils.cpp
     main.cpp
     qrc.qrc
-    databasehelper.h
-    databasehelper.cpp
-    snowflake.hpp)
+    snowflake.hpp
+    vectorsearch.h
+    vectorsearch.cpp
+    config.h
+    registerwidget.h
+    registerwidget.cpp
+    registerwidget.ui
+    historywidget.h
+    historywidget.cpp
+    historywidget.ui
+    pagingwidget.h
+    pagingwidget.cpp
+    pagingwidget.ui)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${DEPENDS})

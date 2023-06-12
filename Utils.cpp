@@ -87,5 +87,23 @@ qint64 Utils::get_uuid()
     return uuid.nextid();
 }
 
+QByteArray Utils::floatArray2QByteArray(float *buffer, int size)
+{
+    QByteArray array;
+    int byte_num = sizeof(float)*size;
+    array.resize(byte_num);
+    memcpy(array.data(), buffer, byte_num);
+    return array;
+}
+
+void Utils::setBackgroundColor(QWidget *w, QColor color)
+{
+    w->setAutoFillBackground(true);
+    QPalette palette = w->palette();
+    palette.setColor(QPalette::Window, color);
+    w->setAutoFillBackground(true);
+    w->setPalette(palette);
+}
+
 
 

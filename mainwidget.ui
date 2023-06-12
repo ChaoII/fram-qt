@@ -44,7 +44,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QToolButton" name="toolButton_2">
+    <widget class="QToolButton" name="setting">
      <property name="maximumSize">
       <size>
        <width>120</width>

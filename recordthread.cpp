@@ -4,47 +4,43 @@
 
 
 #include "recordthread.h"
+#include "models.h"
 
-RecordThread::RecordThread(QObject *parent) : QThread(parent) {
+void RecordThread::record(QVector<FaceInfoWrap> face_infos) {
 
-//    _sql_helper = std::make_shared<SqliteOperator>("attend.db");
-//    _sql_helper->create_db();
-
-}
-
-void RecordThread::update_info(QVector<FaceInfoWrap> &face_info) {
-
-
-    _face_infos = face_info;
-
-}
-
-void RecordThread::run() {
-
-    SqliteOperator sql_helper("attend.db");
-    sql_helper.create_db();
-    unique_record(_face_infos);
-    for (auto &face_info: _face_infos) {
-        auto ret = face_info.ret;
-        QString name = ret.name;
-        QString staff_id = ret.face_id;
-        QString attend_time = face_info.time;
-        sql_helper.open_db();
-        QString insert_sql = QString("insert into attend (staff_id,name,attend_time) values ('%1','%2','%3')").arg(
-                staff_id).arg(
-                name).arg(attend_time);
-        sql_helper.insert_data(insert_sql);
+    unique_record(face_infos);
+    QString date_str = QDateTime::currentDateTime().toString("yyyyMMdd");
+    QDir dir(QDir::currentPath()+"/attend/"+date_str);
+    if(!dir.exists()){
+        dir.mkdir(dir.absolutePath());
     }
-    sql_helper.close_db();
+    QVector<Attend> attends;
+    for (auto &face_info: face_infos) {
+        Attend attend;
+        QString file_path = dir.absoluteFilePath(QDateTime::currentDateTime()
+                                                 .toString("yyyyMMddhhmmsszzzzzz")+"_"
+                                                 +QString(face_info.ret.uid)+".jpg");
+        attend.name = face_info.ret.name;
+        attend.uid = face_info.ret.uid;
+        attend.pic_url = file_path;
+        attend.attend_time = face_info.time;
+        face_info.ret.img.save(file_path);
+        attends.append(attend);
+    }
+
+    auto sql_error = qx::dao::insert(attends);
+    if(sql_error.isValid()){
+       qDebug()<<sql_error.text();
+    }
 }
 
 void RecordThread::unique_record(QVector<FaceInfoWrap> &vec) {
     std::sort(vec.begin(), vec.end(), [](FaceInfoWrap &vec1, FaceInfoWrap &vec2) {
-        return vec1.ret.face_id < vec2.ret.face_id;
+        return vec1.ret.uid < vec2.ret.uid;
     });
     for (int i = 0; i < vec.size(); i++) {
         for (int j = i + 1; j < vec.size(); j++) {
-            if (vec[i].ret.face_id == vec[j].ret.face_id) {
+            if (vec[i].ret.uid == vec[j].ret.uid) {
                 vec.remove(j);
                 j--;
             }

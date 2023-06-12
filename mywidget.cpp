@@ -8,47 +8,41 @@
 #include "ui_mywidget.h"
 #include <QPainter>
 #include <QTimer>
+#include <QMetaType>
+#include "historywidget.h"
 
 
 MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     ui->setupUi(this);
     this->setAttribute(Qt::WA_QuitOnClose);
-    seeta_face_thread = new SeetaFaceThread(this);
-    face_recognition_thread = new FaceRecognitionThread();
-    face_recognition_thread->moveToThread(&worker_thread);
-    connect(&worker_thread,&QThread::finished,face_recognition_thread,&QObject::deleteLater);
-    connect(this,&MyWidget::send_img_signal,face_recognition_thread,&FaceRecognitionThread::face_recognition,Qt::QueuedConnection);
-//    connect(face_recognition_thread,&FaceRecognitionThread::face_rec_signal,this,[](FaceInfoWrap face_info){
-//        qDebug()<<face_info.code;
-//        qDebug()<<face_info.ret.face_id;
-//        qDebug()<<face_info.time;
-//    });
-    worker_thread.start();
+    auto face_rec_thread = new FaceRecThread();
+    face_rec_thread->moveToThread(&worker_thread1);
+    auto record_thread = new RecordThread();
+    record_thread->moveToThread(&worker_thread2);
+    // connect(&worker_thread1,&QThread::finished,face_rec_thread,&QObject::deleteLater);
+    connect(this,&MyWidget::send_img_signal, face_rec_thread, &FaceRecThread::face_recognition, Qt::QueuedConnection);
+    qRegisterMetaType<FaceInfoWrap>();
+    qRegisterMetaType<QVector<FaceInfoWrap>>();
 
-    record_thread = new RecordThread(this);
+    connect(face_rec_thread, &FaceRecThread::face_rec_signal, this, &MyWidget::on_face_rec);
+    connect(face_rec_thread, &FaceRecThread::record_signal, record_thread, &RecordThread::record);
+
+    register_widget = new RegisterWidget();
+    connect(register_widget, &RegisterWidget::register_finished_signal, this, &MyWidget::on_register_finished);
+
+    face_det_thread = new FaceDetThread(this);
+    connect(face_det_thread, &FaceDetThread::img_send_signal, this, &MyWidget::update_frame);
+
     auto timer = new QTimer(this);
-    connect(seeta_face_thread, &SeetaFaceThread::img_send_signal, this, &MyWidget::update_frame);
-    connect(seeta_face_thread, &SeetaFaceThread::face_rec_signal, this, &MyWidget::on_face_rec);
-    connect(seeta_face_thread, &SeetaFaceThread::attend_record_signal, this, &MyWidget::on_save_record);
-    connect(seeta_face_thread, &SeetaFaceThread::det_face_signal, this, &MyWidget::on_det_face);
-
-
-
     connect(timer, &QTimer::timeout, this, &MyWidget::on_update_time);
     timer->setInterval(1000);
     timer->start();
-
-    QTimer::singleShot(1500, this, [=]() {
-        seeta_face_thread->start();
-    });
-//    seeta_face_thread->start();
 }
 
-void MyWidget::update_frame(QImage qimg,QRect rect) {
+void MyWidget::update_frame(QImage qimg, QRect rect) {
     if(!rect.isEmpty()){
         QDateTime cur_time = QDateTime::currentDateTime();
-        if(last_rec_time.msecsTo(cur_time)>1000){
-            qDebug()<<"主线程id："<<QThread::currentThreadId();
+        if(last_rec_time.msecsTo(cur_time) > REC_INTERVAL){
             emit send_img_signal(qimg,rect);
             last_rec_time = cur_time;
         }
@@ -56,54 +50,69 @@ void MyWidget::update_frame(QImage qimg,QRect rect) {
         painter.setPen(QPen(QColor(Qt::green)));
         painter.drawRect(rect);
     }
+    else{
+        Utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
+    }
+    ui->widget_info->setVisible(!rect.isEmpty());
+    if(register_widget && register_widget->isVisible()){
+        register_widget->update_frame(qimg);
+    };
+    if (!isVisible()) return;
     _img = qimg.scaled(ui->label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    if (!this->isVisible()) return;
     update();
 }
 
 void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
 
     QString attend_time = rec_info.time.split(" ")[1].split(".")[0];
-
     if (rec_info.code == -1) {
         ui->lb_name->setText("攻击人脸");
         ui->lb_attend_time->setText(attend_time);
         ui->lb_pic->setPixmap(QPixmap(":img/signin_fail.png"));
-        ui->widget->setStyleSheet("#widget{background-color: rgba(255, 0, 0,40);}");
-        ui->widget_info->setStyleSheet("#widget_info{background-color: rgba(255, 0, 0,0);}");
-
+        ui->pic_library->setPixmap(QPixmap());
+        ui->pic_current->setPixmap(QPixmap());
+        Utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 40));
+        Utils::setBackgroundColor(ui->widget_info, QColor(255, 0, 0, 40));
     } else if (rec_info.code == 0) {
-
         ui->lb_name->setText("未知");
         ui->lb_attend_time->setText(attend_time);
         ui->lb_pic->setPixmap(QPixmap(":img/signin_fail.png"));
-        ui->widget->setStyleSheet("#widget{background-color: rgba(255, 0, 0,0);}");
-        ui->widget_info->setStyleSheet("#widget_info{background-color: rgba(255, 0, 0,40);}");
-
+        ui->pic_library->setPixmap(QPixmap());
+        ui->pic_current->setPixmap(QPixmap());
+        Utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
+        Utils::setBackgroundColor(ui->widget_info, QColor(255, 0, 0, 40));
     } else {
         ui->lb_name->setText(rec_info.ret.name);
         ui->lb_attend_time->setText(attend_time);
         ui->lb_pic->setPixmap(QPixmap(":img/signin_success.png"));
-        ui->widget->setStyleSheet("#widget{background-color: rgba(255, 0, 0,0);}");
-        ui->widget_info->setStyleSheet("#widget_info{background-color: rgba(0, 255, 0, 40);}");
+        ui->pic_library->setPixmap(QPixmap(rec_info.ret.pic_url)
+                                   .scaled(ui->pic_library->size(),
+                                          Qt::KeepAspectRatio,
+                                          Qt::SmoothTransformation));
+        ui->pic_current->setPixmap(QPixmap::fromImage(rec_info.ret.img)
+                                   .scaled(ui->pic_current->size(),
+                                          Qt::KeepAspectRatio,
+                                          Qt::SmoothTransformation));
+        Utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 0));
+        Utils::setBackgroundColor(ui->widget_info, QColor(0, 255, 0, 40));
     }
-
 }
 
-void MyWidget::on_det_face(bool detected) {
-
-    ui->widget_info->setVisible(detected);
-    if (!detected) {
-        ui->widget->setStyleSheet("#widget{background-color: rgba(255, 0, 0,0);}");
-    }
+void MyWidget::on_pb_register_clicked(){
+    register_widget->show();
+    worker_thread1.quit();
+    worker_thread1.wait();
+    face_det_thread->close_detect();
+    hide();
 }
 
-void MyWidget::on_save_record(QVector<FaceInfoWrap> records) {
-
-    record_thread->update_info(records);
-    if (!record_thread->isRunning()) {
-        record_thread->start();
-        qInfo() << "-------------- saved split line --------------------";
+void MyWidget::on_register_finished()
+{
+    face_det_thread->open_detect();
+    register_widget->close();
+    if(!isVisible()) {
+        show();
+        worker_thread1.start();
     }
 }
 
@@ -113,9 +122,9 @@ void MyWidget::on_update_time() {
 
 void MyWidget::closeEvent(QCloseEvent *event) {
 
-    seeta_face_thread->stop_thread();
-    seeta_face_thread->wait();
-//    seeta_face_thread->deleteLater();
+    face_det_thread->stop_thread();
+    face_det_thread->wait();
+    event->accept();
 }
 
 void MyWidget::paintEvent(QPaintEvent *event) {
@@ -126,9 +135,16 @@ void MyWidget::paintEvent(QPaintEvent *event) {
 
 
 void MyWidget::start_thread() {
-    if (seeta_face_thread && !seeta_face_thread->isRunning()) {
-        seeta_face_thread->start();
+    if (face_det_thread && !face_det_thread->isRunning()) {
+        face_det_thread->start();
     }
+}
+
+void MyWidget::run()
+{
+    worker_thread1.start();
+    worker_thread2.start();
+    face_det_thread->start();
 }
 
 
@@ -136,3 +152,11 @@ MyWidget::~MyWidget() {
     std::cout << "mywidget" << std::endl;
     delete ui;
 }
+
+void MyWidget::on_pb_history_clicked()
+{
+    HistoryWidget * w = new HistoryWidget;
+    w->show();
+    hide();
+}
+

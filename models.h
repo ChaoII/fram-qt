@@ -4,15 +4,16 @@
 
 class Staff{
 public:
-    qint64 id;
+    long id;
+    qint64 index_id;
     QString uid;
     QString name;
     QString pic_url;
     QByteArray feature;
 };
 
-QX_REGISTER_PRIMARY_KEY(Staff,qint64)
-QX_REGISTER_HPP_EXPORT_DLL(Staff,qx::trait::no_base_class_defined,0)
+//QX_REGISTER_PRIMARY_KEY(Staff, QString)
+QX_REGISTER_HPP_EXPORT_DLL(Staff, qx::trait::no_base_class_defined, 0)
 typedef std::shared_ptr<Staff> StaffPtr;
 
 class Attend{
@@ -21,10 +22,10 @@ public:
     QString uid;
     QString name;
     QString pic_url;
-    QDateTime attend_time;
+    QString attend_time;
 };
-QX_REGISTER_HPP_EXPORT_DLL(Attend,qx::trait::no_base_class_defined,0)
 
+QX_REGISTER_HPP_EXPORT_DLL(Attend, qx::trait::no_base_class_defined, 0)
 
 
 

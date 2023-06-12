@@ -7,6 +7,7 @@
 
 #include <QImage>
 #include <QDebug>
+#include <QWidget>
 #include "struct.h"
 #include "snowflake.hpp"
 #include <seeta/Common/Struct.h>
@@ -32,6 +33,11 @@ public:
     static QRect SRect2QRect(const SeetaRect& s_rect);
 
     static qint64 get_uuid();
+
+    static QByteArray floatArray2QByteArray(float *buffer,int size);
+
+    static void setBackgroundColor(QWidget* w,QColor color);
+
 
     template<typename T>
     static QByteArray Vector2QByteArray(const std::vector<T>& vec){
@@ -62,8 +68,6 @@ public:
         std::vector<T> buffer = QByteArray2Vector<T>(array);
         return cv::imdecode(buffer,cv::IMREAD_COLOR);
     }
-
-
 private:
 
     inline static snowflake_t uuid = snowflake_t();

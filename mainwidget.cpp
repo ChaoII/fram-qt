@@ -10,7 +10,7 @@
 MainWidget::MainWidget(QWidget *parent) :
         QWidget(parent), ui(new Ui::MainWidget) {
     ui->setupUi(this);
-    this->setAttribute(Qt::WA_QuitOnClose);
+    setAttribute(Qt::WA_QuitOnClose);
     QMetaObject::connectSlotsByName(this);
     attend_widget = new MyWidget();
 }
@@ -18,12 +18,16 @@ MainWidget::MainWidget(QWidget *parent) :
 void MainWidget::on_attend_clicked() {
 
     attend_widget->show();
-//    attend_widget->start_thread();
-    this->hide();
+    attend_widget->run();
+    hide();
+}
+
+void MainWidget::on_setting_clicked()
+{
+
 }
 
 MainWidget::~MainWidget() {
-
     std::cout << "mainwidget" << std::endl;
     if (attend_widget != nullptr) {
         delete attend_widget;
@@ -31,5 +35,7 @@ MainWidget::~MainWidget() {
     }
     delete ui;
 }
+
+
 
 

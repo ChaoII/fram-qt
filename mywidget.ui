@@ -98,7 +98,7 @@ color: rgb(61, 104, 104);</string>
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>100</height>
+        <height>200</height>
        </size>
       </property>
       <property name="maximumSize">
@@ -108,61 +108,117 @@ color: rgb(61, 104, 104);</string>
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true"/>
+       <string notr="true">#label_n,#label_t{
+font: 500 18pt &quot;Futura&quot;;
+color: rgb(100, 100, 100);
+}
+
+#lb_name,#lb_attend_time{
+font: 500 20pt &quot;Futura&quot;;
+color: rgb(83, 255, 132);
+}</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout" columnstretch="2,3,1">
-       <property name="leftMargin">
-        <number>20</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>20</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="styleSheet">
-          <string notr="true">font: 500 24pt &quot;Futura&quot;;
-color: rgb(100, 100, 100);</string>
-         </property>
-         <property name="text">
-          <string>姓名:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_n">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>姓名:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="lb_name">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2" rowspan="2">
+          <widget class="QLabel" name="pic_library">
+           <property name="minimumSize">
+            <size>
+             <width>110</width>
+             <height>180</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>110</width>
+             <height>180</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3" rowspan="2">
+          <widget class="QLabel" name="pic_current">
+           <property name="minimumSize">
+            <size>
+             <width>110</width>
+             <height>180</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>110</width>
+             <height>180</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_t">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>打卡时间:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="lb_attend_time">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="lb_name">
-         <property name="styleSheet">
-          <string notr="true">font: 500 50pt &quot;Futura&quot;;
-color: rgb(83, 255, 132);</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2" rowspan="2">
+       <item>
         <widget class="QLabel" name="lb_pic">
          <property name="minimumSize">
           <size>
-           <width>200</width>
-           <height>200</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>200</width>
-           <height>200</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -176,31 +232,6 @@ color: rgb(83, 255, 132);</string>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="styleSheet">
-          <string notr="true">font: 500 24pt &quot;Futura&quot;;
-color: rgb(100, 100, 100);</string>
-         </property>
-         <property name="text">
-          <string>打卡时间:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="lb_attend_time">
-         <property name="styleSheet">
-          <string notr="true">font: 500 50pt &quot;Futura&quot;;
-color: rgb(83, 255, 132);</string>
-         </property>
-         <property name="text">
-          <string/>
          </property>
         </widget>
        </item>
@@ -222,6 +253,20 @@ color: rgb(83, 255, 132);</string>
        </size>
       </property>
      </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pb_history">
+      <property name="text">
+       <string>打卡记录</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pb_register">
+      <property name="text">
+       <string>注册</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

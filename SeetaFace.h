@@ -6,6 +6,8 @@
 #define FRAM_SEETAFACE_H
 
 
+#define TOSTR(ARG) #ARG
+
 #include <iostream>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -24,6 +26,9 @@
 #include <seeta/FaceAntiSpoofing.h>
 #include "Utils.h"
 #include "struct.h"
+#include "models.h"
+#include "vectorsearch.h"
+
 
 using Status = seeta::FaceAntiSpoofing::Status;
 
@@ -41,15 +46,25 @@ public:
         return seetaFacePtr;
     }
 
-    void create_face_libs(const QString &json_path);
 
-    bool create_face_lib(const QString &img_path, const QString &name, const QString &staff_id);
+
+    bool add_face(cv::Mat &img, const QString &uid, const QString &name);
+
+    bool delete_face(const QString &uid);
+
+    void build_face_index_from_db();
+
+    QString get_facepath_from_index_id(qint64 index_id);
+
+    Staff get_faceinfo_from_index_id(qint64 index_id);
+
+    bool update_face(cv::Mat &img, const QString &uid, const QString &name);
 
     bool extract_feature(cv::Mat &img, float *feature);
 
     std::vector<SeetaFaceInfo> face_detection(cv::Mat &img);
 
-    QPair<int,float> face_recognition(cv::Mat &img, std::vector<SeetaPointF> points);
+    QPair<int64_t,float> face_recognition(cv::Mat &img, std::vector<SeetaPointF> points);
 
     std::vector<SeetaPointF> face_marker(cv::Mat &img, const SeetaRect &rect);
 
@@ -57,10 +72,20 @@ public:
 
     Status face_anti_spoofing(cv::Mat &img, const SeetaRect &rect, std::vector<SeetaPointF> points);
 
+    QVector<Attend> get_attend_info(int row_num_pre_page, int current_page_index);
+    int get_attend_num();
+
 private:
     SeetaFace();
+
     SeetaFace(const SeetaFace&);
+
     SeetaFace& operator=(const SeetaFace&);
+
+    void init_file_dir();
+
+    void init_face_db();
+
 
 private:
     int global_thread_nums = 1;
