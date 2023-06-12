@@ -21,6 +21,10 @@ void PagingWidget::set_params(int cur_page, int num_pre_page, int total_num)
 
 void PagingWidget::init_paging()
 {
+    for(auto & btn:btns_){
+        ui->page_horize_layout->removeWidget(btn);
+
+    }
     ui->label->setText("共"+QString::number(total_num_)+"条");
     ui->lbl_total_page->setText(QString::number(total_page_));
     for(int i=0; i< max_btn_num_; i++){
@@ -47,8 +51,7 @@ void PagingWidget::del_button_clicked()
 {
     QToolButton* btn = static_cast<QToolButton*>(sender());
     int cur_page_index = btn->text().toInt();
-    set_btns_dischecked();
-    set_btn_checked(cur_page_-1);
+    goto_index(cur_page_index);
 
 }
 
@@ -66,6 +69,15 @@ void PagingWidget::set_btn_checked(int index)
             btn->setChecked(true);
         }
     }
+}
+
+void PagingWidget::goto_index(int index)
+{
+    init_paging();
+    for(int i=0;i<index;i++){
+        on_btn_next_clicked();
+    }
+
 }
 
 void PagingWidget::keyPressEvent(QKeyEvent *event)

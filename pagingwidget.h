@@ -36,6 +36,8 @@ private:
 
     void set_btn_checked(int index);
 
+    void goto_index(int index);
+
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;
 
