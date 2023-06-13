@@ -6,11 +6,11 @@
 #define FRAM_MYWIDGET_H
 
 #include <QWidget>
-#include "Utils.h"
-#include "facerecthread.h"
-#include "facedetthread.h"
-#include "recordthread.h"
-#include "registerwidget.h"
+#include "utils/Utils.h"
+#include "core/facerecthread.h"
+#include "core/facedetthread.h"
+#include "core/recordthread.h"
+#include "widgets/faceinfowidget.h"
 #include <QMutex>
 #include <QMutexLocker>
 #include <QCloseEvent>
@@ -60,7 +60,7 @@ private:
     QDateTime last_rec_time = QDateTime::currentDateTime();
     QThread worker_thread1;
     QThread worker_thread2;
-    RegisterWidget *register_widget = nullptr;
+    FaceInfoWidget *face_info_widget = nullptr;
     FaceDetThread *face_det_thread = nullptr;
     Ui::MyWidget *ui;
 };

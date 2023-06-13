@@ -2,8 +2,8 @@
 // Created by aichao on 2022/5/11.
 //
 
-#include "SeetaFace.h"
-#include "models.h"
+#include "core/SeetaFace.h"
+#include "models/models.h"
 
 using namespace std;
 using namespace seeta;
@@ -251,26 +251,7 @@ Status SeetaFace::face_anti_spoofing(cv::Mat &img, const SeetaRect &rect,
     return FS->Predict(data, rect, points.data());
 }
 
-QVector<Attend> SeetaFace::get_attend_info(int row_num_pre_page, int current_page_index)
-{
-    QVector<Attend> attends;
-    qx_query query;
-    int start_row = current_page_index * row_num_pre_page;
-    query.orderDesc("attend_time").limit(row_num_pre_page,start_row);
-    QSqlError sql_error= qx::dao::fetch_by_query(query,attends);
-    if(sql_error.isValid()){
-        qDebug()<<"select data error ,details:"<<sql_error.text();
-    }
 
-    return attends;
-}
-
-int SeetaFace::get_attend_num()
-{
-    qx_query query;
-    int ret = qx::dao::count<Attend>(query);
-    return ret;
-}
 
 
 

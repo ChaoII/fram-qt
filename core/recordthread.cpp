@@ -4,7 +4,7 @@
 
 
 #include "recordthread.h"
-#include "models.h"
+#include "models/models.h"
 
 void RecordThread::record(QVector<FaceInfoWrap> face_infos) {
 

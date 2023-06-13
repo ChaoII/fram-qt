@@ -47,42 +47,45 @@ list(APPEND DEPENDS QxOrm)
 
 # add source code
 set(PROJECT_SOURCES
-    models.h
-    models.cpp
-    facerecthread.h
-    facerecthread.cpp
-    facedetthread.h
-    facedetthread.cpp
-    mainwidget.h
-    mainwidget.cpp
-    mainwidget.ui
-    mywidget.h
-    mywidget.cpp
-    mywidget.ui
-    recordthread.h
-    recordthread.cpp
-    SeetaFace.h
-    SeetaFace.cpp
-    SqliteOperator.h
-    SqliteOperator.cpp
-    struct.h
-    Utils.h
-    Utils.cpp
-    main.cpp
+    models/models.h
+    models/models.cpp
+    core/facerecthread.h
+    core/facerecthread.cpp
+    core/facedetthread.h
+    core/facedetthread.cpp
+    core/vectorsearch.h
+    core/vectorsearch.cpp
+    widgets/mainwidget.h
+    widgets/mainwidget.cpp
+    widgets/mainwidget.ui
+    widgets/mywidget.h
+    widgets/mywidget.cpp
+    widgets/mywidget.ui
+    widgets/registerwidget.h
+    widgets/registerwidget.cpp
+    widgets/registerwidget.ui
+    widgets/historywidget.h
+    widgets/historywidget.cpp
+    widgets/historywidget.ui
+    widgets/faceinfowidget.h
+    widgets/faceinfowidget.cpp
+    widgets/faceinfowidget.ui
     qrc.qrc
-    snowflake.hpp
-    vectorsearch.h
-    vectorsearch.cpp
-    config.h
-    registerwidget.h
-    registerwidget.cpp
-    registerwidget.ui
-    historywidget.h
-    historywidget.cpp
-    historywidget.ui
+    core/recordthread.h
+    core/recordthread.cpp
+    core/SeetaFace.h
+    core/SeetaFace.cpp
+    utils/struct.h
+    utils/Utils.h
+    utils/Utils.cpp
+    utils/snowflake.hpp
+    utils/config.h
     customwidget/pagingwidget.h
     customwidget/pagingwidget.cpp
-    customwidget/pagingwidget.ui)
+    customwidget/pagingwidget.ui
+    main.cpp
+
+)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${DEPENDS})

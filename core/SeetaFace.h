@@ -24,10 +24,10 @@
 #include <seeta/FaceRecognizer.h>
 #include <seeta/FaceTracker.h>
 #include <seeta/FaceAntiSpoofing.h>
-#include "Utils.h"
-#include "struct.h"
-#include "models.h"
-#include "vectorsearch.h"
+#include "utils/Utils.h"
+#include "utils/struct.h"
+#include "models/models.h"
+#include "core/vectorsearch.h"
 
 
 using Status = seeta::FaceAntiSpoofing::Status;
@@ -72,8 +72,30 @@ public:
 
     Status face_anti_spoofing(cv::Mat &img, const SeetaRect &rect, std::vector<SeetaPointF> points);
 
-    QVector<Attend> get_attend_info(int row_num_pre_page, int current_page_index);
-    int get_attend_num();
+    template<class T>
+    QVector<T> get_query_info(int row_num_pre_page, int current_page_index)
+    {
+        QVector<T> models;
+        qx_query query;
+        int start_row = current_page_index * row_num_pre_page;
+        if(std::is_same<T, Attend>()){
+            query.orderDesc("attend_time").limit(row_num_pre_page, start_row);
+        }else{
+            query.limit(row_num_pre_page, start_row);
+        }
+
+        QSqlError sql_error= qx::dao::fetch_by_query(query, models);
+        if(sql_error.isValid()){
+            qDebug()<<"select data error ,details:"<<sql_error.text();
+        }
+        return models;
+    }
+    template<class T>
+    int get_query_num(){
+        qx_query query;
+        int ret = qx::dao::count<T>(query);
+        return ret;
+    }
 
 private:
     SeetaFace();

@@ -2,7 +2,7 @@
 #define REGISTER_H
 
 #include <QWidget>
-#include "config.h"
+#include "utils/config.h"
 #include <opencv2/opencv.hpp>
 
 namespace Ui {

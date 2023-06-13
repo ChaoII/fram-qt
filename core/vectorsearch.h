@@ -4,8 +4,8 @@
 #include <mutex>
 #include <vector>
 #include <faiss/Index.h>
-#include "config.h"
-#include "Utils.h"
+#include "utils/config.h"
+#include "utils/Utils.h"
 
 class VectorSearch
 {

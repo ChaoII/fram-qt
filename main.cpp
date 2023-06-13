@@ -5,7 +5,7 @@
 #include <QApplication>
 #include <QFile>
 #include <QDateTime>
-#include "mainwidget.h"
+#include "widgets/mainwidget.h"
 
 void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
     static QMutex mutex;

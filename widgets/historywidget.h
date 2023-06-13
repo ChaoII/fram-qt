@@ -1,9 +1,10 @@
-#ifndef HISTORYWIDGET_H
-#define HISTORYWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <QStandardItemModel>
-#include "SeetaFace.h"
+#include <QItemSelectionModel>
+#include "core/SeetaFace.h"
+
 
 namespace Ui {
 class HistoryWidget;
@@ -15,6 +16,7 @@ class HistoryWidget : public QWidget
 
 public:
     explicit HistoryWidget(QWidget *parent = nullptr);
+
     ~HistoryWidget();
 
 private:
@@ -23,9 +25,11 @@ private:
 private:
     Ui::HistoryWidget *ui;
 
-    QStandardItemModel* model;
+    QStandardItemModel* the_model;
 
-    int page_size_ = 30;
+    QItemSelectionModel* the_select;
+
+    int page_size_ = 9;
 };
 
-#endif // HISTORYWIDGET_H
+

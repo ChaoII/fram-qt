@@ -5,8 +5,8 @@
 #ifndef FRAM_RECORDTHREAD_H
 #define FRAM_RECORDTHREAD_H
 
-#include "struct.h"
-#include "Utils.h"
+#include "utils/struct.h"
+#include "utils/Utils.h"
 #include <QObject>
 
 

@@ -27,8 +27,8 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     connect(face_rec_thread, &FaceRecThread::face_rec_signal, this, &MyWidget::on_face_rec);
     connect(face_rec_thread, &FaceRecThread::record_signal, record_thread, &RecordThread::record);
 
-    register_widget = new RegisterWidget();
-    connect(register_widget, &RegisterWidget::register_finished_signal, this, &MyWidget::on_register_finished);
+    face_info_widget = new FaceInfoWidget();
+    connect(face_info_widget, &FaceInfoWidget::finished_signal, this, &MyWidget::on_register_finished);
 
     face_det_thread = new FaceDetThread(this);
     connect(face_det_thread, &FaceDetThread::img_send_signal, this, &MyWidget::update_frame);
@@ -54,8 +54,8 @@ void MyWidget::update_frame(QImage qimg, QRect rect) {
         Utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
     }
     ui->widget_info->setVisible(!rect.isEmpty());
-    if(register_widget && register_widget->isVisible()){
-        register_widget->update_frame(qimg);
+    if(face_info_widget && face_info_widget->isVisible()){
+        face_info_widget->update_register_frame(qimg);
     };
     if (!isVisible()) return;
     _img = qimg.scaled(ui->label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -99,7 +99,7 @@ void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
 }
 
 void MyWidget::on_pb_register_clicked(){
-    register_widget->show();
+    face_info_widget->show();
     worker_thread1.quit();
     worker_thread1.wait();
     face_det_thread->close_detect();
@@ -109,7 +109,7 @@ void MyWidget::on_pb_register_clicked(){
 void MyWidget::on_register_finished()
 {
     face_det_thread->open_detect();
-    register_widget->close();
+    face_info_widget->close();
     if(!isVisible()) {
         show();
         worker_thread1.start();

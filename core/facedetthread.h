@@ -7,8 +7,8 @@
 
 #include <QWidget>
 #include <QThread>
-#include "SeetaFace.h"
-#include "Utils.h"
+#include "core/SeetaFace.h"
+#include "utils/Utils.h"
 
 
 QT_BEGIN_NAMESPACE

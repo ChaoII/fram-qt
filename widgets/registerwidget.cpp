@@ -1,15 +1,16 @@
-#include "registerwidget.h"
+#include "widgets/registerwidget.h"
 #include "ui_registerwidget.h"
-#include "SeetaFace.h"
+#include "core/SeetaFace.h"
 #include <QPainter>
 #include <QDebug>
-#include "Utils.h"
+#include "utils/Utils.h"
 
 RegisterWidget::RegisterWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RegisterWidget)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose);
     setWindowFlags(Qt::FramelessWindowHint);
     init_lw();
 }
@@ -35,6 +36,10 @@ void RegisterWidget::on_push_back_clicked()
         emit register_finished_signal();
     }else{
         qWarning() << "faces is not saved! please click the ensure button and back to main window";
+        ui->edit_name->setText("");
+        ui->edit_staff_id->setText("");
+        ui->face_list->clear();
+        emit register_finished_signal();
     }
 }
 
