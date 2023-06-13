@@ -80,9 +80,9 @@ set(PROJECT_SOURCES
     historywidget.h
     historywidget.cpp
     historywidget.ui
-    pagingwidget.h
-    pagingwidget.cpp
-    pagingwidget.ui)
+    customwidget/pagingwidget.h
+    customwidget/pagingwidget.cpp
+    customwidget/pagingwidget.ui)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${DEPENDS})

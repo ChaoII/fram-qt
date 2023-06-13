@@ -18,9 +18,14 @@ public:
     ~HistoryWidget();
 
 private:
+    void update_table(int page);
+
+private:
     Ui::HistoryWidget *ui;
 
     QStandardItemModel* model;
+
+    int page_size_ = 30;
 };
 
 #endif // HISTORYWIDGET_H
