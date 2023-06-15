@@ -56,8 +56,10 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 }
 
 void MyWidget::update_frame(QImage qimg, QRect rect) {
+
     if(!rect.isEmpty()){
         QDateTime cur_time = QDateTime::currentDateTime();
+        // 通过计时调整识别的频率
         if(last_rec_time.msecsTo(cur_time) > Config::getInstance()->getRec_interval()){
             emit send_img_signal(qimg,rect);
             last_rec_time = cur_time;
