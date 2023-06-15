@@ -61,6 +61,7 @@ void HistoryWidget::update_table(int page)
         the_model->setItem(i, 1, item2);
         the_model->setItem(i, 2, item3);
         the_model->setItem(i, 3, item4);
+        // 添加图片
         ui->tb_history->setRowHeight(i, 100);
         QLabel* label = new QLabel();
         label->resize(60,100);
