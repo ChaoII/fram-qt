@@ -11,6 +11,7 @@
 #include "core/facedetthread.h"
 #include "core/recordthread.h"
 #include "widgets/faceinfowidget.h"
+#include "widgets/historywidget.h"
 #include <QMutex>
 #include <QMutexLocker>
 #include <QCloseEvent>
@@ -25,6 +26,7 @@ class MyWidget : public QWidget {
 Q_OBJECT
 
 public:
+
     explicit MyWidget(QWidget *parent = nullptr);
 
     void update_frame(QImage qimg, QRect rect);
@@ -37,29 +39,38 @@ public:
 
     void run();
 
-    void closeEvent(QCloseEvent *event) override;
-
     void paintEvent(QPaintEvent *event) override;
 
     ~MyWidget() override;
 
 signals:
+
     void send_img_signal(QImage qimg, QRect rect);
 
-protected slots:
+
+private slots:
+
+    void on_pb_history_clicked();
 
     void on_pb_register_clicked();
 
-    void on_register_finished();
+private:
 
-private slots:
-    void on_pb_history_clicked();
+    void init_widget();
+
+    void hide_all_widgets();
+
+    void on_face_finished();
+
+    void on_history_finished();
+
 
 private:
-    QImage _img;
+    QImage img_;
     QDateTime last_rec_time = QDateTime::currentDateTime();
     QThread worker_thread1;
     QThread worker_thread2;
+    HistoryWidget* history_widget = nullptr;
     FaceInfoWidget *face_info_widget = nullptr;
     FaceDetThread *face_det_thread = nullptr;
     Ui::MyWidget *ui;

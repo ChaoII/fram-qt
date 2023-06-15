@@ -57,4 +57,6 @@ Q_DECLARE_METATYPE(QVector<FaceInfoWrap>);
 
 
 
+
+
 #endif //FRAM_STRUCT_H

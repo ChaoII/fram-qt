@@ -31,6 +31,8 @@ public:
 
     void reset_index();
 
+    size_t remove_index(const std::vector<int64_t> &ids);
+
     void add_features(const std::vector<int64_t> &ids, float* features);
 
     SearchResult search(float *feature, int query_number);

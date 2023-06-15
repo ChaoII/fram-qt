@@ -2,11 +2,9 @@
 // Created by aichao on 2022/5/11.
 //
 
-#ifndef FRAM_SEETAFACE_H
-#define FRAM_SEETAFACE_H
+#pragma once
 
 
-#define TOSTR(ARG) #ARG
 
 #include <iostream>
 #include <QJsonObject>
@@ -37,6 +35,7 @@ class SeetaFace {
 public:
 
     static SeetaFace* getInstance(){
+        // 外层判断避免加锁的开销
         if(seetaFacePtr == nullptr){
             std::lock_guard<std::mutex> lock(mutex_);
             if(seetaFacePtr == nullptr){
@@ -46,7 +45,10 @@ public:
         return seetaFacePtr;
     }
 
-
+    static void deleteInstance(){
+        delete seetaFacePtr ;
+        seetaFacePtr = nullptr;
+    }
 
     bool add_face(cv::Mat &img, const QString &uid, const QString &name);
 
@@ -72,6 +74,8 @@ public:
 
     Status face_anti_spoofing(cv::Mat &img, const SeetaRect &rect, std::vector<SeetaPointF> points);
 
+    bool delete_face_by_ids(const std::vector<int64_t>& ids);
+
     template<class T>
     QVector<T> get_query_info(int row_num_pre_page, int current_page_index)
     {
@@ -81,7 +85,7 @@ public:
         if(std::is_same<T, Attend>()){
             query.orderDesc("attend_time").limit(row_num_pre_page, start_row);
         }else{
-            query.limit(row_num_pre_page, start_row);
+            query.orderDesc("register_time").limit(row_num_pre_page, start_row);
         }
 
         QSqlError sql_error= qx::dao::fetch_by_query(query, models);
@@ -98,6 +102,7 @@ public:
     }
 
 private:
+
     SeetaFace();
 
     SeetaFace(const SeetaFace&);
@@ -122,4 +127,3 @@ private:
 };
 
 
-#endif //FRAM_SEETAFACE_H

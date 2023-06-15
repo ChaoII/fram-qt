@@ -55,9 +55,6 @@ set(PROJECT_SOURCES
     core/facedetthread.cpp
     core/vectorsearch.h
     core/vectorsearch.cpp
-    widgets/mainwidget.h
-    widgets/mainwidget.cpp
-    widgets/mainwidget.ui
     widgets/mywidget.h
     widgets/mywidget.cpp
     widgets/mywidget.ui
@@ -80,11 +77,11 @@ set(PROJECT_SOURCES
     utils/Utils.cpp
     utils/snowflake.hpp
     utils/config.h
+    utils/config.cpp
     customwidget/pagingwidget.h
     customwidget/pagingwidget.cpp
     customwidget/pagingwidget.ui
     main.cpp
-
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

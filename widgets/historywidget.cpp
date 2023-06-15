@@ -1,6 +1,6 @@
 #include "historywidget.h"
 #include "ui_historywidget.h"
-#include "customwidget/pagingwidget.h"
+
 
 HistoryWidget::HistoryWidget(QWidget *parent) :
     QWidget(parent),
@@ -9,7 +9,7 @@ HistoryWidget::HistoryWidget(QWidget *parent) :
     ui->setupUi(this);
 //    ui->tb_history->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tb_history->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->tb_history->horizontalHeader()->setMinimumHeight(54);
+    ui->tb_history->horizontalHeader()->setMinimumHeight(30);
     ui->tb_history->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tb_history->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tb_history->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); //隐藏垂直滚动条
@@ -23,10 +23,10 @@ HistoryWidget::HistoryWidget(QWidget *parent) :
     the_model->setHorizontalHeaderLabels(QStringList()<<"编号"<<"姓名"<<"工号"<<"打卡时间"<<"图片");
     ui->tb_history->setModel(the_model);
     int num = SeetaFace::getInstance()->get_query_num<Attend>();
-    PagingWidget* paging = new PagingWidget();
+    paging = new PagingWidget();
     paging->initPage(num, 0, page_size_);
     update_table(0);
-    ui->page_layout->addWidget(paging);
+    layout()->addWidget(paging);
     connect(paging,&PagingWidget::pageChanged,this,&HistoryWidget::update_table);
 }
 
@@ -68,5 +68,11 @@ void HistoryWidget::update_table(int page)
         ui->tb_history->setIndexWidget(the_model->index(i, 4), label);
     }
     ui->tb_history->selectRow(0);
+}
+
+
+void HistoryWidget::on_pb_back_clicked()
+{
+    emit history_back_signal();
 }
 

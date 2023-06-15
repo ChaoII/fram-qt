@@ -10,7 +10,6 @@ class RegisterWidget;
 }
 
 struct RegisterFace{
-
     cv::Mat img;
     QString uid;
     QString name;
@@ -41,6 +40,8 @@ private slots:
 private:
 
     void init_lw();
+
+    void clear_register_info();
 
 private:
     Ui::RegisterWidget *ui;

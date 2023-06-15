@@ -42,8 +42,8 @@ void SeetaFace::init_file_dir()
 {
     QDir dir;
 
-    if(!dir.exists(QDir::currentPath()+"/face")){
-        dir.mkdir(QDir::currentPath()+"/face");
+    if(!dir.exists(QDir::currentPath()+"/faces")){
+        dir.mkdir(QDir::currentPath()+"/faces");
     };
     if(!dir.exists(QDir::currentPath()+"/attend")){
         dir.mkdir(QDir::currentPath()+"/attend");
@@ -67,9 +67,6 @@ void SeetaFace::init_face_db()
     qx::QxSqlDatabase::getSingleton()->setTraceSqlRecord(false);
 
 
-
-
-
     QSqlError staff_error = qx::dao::create_table<Staff>();
     if(staff_error.isValid()){
         qDebug()<<staff_error.text();
@@ -80,7 +77,7 @@ void SeetaFace::init_face_db()
         qDebug()<<attend_error.text();
     }
 
-    QFileInfo fileInfo(INDEX_FILE);
+    QFileInfo fileInfo(Config::getInstance()->getIndex_file().toStdString().c_str());
     if(!fileInfo.exists()){
         build_face_index_from_db();
     }
@@ -89,9 +86,10 @@ void SeetaFace::init_face_db()
 bool SeetaFace::add_face(cv::Mat &img, const QString &uid, const QString &name)
 {
     unique_ptr<float[]> feature(new float[FR->GetExtractFeatureSize()]);
-    SeetaFace::getInstance()->extract_feature(img, feature.get());
+    bool ret= SeetaFace::getInstance()->extract_feature(img, feature.get());
+    if(!ret) return false;
     qint64 uuid = Utils::get_uuid();
-    QDir dir(QDir::currentPath()+"/face/"+uid);
+    QDir dir(QDir::currentPath()+"/faces/"+uid);
     if(!dir.exists()){
         dir.mkdir(dir.absolutePath());
     }
@@ -103,6 +101,7 @@ bool SeetaFace::add_face(cv::Mat &img, const QString &uid, const QString &name)
     staff.name = name;
     staff.pic_url = file_path;
     staff.feature = Utils::floatArray2QByteArray(feature.get(), FR->GetExtractFeatureSize());
+    staff.register_time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     auto sql_error = qx::dao::insert(staff);
     if(sql_error.isValid()){
         qDebug()<<"新增人脸失败，name:"<<name<<"uid:"<<uid<<"失败原因："<<sql_error.text();
@@ -162,7 +161,7 @@ Staff SeetaFace::get_faceinfo_from_index_id(qint64 index_id)
     Staff staff;
     qx_query query;
     query.where("index_id").isEqualTo(index_id);
-    QSqlError sql_error = qx::dao::fetch_by_query<Staff>(query,staff);
+    QSqlError sql_error = qx::dao::fetch_by_query<Staff>(query, staff);
     if(sql_error.isValid()){
         return {};
     }
@@ -213,7 +212,7 @@ std::vector<SeetaFaceInfo> SeetaFace::face_detection(cv::Mat &img)
     // 排序，将人脸由大到小进行排列
     std::partial_sort(faces.begin(),faces.begin() + 1,faces.end(),
                       [](SeetaFaceInfo a, SeetaFaceInfo b){
-        return a.pos.width>b.pos.width;
+        return a.pos.width > b.pos.width;
     });
     return faces;
 }
@@ -249,6 +248,40 @@ Status SeetaFace::face_anti_spoofing(cv::Mat &img, const SeetaRect &rect,
                                      std::vector<SeetaPointF> points) {
     SeetaImageData data = Utils::CvMat2Simg(img);
     return FS->Predict(data, rect, points.data());
+}
+
+bool SeetaFace::delete_face_by_ids(const std::vector<int64_t>& ids)
+{
+    QVariantList variant_ids;
+    for(auto &id: ids){
+       variant_ids.append(QVariant::fromValue(id));
+    }
+    qx_query query;
+    query.where("index_id").in(variant_ids);
+    QVector<Staff> staffs;
+    qx::dao::fetch_by_query(query, staffs);
+    for(auto& staff: staffs){
+        QFileInfo file_info(staff.pic_url);
+        if(file_info.exists()){
+            file_info.dir().remove(file_info.fileName());
+            if(file_info.dir().entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot).count()<=0){
+                file_info.dir().removeRecursively();
+                qDebug()<<"清空文件夹:"<<file_info.dir().absolutePath();
+            }
+            qDebug()<<staff.uid<<staff.name<<file_info.fileName();
+        }
+    }
+    QSqlError sql_error = qx::dao::delete_by_query<Staff>(query);
+    if(sql_error.isValid()){
+        qDebug()<<"delete data error , details:"<<sql_error.text();
+        return false;
+    }
+    size_t nums = VectorSearch::getInstance()->remove_index(ids);
+    if(nums != ids.size()){
+        qDebug()<<"delete failed";
+        return false;
+    }
+    return true;
 }
 
 

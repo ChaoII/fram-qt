@@ -32,12 +32,20 @@ private:
 
     void initial_table();
 
+    void update_paging();
+
 signals:
-    void finished_signal();
+    void face_back_signal();
 
 private slots:
-    void handle_register_slot();
 
+    void handle_register_finished();
+
+    void on_pb1_back_clicked();
+
+    void on_pb1_delete_clicked();
+
+    void on_tb_staff_clicked(const QModelIndex &index);
 
 private:
     Ui::FaceInfoWidget *ui;

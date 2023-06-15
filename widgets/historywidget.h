@@ -4,6 +4,7 @@
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
 #include "core/SeetaFace.h"
+#include "customwidget/pagingwidget.h"
 
 
 namespace Ui {
@@ -18,6 +19,12 @@ public:
     explicit HistoryWidget(QWidget *parent = nullptr);
 
     ~HistoryWidget();
+signals:
+
+    void history_back_signal();
+
+private slots:
+    void on_pb_back_clicked();
 
 private:
     void update_table(int page);
@@ -30,6 +37,8 @@ private:
     QItemSelectionModel* the_select;
 
     int page_size_ = 9;
+
+    PagingWidget* paging = nullptr;
 };
 
 

@@ -1,10 +1,15 @@
 <RCC>
-  <qresource prefix="/">
-    <file>img/face_region.gif</file>
-    <file>img/face.png</file>
-    <file>img/face_region.png</file>
-    <file>img/signin_fail.png</file>
-    <file>img/setting.png</file>
-    <file>img/signin_success.png</file>
-  </qresource>
+    <qresource prefix="/">
+        <file>img/face_region.gif</file>
+        <file>img/face.png</file>
+        <file>img/face_region.png</file>
+        <file>img/signin_fail.png</file>
+        <file>img/setting.png</file>
+        <file>img/signin_success.png</file>
+        <file>img/3.png</file>
+        <file>img/4.png</file>
+        <file>img/4_p.png</file>
+        <file>img/3_p.png</file>
+        <file>img/back.png</file>
+    </qresource>
 </RCC>

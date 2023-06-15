@@ -11,6 +11,7 @@ namespace qx {
         t.data(&Staff::name,"name");
         t.data(&Staff::pic_url,"pic_url");
         t.data(&Staff::feature,"feature");
+        t.data(&Staff::register_time,"register_time");
     }
     template<> void register_class(QxClass<Attend> &t){
         t.setName("attend");

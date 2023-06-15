@@ -5,7 +5,7 @@
 #include <QApplication>
 #include <QFile>
 #include <QDateTime>
-#include "widgets/mainwidget.h"
+#include "widgets/mywidget.h"
 
 void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
     static QMutex mutex;
@@ -31,7 +31,7 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
     QString current_date_time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
 #if DEBUG
     QString context_info = QString("File:(%1) Line(%2)").arg(QString(context.file)).arg(context.line);
-    QString message = QString("[%1] |【%2】|%3|%4").arg(current_date_time, text,context_info, msg);
+    QString message = QString("[%1] |【%2】|%3|%4").arg(current_date_time, text, context_info, msg);
 #else
     QString message = QString("[%1]|【%2】| %3").arg(current_date_time, text, msg);
 #endif
@@ -47,7 +47,7 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 //    qInstallMessageHandler(outputMessage);
-    MainWidget w;
+    MyWidget w;
     w.show();
     return a.exec();
 }

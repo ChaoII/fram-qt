@@ -15,34 +15,50 @@
 MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     ui->setupUi(this);
     this->setAttribute(Qt::WA_QuitOnClose);
-    auto face_rec_thread = new FaceRecThread();
-    face_rec_thread->moveToThread(&worker_thread1);
-    auto record_thread = new RecordThread();
-    record_thread->moveToThread(&worker_thread2);
-    // connect(&worker_thread1,&QThread::finished,face_rec_thread,&QObject::deleteLater);
-    connect(this,&MyWidget::send_img_signal, face_rec_thread, &FaceRecThread::face_recognition, Qt::QueuedConnection);
-    qRegisterMetaType<FaceInfoWrap>();
-    qRegisterMetaType<QVector<FaceInfoWrap>>();
 
-    connect(face_rec_thread, &FaceRecThread::face_rec_signal, this, &MyWidget::on_face_rec);
-    connect(face_rec_thread, &FaceRecThread::record_signal, record_thread, &RecordThread::record);
-
-    face_info_widget = new FaceInfoWidget();
-    connect(face_info_widget, &FaceInfoWidget::finished_signal, this, &MyWidget::on_register_finished);
-
+    // 视频解码及人脸检测线程
     face_det_thread = new FaceDetThread(this);
     connect(face_det_thread, &FaceDetThread::img_send_signal, this, &MyWidget::update_frame);
 
+    // 人脸识别线程
+    auto face_rec_thread = new FaceRecThread();
+    face_rec_thread->moveToThread(&worker_thread1);
+
+    // 打卡记录线程
+    auto record_thread = new RecordThread();
+    record_thread->moveToThread(&worker_thread2);
+    // connect(&worker_thread1,&QThread::finished,face_rec_thread,&QObject::deleteLater);
+    connect(this, &MyWidget::send_img_signal, face_rec_thread, &FaceRecThread::face_recognition, Qt::QueuedConnection);
+
+    // 注册信号槽元对象
+    qRegisterMetaType<FaceInfoWrap>();
+    qRegisterMetaType<QVector<FaceInfoWrap>>();
+    connect(face_rec_thread, &FaceRecThread::face_rec_signal, this, &MyWidget::on_face_rec);
+    connect(face_rec_thread, &FaceRecThread::record_signal, record_thread, &RecordThread::record);
+
+    // 人脸库信息窗体
+    face_info_widget = new FaceInfoWidget();
+    connect(face_info_widget, &FaceInfoWidget::face_back_signal, this, &MyWidget::on_face_finished);
+
+    // 打卡记录窗体
+    history_widget  = new HistoryWidget();
+    connect(history_widget, &HistoryWidget::history_back_signal, this, &MyWidget::on_history_finished);
+
+    // 界面时间
     auto timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MyWidget::on_update_time);
     timer->setInterval(1000);
     timer->start();
+
+    // 初始化界面
+    init_widget();
+    run();
 }
 
 void MyWidget::update_frame(QImage qimg, QRect rect) {
     if(!rect.isEmpty()){
         QDateTime cur_time = QDateTime::currentDateTime();
-        if(last_rec_time.msecsTo(cur_time) > REC_INTERVAL){
+        if(last_rec_time.msecsTo(cur_time) > Config::getInstance()->getRec_interval()){
             emit send_img_signal(qimg,rect);
             last_rec_time = cur_time;
         }
@@ -57,8 +73,8 @@ void MyWidget::update_frame(QImage qimg, QRect rect) {
     if(face_info_widget && face_info_widget->isVisible()){
         face_info_widget->update_register_frame(qimg);
     };
-    if (!isVisible()) return;
-    _img = qimg.scaled(ui->label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    if (!ui->widget->isVisible()) return;
+    img_ = qimg.scaled(size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     update();
 }
 
@@ -99,38 +115,53 @@ void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
 }
 
 void MyWidget::on_pb_register_clicked(){
-    face_info_widget->show();
+    hide_all_widgets();
+    face_info_widget->setVisible(true);
     worker_thread1.quit();
     worker_thread1.wait();
     face_det_thread->close_detect();
-    hide();
 }
 
-void MyWidget::on_register_finished()
+void MyWidget::init_widget()
+{
+    layout()->addWidget(history_widget);
+    layout()->addWidget(face_info_widget);
+    hide_all_widgets();
+    history_widget->setVisible(false);
+    history_widget->setVisible(false);
+    face_info_widget->setVisible(false);
+    ui->widget->setVisible(true);
+}
+
+void MyWidget::on_face_finished()
 {
     face_det_thread->open_detect();
-    face_info_widget->close();
-    if(!isVisible()) {
-        show();
+    hide_all_widgets();
+    ui->widget->setVisible(true);
+    if(!worker_thread1.isRunning()){
+        qDebug()<<"start worker_thread1";
         worker_thread1.start();
+        qDebug()<<"worker_thread1 is runging: "<<worker_thread1.isRunning();
     }
+
+}
+
+void MyWidget::on_history_finished()
+{
+   hide_all_widgets();
+   ui->widget->setVisible(true);
 }
 
 void MyWidget::on_update_time() {
     ui->lb_cur_time->setText(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
 }
 
-void MyWidget::closeEvent(QCloseEvent *event) {
-
-    face_det_thread->stop_thread();
-    face_det_thread->wait();
-    event->accept();
-}
 
 void MyWidget::paintEvent(QPaintEvent *event) {
-    if (_img.isNull()) return;
+    if(!ui->widget->isVisible()) return;
+    if (img_.isNull()) return;
     QPainter painter(this);
-    painter.drawImage(0, 0, _img);
+    painter.drawImage(0, 0, img_);
 }
 
 
@@ -147,16 +178,34 @@ void MyWidget::run()
     face_det_thread->start();
 }
 
-
 MyWidget::~MyWidget() {
     std::cout << "mywidget" << std::endl;
+    worker_thread1.quit();
+    worker_thread1.wait();
+    worker_thread2.quit();
+    worker_thread2.wait();
+    face_det_thread->stop_thread();
+    face_det_thread->quit();
+    face_det_thread->wait();
     delete ui;
 }
 
 void MyWidget::on_pb_history_clicked()
 {
-    HistoryWidget * w = new HistoryWidget;
-    w->show();
-    hide();
+    hide_all_widgets();
+    history_widget->setVisible(true);
+}
+
+void MyWidget::hide_all_widgets()
+{
+    if(ui->widget->isVisible()){
+        ui->widget->setVisible(false);
+    }
+    if(history_widget->isVisible()){
+        history_widget->setVisible(false);
+    }
+    if(face_info_widget->isVisible()){
+        face_info_widget->setVisible(false);
+    }
 }
 

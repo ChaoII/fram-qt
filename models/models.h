@@ -10,6 +10,7 @@ public:
     QString name;
     QString pic_url;
     QByteArray feature;
+    QString register_time;
 };
 
 //QX_REGISTER_PRIMARY_KEY(Staff, QString)
