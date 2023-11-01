@@ -115,8 +115,7 @@ private:
 
 
 private:
-    int global_thread_nums = 1;
-    std::string model_dir= "/home/orangepi/my/seeta-face6/build/models/";
+
     std::vector<FaceLibInfo> face_lib;
     std::shared_ptr<seeta::FaceDetector> FD = nullptr;
     std::shared_ptr<seeta::FaceLandmarker> FL = nullptr;

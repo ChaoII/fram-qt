@@ -27,7 +27,6 @@ void RecordThread::record(QVector<FaceInfoWrap> face_infos) {
         face_info.ret.img.save(file_path);
         attends.append(attend);
     }
-
     auto sql_error = qx::dao::insert(attends);
     if(sql_error.isValid()){
        qDebug()<<sql_error.text();

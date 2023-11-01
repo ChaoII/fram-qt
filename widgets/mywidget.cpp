@@ -41,14 +41,21 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     connect(face_info_widget, &FaceInfoWidget::face_back_signal, this, &MyWidget::on_face_finished);
 
     // 打卡记录窗体
-    history_widget  = new HistoryWidget();
+    history_widget = new HistoryWidget();
     connect(history_widget, &HistoryWidget::history_back_signal, this, &MyWidget::on_history_finished);
 
     // 界面时间
-    auto timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &MyWidget::on_update_time);
-    timer->setInterval(1000);
-    timer->start();
+    auto timer1 = new QTimer(this);
+    connect(timer1, &QTimer::timeout, this, &MyWidget::on_update_time);
+    timer1->setInterval(1000);
+    timer1->start();
+
+    // 记录线程
+    auto timer2 = new QTimer(this);
+    connect(timer2, &QTimer::timeout, [=]() { emit send_img_signal(QImage(), QRect()); });
+    timer2->setInterval(Config::getInstance()->getRecord_interval() * 1000);
+    timer2->start();
+
 
     // 初始化界面
     init_widget();
@@ -57,22 +64,21 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 
 void MyWidget::update_frame(QImage qimg, QRect rect) {
 
-    if(!rect.isEmpty()){
+    if (!rect.isEmpty()) {
         QDateTime cur_time = QDateTime::currentDateTime();
         // 通过计时调整识别的频率
-        if(last_rec_time.msecsTo(cur_time) > Config::getInstance()->getRec_interval()){
-            emit send_img_signal(qimg,rect);
+        if (last_rec_time.msecsTo(cur_time) > Config::getInstance()->getRec_interval()) {
+            emit send_img_signal(qimg, rect);
             last_rec_time = cur_time;
         }
         QPainter painter(&qimg);
         painter.setPen(QPen(QColor(Qt::green)));
         painter.drawRect(rect);
-    }
-    else{
+    } else {
         Utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
     }
     ui->widget_info->setVisible(!rect.isEmpty());
-    if(face_info_widget && face_info_widget->isVisible()){
+    if (face_info_widget && face_info_widget->isVisible()) {
         face_info_widget->update_register_frame(qimg);
     };
     if (!ui->widget->isVisible()) return;
@@ -104,19 +110,19 @@ void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
         ui->lb_attend_time->setText(attend_time);
         ui->lb_pic->setPixmap(QPixmap(":img/signin_success.png"));
         ui->pic_library->setPixmap(QPixmap(rec_info.ret.pic_url)
-                                   .scaled(ui->pic_library->size(),
-                                          Qt::KeepAspectRatio,
-                                          Qt::SmoothTransformation));
+                                           .scaled(ui->pic_library->size(),
+                                                   Qt::KeepAspectRatio,
+                                                   Qt::SmoothTransformation));
         ui->pic_current->setPixmap(QPixmap::fromImage(rec_info.ret.img)
-                                   .scaled(ui->pic_current->size(),
-                                          Qt::KeepAspectRatio,
-                                          Qt::SmoothTransformation));
+                                           .scaled(ui->pic_current->size(),
+                                                   Qt::KeepAspectRatio,
+                                                   Qt::SmoothTransformation));
         Utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 0));
         Utils::setBackgroundColor(ui->widget_info, QColor(0, 255, 0, 40));
     }
 }
 
-void MyWidget::on_pb_register_clicked(){
+void MyWidget::on_pb_register_clicked() {
     hide_all_widgets();
     face_info_widget->setVisible(true);
     worker_thread1.quit();
@@ -124,8 +130,7 @@ void MyWidget::on_pb_register_clicked(){
     face_det_thread->close_detect();
 }
 
-void MyWidget::init_widget()
-{
+void MyWidget::init_widget() {
     layout()->addWidget(history_widget);
     layout()->addWidget(face_info_widget);
     hide_all_widgets();
@@ -135,23 +140,21 @@ void MyWidget::init_widget()
     ui->widget->setVisible(true);
 }
 
-void MyWidget::on_face_finished()
-{
+void MyWidget::on_face_finished() {
     face_det_thread->open_detect();
     hide_all_widgets();
     ui->widget->setVisible(true);
-    if(!worker_thread1.isRunning()){
-        qDebug()<<"start worker_thread1";
+    if (!worker_thread1.isRunning()) {
+        qDebug() << "start worker_thread1";
         worker_thread1.start();
-        qDebug()<<"worker_thread1 is runging: "<<worker_thread1.isRunning();
+        qDebug() << "worker_thread1 is runging: " << worker_thread1.isRunning();
     }
 
 }
 
-void MyWidget::on_history_finished()
-{
-   hide_all_widgets();
-   ui->widget->setVisible(true);
+void MyWidget::on_history_finished() {
+    hide_all_widgets();
+    ui->widget->setVisible(true);
 }
 
 void MyWidget::on_update_time() {
@@ -160,7 +163,7 @@ void MyWidget::on_update_time() {
 
 
 void MyWidget::paintEvent(QPaintEvent *event) {
-    if(!ui->widget->isVisible()) return;
+    if (!ui->widget->isVisible()) return;
     if (img_.isNull()) return;
     QPainter painter(this);
     painter.drawImage(0, 0, img_);
@@ -173,8 +176,7 @@ void MyWidget::start_thread() {
     }
 }
 
-void MyWidget::run()
-{
+void MyWidget::run() {
     worker_thread1.start();
     worker_thread2.start();
     face_det_thread->start();
@@ -192,21 +194,20 @@ MyWidget::~MyWidget() {
     delete ui;
 }
 
-void MyWidget::on_pb_history_clicked()
-{
+void MyWidget::on_pb_history_clicked() {
     hide_all_widgets();
     history_widget->setVisible(true);
+    history_widget->update_table(0);
 }
 
-void MyWidget::hide_all_widgets()
-{
-    if(ui->widget->isVisible()){
+void MyWidget::hide_all_widgets() {
+    if (ui->widget->isVisible()) {
         ui->widget->setVisible(false);
     }
-    if(history_widget->isVisible()){
+    if (history_widget->isVisible()) {
         history_widget->setVisible(false);
     }
-    if(face_info_widget->isVisible()){
+    if (face_info_widget->isVisible()) {
         face_info_widget->setVisible(false);
     }
 }

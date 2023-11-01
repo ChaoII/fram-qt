@@ -2,6 +2,10 @@
 
 void FaceRecThread::face_recognition(const QImage &img, const QRect &rect)
 {
+    if(rect.isEmpty()){
+        send_records();
+        return;
+    }
     auto img_ = Utils::QImage2CvMat(img);
     auto rect_ = Utils::QRect2SRect(rect);
     auto points = SeetaFace::getInstance()->face_marker(img_, rect_);
@@ -9,7 +13,7 @@ void FaceRecThread::face_recognition(const QImage &img, const QRect &rect)
     auto status = Status::REAL;
     FaceInfoWrap info{-1, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss zzzzzzz"), {}};
     status = SeetaFace::getInstance()->face_anti_spoofing(img_, rect_, points);
-    send_records();
+
     if (status == Status::SPOOF) {
         qCritical() << "攻击人脸";
     } else {

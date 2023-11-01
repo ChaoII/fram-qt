@@ -42,6 +42,10 @@ public:
 
     int getRecord_interval() const;
 
+    const QString& get_model_dir() const;
+
+    int get_face_recognition_thread_num() const;
+
 private:
     explicit Config();
 
@@ -62,6 +66,8 @@ private:
     int rec_interval;
     float rec_threshold;
     int record_interval;
+    QString model_dir;
+    int face_recognition_thread_num;
 };
 
 

@@ -16,11 +16,13 @@
 
 PagingWidget::PagingWidget(QWidget *parent) : QWidget(parent) {
     QString qss = QString("")
-                  + QString("QPushButton{border:1px solid #eeeeee;background:#ffffff;border-radius:5px;font-family:\"Microsoft YaHei\";font-size:13px;}")
+                  +
+                  QString("QPushButton{border:1px solid #eeeeee;background:#ffffff;border-radius:5px;font-family:\"Microsoft YaHei\";font-size:13px;}")
                   + QString("QPushButton:hover{background: #01048a;color:#ffffff}")
                   + QString("QPushButton[currentPage=\"true\"]{background: #01048a;color:#ffffff;border-radius:5px;}")
                   + QString("QLabel{font-family:\"Microsoft YaHei\";font-size:13px;}")
-                  + QString("QLineEdit{border-radius:5px;border:1px solid #eeeeee;font-family:\"Microsoft YaHei\";font-size:13px;}");
+                  +
+                  QString("QLineEdit{border-radius:5px;border:1px solid #eeeeee;font-family:\"Microsoft YaHei\";font-size:13px;}");
     this->setStyleSheet(qss);
 
     m_pPageHLayout = nullptr;
@@ -44,7 +46,12 @@ PagingWidget::PagingWidget(QWidget *parent) : QWidget(parent) {
 
     m_pPageHLayout = new QHBoxLayout();
     m_pPageHLayout->setSpacing(2);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_pPageHLayout->setMargin(0);
+#else
+    m_pPageHLayout->setContentsMargins(0, 0, 0, 0);
+#endif
+
     this->setLayout(m_pPageHLayout);
     m_pPageHLayout->addStretch(1);
     m_pTotalLabel = new QLabel(this);
@@ -173,7 +180,11 @@ void PagingWidget::setTotal(int total) {
 void PagingWidget::initPageBtnControl() {
     m_pPageBtnHLayout = new QHBoxLayout();
     m_pPageBtnHLayout->setSpacing(8);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_pPageBtnHLayout->setMargin(0);
+#else
+    m_pPageBtnHLayout->setContentsMargins(0, 0, 0, 0);
+#endif
     m_pPrePageBtn = initPushButton();
     m_pPrePageBtn->setText("<");
     m_pPageBtnHLayout->addWidget(m_pPrePageBtn);
@@ -213,7 +224,11 @@ void PagingWidget::initPageBtnControl() {
 void PagingWidget::initJumpControl() {
     m_pJumpHLayout = new QHBoxLayout();
     m_pJumpHLayout->setSpacing(5);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_pJumpHLayout->setMargin(0);
+#else
+    m_pJumpHLayout->setContentsMargins(0, 0, 0, 0);
+#endif
     m_pGoToLabel = new QLabel(this);
     m_pGoToLabel->setText(" 前往");
     m_pGoToLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);

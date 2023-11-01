@@ -18,6 +18,8 @@ class HistoryWidget : public QWidget
 public:
     explicit HistoryWidget(QWidget *parent = nullptr);
 
+    void update_table(int page);
+
     ~HistoryWidget();
 signals:
 
@@ -25,9 +27,6 @@ signals:
 
 private slots:
     void on_pb_back_clicked();
-
-private:
-    void update_table(int page);
 
 private:
     Ui::HistoryWidget *ui;

@@ -21,8 +21,6 @@ public:
         return pInstance;
     }
 
-    void index_size();
-
     void create_index();
 
     bool load_index();

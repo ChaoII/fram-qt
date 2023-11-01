@@ -12,10 +12,33 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS .)
 
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Force MSVC to use UTF-8 because that's what we use. Otherwise it uses
+    # the default of whatever Windows sets and causes encoding issues.
+    message(STATUS "You are using MSVC. Forcing to use UTF-8")
+    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/wd4828>")
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/wd4828>")
+endif ()
+
 set(DEPENDS "")
 # add_qt
-find_package(Qt5 COMPONENTS Widgets Sql Concurrent REQUIRED)
-list(APPEND DEPENDS Qt5::Widgets Qt5::Sql Qt5::Concurrent)
+#set(QT_VERSION "6" CACHE STRING "Qt version")
+#set(OpenCV_DIR "E:/develop/opencv/x64/vc16/staticlib" CACHE PATH "fastdeploy install directory")
+#set(SEETAFACE_DIR "/home/orangepi/my/seeta-face6/build/" CACHE PATH "seetaface6 install directory")
+#set(QxOrm_DIR "/home/orangepi/my/QxOrm/build/install/" CACHE PATH "QxOrm install directory")
+#set(CMAKE_TOOLCHAIN_FILE "E:/vcpkg/scripts/buildsystems/vcpkg.cmake")
+
+
+set(QT_VERSION "6" CACHE STRING "Qt version")
+set(OpenCV_DIR "E:/develop/opencv/x64/vc16/staticlib" CACHE PATH "opencv install directory")
+set(SEETAFACE_DIR "E:/develop/SeetaFace" CACHE PATH "seetaface6 install directory")
+set(QxOrm_DIR "E:/develop/QxOrm" CACHE PATH "QxOrm install directory")
+set(CMAKE_TOOLCHAIN_FILE "E:/vcpkg/scripts/buildsystems/vcpkg.cmake")
+
+find_package(Qt${QT_VERSION} COMPONENTS Widgets Sql Concurrent REQUIRED)
+list(APPEND DEPENDS Qt${QT_VERSION}::Widgets Qt${QT_VERSION}::Sql Qt${QT_VERSION}::Concurrent)
 
 #add opencv
 find_package(OpenCV REQUIRED)
@@ -29,9 +52,16 @@ find_package(faiss REQUIRED)
 list(APPEND DEPENDS faiss)
 
 # add seetaface
-set(SEETAFACE_DIR "/home/orangepi/my/seeta-face6/build/")
+if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "AMD64")
+    set(ARCH "x64")
+elseif(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64")
+    set(ARCH "arm64")
+else()
+    message(FATAL "cpu arch x86 and aarch64 only be surrorted")
+endif()
+message(${SEETAFACE_DIR}/lib/${ARCH})
 include_directories(${SEETAFACE_DIR}/include)
-link_directories(${SEETAFACE_DIR}/lib/aarch64)
+link_directories(${SEETAFACE_DIR}/lib/${ARCH})
 list(APPEND DEPENDS
     SeetaFaceLandmarker600
     SeetaFaceRecognizer610
@@ -40,7 +70,7 @@ list(APPEND DEPENDS
     SeetaFaceAntiSpoofingX600)
 
 #add QxOrm
-set(QxOrm_DIR "/home/orangepi/my/QxOrm/build/install/")
+
 include_directories(${QxOrm_DIR}/include)
 link_directories(${QxOrm_DIR}/lib)
 list(APPEND DEPENDS QxOrm)
@@ -86,5 +116,3 @@ set(PROJECT_SOURCES
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${DEPENDS})
-
-

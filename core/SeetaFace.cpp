@@ -10,6 +10,8 @@ using namespace seeta;
 
 SeetaFace::SeetaFace() {
 
+    std::string model_dir = Config::getInstance()->get_model_dir().toStdString();
+    int face_recognition_thread_num = Config::getInstance()->get_face_recognition_thread_num();
     ModelSetting fd_setting;
     fd_setting.append(model_dir + "face_detector.csta");
     fd_setting.set_device(ModelSetting::CPU);
@@ -27,13 +29,13 @@ SeetaFace::SeetaFace() {
     fs_setting.set_device(ModelSetting::CPU);
 
     FD = std::make_shared<FaceDetector>(fd_setting);
-    FD->set(seeta::FaceDetector::PROPERTY_NUMBER_THREADS,global_thread_nums);
+    FD->set(seeta::FaceDetector::PROPERTY_NUMBER_THREADS,face_recognition_thread_num);
     // unsupported set thread number
     FL = std::make_shared<FaceLandmarker>(pd_setting);
     FR = std::make_shared<FaceRecognizer>(fr_setting);
-    FR->set(seeta::FaceRecognizer::PROPERTY_NUMBER_THREADS,global_thread_nums);
+    FR->set(seeta::FaceRecognizer::PROPERTY_NUMBER_THREADS,face_recognition_thread_num);
     FS = std::make_shared<FaceAntiSpoofing>(fs_setting);
-    FS->set(seeta::FaceAntiSpoofing::PROPERTY_NUMBER_THREADS,global_thread_nums);
+    FS->set(seeta::FaceAntiSpoofing::PROPERTY_NUMBER_THREADS,face_recognition_thread_num);
     init_face_db();
     init_file_dir();
 }

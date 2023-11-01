@@ -6,6 +6,10 @@
 #include <faiss/Index.h>
 #include <faiss/IndexFlat.h>
 
+#if defined(_MSC_VER)
+#include <faiss/impl/IDSelector.h>
+#endif
+
 
 
 void VectorSearch::create_index()
