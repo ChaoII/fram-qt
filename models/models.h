@@ -1,8 +1,8 @@
-#ifndef MODELS_H
-#define MODELS_H
+#pragma once
+
 #include <QxOrm.h>
 
-class Staff{
+class Staff {
 public:
     long id;
     qint64 index_id;
@@ -15,9 +15,10 @@ public:
 
 //QX_REGISTER_PRIMARY_KEY(Staff, QString)
 QX_REGISTER_HPP_EXPORT_DLL(Staff, qx::trait::no_base_class_defined, 0)
+
 typedef std::shared_ptr<Staff> StaffPtr;
 
-class Attend{
+class Attend {
 public:
     long id;
     QString uid;
@@ -28,8 +29,3 @@ public:
 
 QX_REGISTER_HPP_EXPORT_DLL(Attend, qx::trait::no_base_class_defined, 0)
 
-
-
-
-
-#endif // MODELS_H

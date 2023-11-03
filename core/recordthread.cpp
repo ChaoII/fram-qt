@@ -10,16 +10,15 @@ void RecordThread::record(QVector<FaceInfoWrap> face_infos) {
 
     unique_record(face_infos);
     QString date_str = QDateTime::currentDateTime().toString("yyyyMMdd");
-    QDir dir(QDir::currentPath()+"/attend/"+date_str);
-    if(!dir.exists()){
+    QDir dir("./attend/" + date_str);
+    if (!dir.exists()) {
         dir.mkdir(dir.absolutePath());
     }
     QVector<Attend> attends;
     for (auto &face_info: face_infos) {
         Attend attend;
-        QString file_path = dir.absoluteFilePath(QDateTime::currentDateTime()
-                                                 .toString("yyyyMMddhhmmsszzzzzz")+"_"
-                                                 +QString(face_info.ret.uid)+".jpg");
+        QString file_path = dir.relativeFilePath("./attend/" + date_str + "/" + QDateTime::currentDateTime()
+                .toString("yyyyMMddhhmmsszzzzzz") + "_" + QString(face_info.ret.uid) + ".jpg");
         attend.name = face_info.ret.name;
         attend.uid = face_info.ret.uid;
         attend.pic_url = file_path;
@@ -28,8 +27,8 @@ void RecordThread::record(QVector<FaceInfoWrap> face_infos) {
         attends.append(attend);
     }
     auto sql_error = qx::dao::insert(attends);
-    if(sql_error.isValid()){
-       qDebug()<<sql_error.text();
+    if (sql_error.isValid()) {
+        qDebug() << sql_error.text();
     }
 }
 

@@ -52,7 +52,7 @@ find_package(faiss REQUIRED)
 list(APPEND DEPENDS faiss)
 
 # add seetaface
-if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "AMD64")
+if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "AMD64" OR "x68_64")
     set(ARCH "x64")
 elseif(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64")
     set(ARCH "arm64")

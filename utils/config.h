@@ -20,9 +20,9 @@
 //#define RECORD_INTERVAL 5
 
 
-class Config :public QObject{
+class Config : public QObject {
 public:
-    static Config* getInstance();
+    static Config *getInstance();
 
     static void deleteInstance();
 
@@ -42,16 +42,16 @@ public:
 
     int getRecord_interval() const;
 
-    const QString& get_model_dir() const;
+    const QString &get_model_dir() const;
 
     int get_face_recognition_thread_num() const;
 
 private:
     explicit Config();
 
-    Config(const Config&);
+    Config(const Config &);
 
-    Config& operator=(const Config&);
+    Config &operator=(const Config &);
 
 private:
 

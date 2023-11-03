@@ -1,5 +1,5 @@
-#ifndef VECTORSEARCH_H
-#define VECTORSEARCH_H
+#pragma once
+
 #include <iostream>
 #include <mutex>
 #include <vector>
@@ -7,14 +7,13 @@
 #include "utils/config.h"
 #include "utils/Utils.h"
 
-class VectorSearch
-{
+class VectorSearch {
 
 public:
-    static VectorSearch* getInstance(){
-        if(pInstance == nullptr){
+    static VectorSearch *getInstance() {
+        if (pInstance == nullptr) {
             std::lock_guard<std::mutex> lock(mutex_);
-            if(pInstance == nullptr){
+            if (pInstance == nullptr) {
                 pInstance = new VectorSearch();
             }
         }
@@ -31,7 +30,7 @@ public:
 
     size_t remove_index(const std::vector<int64_t> &ids);
 
-    void add_features(const std::vector<int64_t> &ids, float* features);
+    void add_features(const std::vector<int64_t> &ids, float *features);
 
     SearchResult search(float *feature, int query_number);
 
@@ -42,11 +41,11 @@ private:
 
     VectorSearch(const VectorSearch &);
 
-    VectorSearch& operator=(const VectorSearch &);
+    VectorSearch &operator=(const VectorSearch &);
 
 private:
 
-    inline static VectorSearch* pInstance = nullptr;
+    inline static VectorSearch *pInstance = nullptr;
 
     inline static std::mutex mutex_;
 
@@ -56,5 +55,3 @@ private:
 
     std::vector<float> D_;
 };
-
-#endif // VECTORSEARCH_H

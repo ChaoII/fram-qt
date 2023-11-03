@@ -1,28 +1,29 @@
-#ifndef FACERECOGNITIONTHREAD_H
-#define FACERECOGNITIONTHREAD_H
+
+#pragma once
 
 #include <QThread>
 #include "SeetaFace.h"
 
 using Status = seeta::FaceAntiSpoofing::Status;
 
-class FaceRecThread : public QObject
-{
-    Q_OBJECT
+class FaceRecThread : public QObject {
+Q_OBJECT
 public:
-    explicit FaceRecThread(QObject *parent = nullptr):QObject(parent){};
+    explicit FaceRecThread(QObject *parent = nullptr) : QObject(parent) {};
 
 
 private:
     void send_records();
 
 signals:
+
     void face_rec_signal(FaceInfoWrap);
 
     void record_signal(QVector<FaceInfoWrap>);
 
 
 public slots:
+
     void face_recognition(const QImage &img, const QRect &rect);
 
 private:
@@ -31,4 +32,3 @@ private:
 
 };
 
-#endif // FACERECOGNITIONTHREAD_H

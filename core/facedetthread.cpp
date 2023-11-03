@@ -23,11 +23,11 @@ void FaceDetThread::run() {
             cap_->read(frame_src);
             if (frame_src.empty()) continue;
             // flip for horize
-            cv::flip(frame_src,frame_src, 1);
+            cv::flip(frame_src, frame_src, 1);
             //发送打卡记录存储信号
             QRect rect;
             cv::Mat frame = Utils::crop_img(frame_src);
-            if(is_detect){
+            if (is_detect) {
                 auto faces = SeetaFace::getInstance()->face_detection(frame);
                 if (faces.size() > 0) {
                     //-----------发送检测到人脸的信号----------
@@ -35,7 +35,7 @@ void FaceDetThread::run() {
                 }
             }
             QImage q_img = Utils::CvMat2QImage(frame);
-            emit img_send_signal(q_img,rect);
+            emit img_send_signal(q_img, rect);
         }
     }
 }
@@ -46,18 +46,16 @@ void FaceDetThread::stop_thread() {
 }
 
 
-void FaceDetThread::close_detect()
-{
+void FaceDetThread::close_detect() {
     is_detect = false;
 }
 
-void FaceDetThread::open_detect()
-{
+void FaceDetThread::open_detect() {
     is_detect = true;
 }
 
 FaceDetThread::~FaceDetThread() {
-    if (cap_->isOpened()){
+    if (cap_->isOpened()) {
         cap_->release();
     }
 }

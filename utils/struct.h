@@ -2,23 +2,25 @@
 // Created by aichao on 2022/5/12.
 //
 
-#ifndef FRAM_STRUCT_H
-#define FRAM_STRUCT_H
+#pragma once
+
 #include <QDataStream>
 #include "Utils.h"
 #include <QMetaObject>
 #include <opencv2/opencv.hpp>
 
-struct FaceInfo{
+struct FaceInfo {
     QString uid;
     QString name;
     QVector<float> feature;
-    friend QDataStream &operator<<(QDataStream &output,const FaceInfo &face_info){
-        output<<face_info.uid<<face_info.name<<face_info.feature;
+
+    friend QDataStream &operator<<(QDataStream &output, const FaceInfo &face_info) {
+        output << face_info.uid << face_info.name << face_info.feature;
         return output;
     }
-    friend QDataStream &operator>>(QDataStream &input,FaceInfo &face_info){
-        input>>face_info.uid>>face_info.name>>face_info.feature;
+
+    friend QDataStream &operator>>(QDataStream &input, FaceInfo &face_info) {
+        input >> face_info.uid >> face_info.name >> face_info.feature;
         return input;
     }
 };
@@ -46,17 +48,13 @@ struct FaceInfoWrap {
     FaceRecRet ret;
 };
 
-struct SearchResult{
+struct SearchResult {
     std::vector<int64_t> I;
     std::vector<float> D;
     int return_k;
 };
 
 Q_DECLARE_METATYPE(FaceInfoWrap)
+
 Q_DECLARE_METATYPE(QVector<FaceInfoWrap>);
 
-
-
-
-
-#endif //FRAM_STRUCT_H

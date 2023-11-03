@@ -2,8 +2,7 @@
 // Created by aichao on 2022/5/11.
 //
 
-#ifndef FRAM_MYWIDGET_H
-#define FRAM_MYWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include "utils/Utils.h"
@@ -70,11 +69,9 @@ private:
     QDateTime last_rec_time = QDateTime::currentDateTime();
     QThread worker_thread1;
     QThread worker_thread2;
-    HistoryWidget* history_widget = nullptr;
+    HistoryWidget *history_widget = nullptr;
     FaceInfoWidget *face_info_widget = nullptr;
     FaceDetThread *face_det_thread = nullptr;
     Ui::MyWidget *ui;
 };
 
-
-#endif //FRAM_MYWIDGET_H

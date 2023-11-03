@@ -2,8 +2,7 @@
 // Created by aichao on 2022/5/13.
 //
 
-#ifndef FRAM_MAINWIDGET_H
-#define FRAM_MAINWIDGET_H
+#pragma once
 
 
 #include <QWidget>
@@ -36,4 +35,3 @@ private:
 };
 
 
-#endif //FRAM_MAINWIDGET_H

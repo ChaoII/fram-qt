@@ -5,7 +5,6 @@
 #pragma once
 
 
-
 #include <iostream>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -34,19 +33,19 @@ class SeetaFace {
 
 public:
 
-    static SeetaFace* getInstance(){
+    static SeetaFace *getInstance() {
         // 外层判断避免加锁的开销
-        if(seetaFacePtr == nullptr){
+        if (seetaFacePtr == nullptr) {
             std::lock_guard<std::mutex> lock(mutex_);
-            if(seetaFacePtr == nullptr){
+            if (seetaFacePtr == nullptr) {
                 seetaFacePtr = new SeetaFace();
             }
         }
         return seetaFacePtr;
     }
 
-    static void deleteInstance(){
-        delete seetaFacePtr ;
+    static void deleteInstance() {
+        delete seetaFacePtr;
         seetaFacePtr = nullptr;
     }
 
@@ -66,7 +65,7 @@ public:
 
     std::vector<SeetaFaceInfo> face_detection(cv::Mat &img);
 
-    QPair<int64_t,float> face_recognition(cv::Mat &img, std::vector<SeetaPointF> points);
+    QPair<int64_t, float> face_recognition(cv::Mat &img, std::vector<SeetaPointF> points);
 
     std::vector<SeetaPointF> face_marker(cv::Mat &img, const SeetaRect &rect);
 
@@ -74,28 +73,28 @@ public:
 
     Status face_anti_spoofing(cv::Mat &img, const SeetaRect &rect, std::vector<SeetaPointF> points);
 
-    bool delete_face_by_ids(const std::vector<int64_t>& ids);
+    bool delete_face_by_ids(const std::vector<int64_t> &ids);
 
     template<class T>
-    QVector<T> get_query_info(int row_num_pre_page, int current_page_index)
-    {
+    QVector<T> get_query_info(int row_num_pre_page, int current_page_index) {
         QVector<T> models;
         qx_query query;
         int start_row = current_page_index * row_num_pre_page;
-        if(std::is_same<T, Attend>()){
+        if (std::is_same<T, Attend>()) {
             query.orderDesc("attend_time").limit(row_num_pre_page, start_row);
-        }else{
+        } else {
             query.orderDesc("register_time").limit(row_num_pre_page, start_row);
         }
 
-        QSqlError sql_error= qx::dao::fetch_by_query(query, models);
-        if(sql_error.isValid()){
-            qDebug()<<"select data error ,details:"<<sql_error.text();
+        QSqlError sql_error = qx::dao::fetch_by_query(query, models);
+        if (sql_error.isValid()) {
+            qDebug() << "select data error ,details:" << sql_error.text();
         }
         return models;
     }
+
     template<class T>
-    int get_query_num(){
+    int get_query_num() {
         qx_query query;
         int ret = qx::dao::count<T>(query);
         return ret;
@@ -105,9 +104,9 @@ private:
 
     SeetaFace();
 
-    SeetaFace(const SeetaFace&);
+    SeetaFace(const SeetaFace &);
 
-    SeetaFace& operator=(const SeetaFace&);
+    SeetaFace &operator=(const SeetaFace &);
 
     void init_file_dir();
 
@@ -122,7 +121,7 @@ private:
     std::shared_ptr<seeta::FaceRecognizer> FR = nullptr;
     std::shared_ptr<seeta::FaceAntiSpoofing> FS = nullptr;
     inline static std::mutex mutex_;
-    inline static SeetaFace* seetaFacePtr = nullptr;
+    inline static SeetaFace *seetaFacePtr = nullptr;
 };
 
 

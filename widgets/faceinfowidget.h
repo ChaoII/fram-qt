@@ -1,5 +1,5 @@
-#ifndef HISTORYWIDGET_H
-#define HISTORYWIDGET_H
+
+#pragma once
 
 #include <QWidget>
 #include <QStandardItemModel>
@@ -10,12 +10,11 @@
 
 
 namespace Ui {
-class FaceInfoWidget;
+    class FaceInfoWidget;
 }
 
-class FaceInfoWidget : public QWidget
-{
-    Q_OBJECT
+class FaceInfoWidget : public QWidget {
+Q_OBJECT
 
 public:
     explicit FaceInfoWidget(QWidget *parent = nullptr);
@@ -25,6 +24,7 @@ public:
     ~FaceInfoWidget();
 
 private slots:
+
     void on_pb1_register_clicked();
 
 private:
@@ -35,6 +35,7 @@ private:
     void update_paging();
 
 signals:
+
     void face_back_signal();
 
 private slots:
@@ -50,15 +51,14 @@ private slots:
 private:
     Ui::FaceInfoWidget *ui;
 
-    QStandardItemModel* the_model;
+    QStandardItemModel *the_model;
 
-    QItemSelectionModel* the_select;
+    QItemSelectionModel *the_select;
 
     int page_size_ = 9;
 
-    PagingWidget* paging;
+    PagingWidget *paging;
 
     RegisterWidget *register_widget;
 };
 
-#endif // HISTORYWIDGET_H

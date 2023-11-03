@@ -2,8 +2,7 @@
 // Created by aichao on 2022/5/11.
 //
 
-#ifndef FRAM_SEETAFACETHREAD_H
-#define FRAM_SEETAFACETHREAD_H
+#pragma once
 
 #include <QWidget>
 #include <QThread>
@@ -43,5 +42,3 @@ private:
     std::shared_ptr<cv::VideoCapture> cap_ = nullptr;
 };
 
-
-#endif //FRAM_SEETAFACETHREAD_H

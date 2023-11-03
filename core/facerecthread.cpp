@@ -1,8 +1,7 @@
 #include "facerecthread.h"
 
-void FaceRecThread::face_recognition(const QImage &img, const QRect &rect)
-{
-    if(rect.isEmpty()){
+void FaceRecThread::face_recognition(const QImage &img, const QRect &rect) {
+    if (rect.isEmpty()) {
         send_records();
         return;
     }
@@ -23,9 +22,9 @@ void FaceRecThread::face_recognition(const QImage &img, const QRect &rect)
             info = FaceInfoWrap{0, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss zzzzzz"), {}};
             qWarning() << "未知人脸: " << "score: " << qPrintable(QString::asprintf("%.2f", ret.second));
         } else {
-            auto r= SeetaFace::getInstance()->get_faceinfo_from_index_id(ret.first);
+            auto r = SeetaFace::getInstance()->get_faceinfo_from_index_id(ret.first);
             info = FaceInfoWrap{1, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss zzzzzz"),
-            {r.uid, r.name, r.pic_url, img, ret.second}};
+                                {r.uid, r.name, r.pic_url, img, ret.second}};
             qInfo() << "打卡成功 name: " << qPrintable(r.name) << "score: "
                     << qPrintable(QString::asprintf("%.2f", ret.second));
             records_.append(info);

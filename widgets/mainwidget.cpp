@@ -22,8 +22,7 @@ void MainWidget::on_attend_clicked() {
     hide();
 }
 
-void MainWidget::on_setting_clicked()
-{
+void MainWidget::on_setting_clicked() {
 
 }
 
