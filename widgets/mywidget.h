@@ -14,6 +14,7 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QCloseEvent>
+#include "core/outersocket.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -73,5 +74,6 @@ private:
     FaceInfoWidget *face_info_widget = nullptr;
     FaceDetThread *face_det_thread = nullptr;
     Ui::MyWidget *ui;
+    OuterSocket *out_socket;
 };
 

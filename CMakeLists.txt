@@ -37,8 +37,8 @@ set(SEETAFACE_DIR "E:/develop/SeetaFace" CACHE PATH "seetaface6 install director
 set(QxOrm_DIR "E:/develop/QxOrm" CACHE PATH "QxOrm install directory")
 set(CMAKE_TOOLCHAIN_FILE "E:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
-find_package(Qt${QT_VERSION} COMPONENTS Widgets Sql Concurrent REQUIRED)
-list(APPEND DEPENDS Qt${QT_VERSION}::Widgets Qt${QT_VERSION}::Sql Qt${QT_VERSION}::Concurrent)
+find_package(Qt${QT_VERSION} COMPONENTS Widgets Sql Concurrent Network REQUIRED)
+list(APPEND DEPENDS Qt${QT_VERSION}::Widgets Qt${QT_VERSION}::Sql Qt${QT_VERSION}::Concurrent Qt${QT_VERSION}::Network)
 
 #add opencv
 find_package(OpenCV REQUIRED)
@@ -112,6 +112,8 @@ set(PROJECT_SOURCES
     customwidget/pagingwidget.cpp
     customwidget/pagingwidget.ui
     main.cpp
+    core/outersocket.cpp
+    core/outersocket.h
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

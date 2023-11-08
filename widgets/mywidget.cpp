@@ -16,6 +16,11 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     ui->setupUi(this);
     this->setAttribute(Qt::WA_QuitOnClose);
 
+
+    // socket
+    out_socket = new OuterSocket(this);
+
+
     // 视频解码及人脸检测线程
     face_det_thread = new FaceDetThread(this);
     connect(face_det_thread, &FaceDetThread::img_send_signal, this, &MyWidget::update_frame);
