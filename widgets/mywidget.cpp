@@ -16,22 +16,31 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     ui->setupUi(this);
     this->setAttribute(Qt::WA_QuitOnClose);
 
-
     // socket
     out_socket = new OuterSocket(this);
+    connect(out_socket, &OuterSocket::outer_socket_close_detector_signal,
+            [this]() { qDebug() << "mywindow: send close detector"; emit close_detector_signal(); });
+    connect(out_socket, &OuterSocket::outer_socket_open_detector_signal,
+            [this]() { qDebug() << "mywindow: send open detector"; emit open_detector_signal(); });
 
+    qDebug() << "main:" << QThread::currentThreadId();
 
     // 视频解码及人脸检测线程
-    face_det_thread = new FaceDetThread(this);
+    auto face_det_thread = new FaceDetThread();
+    face_det_thread->moveToThread(&face_det_thread_);
     connect(face_det_thread, &FaceDetThread::img_send_signal, this, &MyWidget::update_frame);
+    connect(this, &MyWidget::run_detect_thread_signal, face_det_thread, &FaceDetThread::run_detect);
+    connect(this, &MyWidget::stop_detect_thread_signal, face_det_thread, &FaceDetThread::stop_thread);
+    connect(this, &MyWidget::close_detector_signal, face_det_thread, &FaceDetThread::close_detector);
+    connect(this, &MyWidget::open_detector_signal, face_det_thread, &FaceDetThread::open_detector);
 
     // 人脸识别线程
     auto face_rec_thread = new FaceRecThread();
-    face_rec_thread->moveToThread(&worker_thread1);
+    face_rec_thread->moveToThread(&face_rec_thread_);
 
     // 打卡记录线程
     auto record_thread = new RecordThread();
-    record_thread->moveToThread(&worker_thread2);
+    record_thread->moveToThread(&attend_record_thread_);
     // connect(&worker_thread1,&QThread::finished,face_rec_thread,&QObject::deleteLater);
     connect(this, &MyWidget::send_img_signal, face_rec_thread, &FaceRecThread::face_recognition, Qt::QueuedConnection);
 
@@ -130,9 +139,10 @@ void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
 void MyWidget::on_pb_register_clicked() {
     hide_all_widgets();
     face_info_widget->setVisible(true);
-    worker_thread1.quit();
-    worker_thread1.wait();
-    face_det_thread->close_detect();
+    face_info_widget->update_register_widget();
+    face_rec_thread_.quit();
+    face_rec_thread_.wait();
+    emit close_detector_signal();
 }
 
 void MyWidget::init_widget() {
@@ -146,15 +156,14 @@ void MyWidget::init_widget() {
 }
 
 void MyWidget::on_face_finished() {
-    face_det_thread->open_detect();
+    emit open_detector_signal();
     hide_all_widgets();
     ui->widget->setVisible(true);
-    if (!worker_thread1.isRunning()) {
+    if (!face_rec_thread_.isRunning()) {
         qDebug() << "start worker_thread1";
-        worker_thread1.start();
-        qDebug() << "worker_thread1 is runging: " << worker_thread1.isRunning();
+        face_rec_thread_.start();
+        qDebug() << "worker_thread1 is running: " << face_rec_thread_.isRunning();
     }
-
 }
 
 void MyWidget::on_history_finished() {
@@ -175,34 +184,28 @@ void MyWidget::paintEvent(QPaintEvent *event) {
 }
 
 
-void MyWidget::start_thread() {
-    if (face_det_thread && !face_det_thread->isRunning()) {
-        face_det_thread->start();
-    }
-}
-
 void MyWidget::run() {
-    worker_thread1.start();
-    worker_thread2.start();
-    face_det_thread->start();
+    face_det_thread_.start();
+    face_rec_thread_.start();
+    attend_record_thread_.start();
+    emit run_detect_thread_signal();
 }
 
 MyWidget::~MyWidget() {
-    std::cout << "mywidget" << std::endl;
-    worker_thread1.quit();
-    worker_thread1.wait();
-    worker_thread2.quit();
-    worker_thread2.wait();
-    face_det_thread->stop_thread();
-    face_det_thread->quit();
-    face_det_thread->wait();
+    face_rec_thread_.quit();
+    face_rec_thread_.wait();
+    attend_record_thread_.quit();
+    attend_record_thread_.wait();
+    emit stop_detect_thread_signal();
+    face_det_thread_.quit();
+    face_det_thread_.wait();
     delete ui;
 }
 
 void MyWidget::on_pb_history_clicked() {
     hide_all_widgets();
     history_widget->setVisible(true);
-    history_widget->update_table(0);
+    history_widget->update_history_widget();
 }
 
 void MyWidget::hide_all_widgets() {

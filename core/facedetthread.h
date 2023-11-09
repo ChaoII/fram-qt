@@ -5,36 +5,36 @@
 #pragma once
 
 #include <QWidget>
-#include <QThread>
 #include "core/SeetaFace.h"
 #include "utils/Utils.h"
 
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class SeetaFaceThread; }
-QT_END_NAMESPACE
-
-
-class FaceDetThread : public QThread {
+class FaceDetThread : public QObject {
 Q_OBJECT
-
 
 public:
     explicit FaceDetThread(QObject *parent = nullptr);
-
-    void stop_thread(); //线程关闭外部接口
-
-    void close_detect();
-
-    void open_detect();
-
-    void run() override; //
 
     ~FaceDetThread() override;
 
 signals:
 
     void img_send_signal(QImage, QRect);
+
+public slots:
+
+    ///运行检测线程，包括解码+人脸检测
+    void run_detect();
+
+    ///停止检测线程，停止解码+人脸检测
+    void stop_thread();
+
+    ///关闭人脸检测器仅做视频解码
+    void close_detector();
+
+    ///开启人脸检测器，解码+人脸检测
+    void open_detector();
+
 
 private:
     bool is_detect = true;

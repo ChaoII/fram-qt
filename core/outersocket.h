@@ -20,6 +20,11 @@ public:
         }
     }
 
+signals:
+
+    void outer_socket_close_detector_signal();
+
+    void outer_socket_open_detector_signal();
 
 public slots:
 

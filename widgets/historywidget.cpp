@@ -73,3 +73,15 @@ void HistoryWidget::on_pb_back_clicked() {
     emit history_back_signal();
 }
 
+void HistoryWidget::update_paging() {
+
+    int num = SeetaFace::getInstance()->get_query_num<Attend>();
+    paging->initPage(num, 0, page_size_);
+    update_table(0);
+
+}
+
+void HistoryWidget::update_history_widget() {
+    update_paging();
+}
+

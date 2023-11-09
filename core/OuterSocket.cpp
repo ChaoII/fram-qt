@@ -41,6 +41,8 @@ void OuterSocket::on_read_ready() {
         tcp_socket_ptr->write(QString("0x0201").toUtf8());
     }
     if (rets[0] == "1") {
+        emit outer_socket_close_detector_signal();
+        QThread::msleep(200);
         qDebug() << "adding face ....";
         if (rets.size() < 4) {
             qDebug() << "data must contain 'flag','image_directory','uid','name'";
@@ -55,11 +57,15 @@ void OuterSocket::on_read_ready() {
         if (file_info.exists() && file_info.suffix() == "jpg") {
             QString file_path = file_info.absoluteFilePath();
             auto img = cv::imread(file_path.toStdString());
+            qDebug() << "1----------------------------";
             SeetaFace::getInstance()->add_face(img, uid, name);
+            qDebug() << "2----------------------------";
             tcp_socket_ptr->write(QString("0x0001").toUtf8());
         } else {
             tcp_socket_ptr->write(QString("0x0101").toUtf8());
         }
+        QThread::msleep(200);
+        emit outer_socket_open_detector_signal();
     } else if (rets[0] == "-1") {
         if (rets.size() < 2) {
             qDebug() << "data must contain 'flag','index_id'";

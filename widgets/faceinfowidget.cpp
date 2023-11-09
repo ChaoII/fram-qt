@@ -151,3 +151,7 @@ void FaceInfoWidget::on_tb_staff_clicked(const QModelIndex &index) {
 //    };
 }
 
+void FaceInfoWidget::update_register_widget() {
+    update_paging();
+}
+

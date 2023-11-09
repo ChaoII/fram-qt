@@ -17,13 +17,19 @@ Q_OBJECT
 public:
     explicit HistoryWidget(QWidget *parent = nullptr);
 
-    void update_table(int page);
+    void update_history_widget();
 
     ~HistoryWidget();
 
 signals:
 
     void history_back_signal();
+
+
+private:
+    void update_table(int page);
+
+    void update_paging();
 
 private slots:
 

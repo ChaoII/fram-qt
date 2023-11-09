@@ -21,6 +21,8 @@ public:
 
     void update_register_frame(const QImage &img);
 
+    void update_register_widget();
+
     ~FaceInfoWidget();
 
 private slots:

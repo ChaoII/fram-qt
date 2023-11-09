@@ -35,8 +35,6 @@ public:
 
     void on_update_time();
 
-    void start_thread();
-
     void run();
 
     void paintEvent(QPaintEvent *event) override;
@@ -46,6 +44,14 @@ public:
 signals:
 
     void send_img_signal(QImage qimg, QRect rect);
+
+    void run_detect_thread_signal();
+
+    void stop_detect_thread_signal();
+
+    void close_detector_signal();
+
+    void open_detector_signal();
 
 
 private slots:
@@ -68,11 +74,12 @@ private:
 private:
     QImage img_;
     QDateTime last_rec_time = QDateTime::currentDateTime();
-    QThread worker_thread1;
-    QThread worker_thread2;
+    QThread face_det_thread_;
+    QThread face_rec_thread_;
+    QThread attend_record_thread_;
+
     HistoryWidget *history_widget = nullptr;
     FaceInfoWidget *face_info_widget = nullptr;
-    FaceDetThread *face_det_thread = nullptr;
     Ui::MyWidget *ui;
     OuterSocket *out_socket;
 };
