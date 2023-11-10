@@ -22,43 +22,44 @@
 
 class Config : public QObject {
 public:
-    static Config *getInstance();
-
-    static void deleteInstance();
+    static Config &getInstance() {
+        static Config config;
+        return config;
+    };
 
     void init_settings();
 
-    const QString &getIndex_file() const;
+    const QString &get_index_file() const;
 
-    int getTop_k() const;
+    int get_top_k() const;
 
-    int getVector_size() const;
+    int get_vector_size() const;
 
-    int getMax_face_num() const;
+    int get_max_face_num() const;
 
-    int getRec_interval() const;
+    int get_rec_interval() const;
 
-    float getRec_threshold() const;
+    float get_rec_threshold() const;
 
-    int getRecord_interval() const;
+    int get_record_interval() const;
 
     const QString &get_model_dir() const;
 
     int get_face_recognition_thread_num() const;
 
+    int get_socket_port() const;
+
 private:
     explicit Config();
 
-    Config(const Config &);
+    ~Config() = default;
 
-    Config &operator=(const Config &);
+    Config(const Config &) = delete;
+
+    Config &operator=(const Config &) = delete;
 
 private:
-
-    inline static QSettings *settings = nullptr;
-    inline static Config *config = nullptr;
-    inline static std::mutex mutex_;
-
+    std::shared_ptr<QSettings> settings;
     QString index_file;
     int top_k;
     int vector_size;
@@ -68,6 +69,7 @@ private:
     int record_interval;
     QString model_dir;
     int face_recognition_thread_num;
+    int socket_port;
 };
 
 

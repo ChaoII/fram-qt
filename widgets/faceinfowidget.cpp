@@ -16,7 +16,7 @@ FaceInfoWidget::FaceInfoWidget(QWidget *parent) :
     connect(register_widget, &RegisterWidget::register_finished_signal, this,
             &FaceInfoWidget::handle_register_finished);
 
-    int num = SeetaFace::getInstance()->get_query_num<Staff>();
+    int num = SeetaFace::getInstance().get_query_num<Staff>();
     paging = new PagingWidget();
     paging->initPage(num, 0, page_size_);
     update_table(0);
@@ -40,7 +40,7 @@ void FaceInfoWidget::update_table(int page) {
             QStringList() << "" << "编号" << "ID" << "姓名" << "工号" << "注册时间" << "图片");
 
     // the start index is 0 so sql squery must -1
-    auto rs = SeetaFace::getInstance()->get_query_info<Staff>(page_size_, page - 1);
+    auto rs = SeetaFace::getInstance().get_query_info<Staff>(page_size_, page - 1);
     for (int i = 0; i < rs.size(); i++) {
         ui->tb_staff->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
         ui->tb_staff->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
@@ -101,7 +101,7 @@ void FaceInfoWidget::initial_table() {
 }
 
 void FaceInfoWidget::update_paging() {
-    int num = SeetaFace::getInstance()->get_query_num<Staff>();
+    int num = SeetaFace::getInstance().get_query_num<Staff>();
     paging->initPage(num, 0, page_size_);
     update_table(0);
 }
@@ -137,7 +137,7 @@ void FaceInfoWidget::on_pb1_delete_clicked() {
             the_model->removeRow(i);
         }
     }
-    SeetaFace::getInstance()->delete_face_by_ids(index_ids);
+    SeetaFace::getInstance().delete_face_by_ids(index_ids);
     update_paging();
 }
 

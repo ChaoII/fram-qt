@@ -33,20 +33,9 @@ class SeetaFace {
 
 public:
 
-    static SeetaFace *getInstance() {
-        // 外层判断避免加锁的开销
-        if (seetaFacePtr == nullptr) {
-            std::lock_guard<std::mutex> lock(mutex_);
-            if (seetaFacePtr == nullptr) {
-                seetaFacePtr = new SeetaFace();
-            }
-        }
-        return seetaFacePtr;
-    }
-
-    static void deleteInstance() {
-        delete seetaFacePtr;
-        seetaFacePtr = nullptr;
+    static SeetaFace &getInstance() {
+        static SeetaFace seetaFace;
+        return seetaFace;
     }
 
     bool add_face(cv::Mat &img, const QString &uid, const QString &name);
@@ -104,6 +93,8 @@ private:
 
     SeetaFace();
 
+    ~SeetaFace() = default;
+
     SeetaFace(const SeetaFace &);
 
     SeetaFace &operator=(const SeetaFace &);
@@ -112,16 +103,11 @@ private:
 
     void init_face_db();
 
-
 private:
-
-    std::vector<FaceLibInfo> face_lib;
     std::shared_ptr<seeta::FaceDetector> FD = nullptr;
     std::shared_ptr<seeta::FaceLandmarker> FL = nullptr;
     std::shared_ptr<seeta::FaceRecognizer> FR = nullptr;
     std::shared_ptr<seeta::FaceAntiSpoofing> FS = nullptr;
-    inline static std::mutex mutex_;
-    inline static SeetaFace *seetaFacePtr = nullptr;
 };
 
 

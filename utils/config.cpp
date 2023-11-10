@@ -1,23 +1,6 @@
 #include "utils/config.h"
 #include <QFileInfo>
 
-Config *Config::getInstance() {
-    // 外层判断避免加锁的开销
-    if (config == nullptr) {
-        std::lock_guard<std::mutex> lock(mutex_);
-        if (config == nullptr) {
-            config = new Config();
-        }
-    }
-    return config;
-}
-
-void Config::deleteInstance() {
-    delete config;
-    config = nullptr;
-    delete settings;
-    settings = nullptr;
-}
 
 void Config::init_settings() {
     // 向量索引topk
@@ -39,6 +22,7 @@ void Config::init_settings() {
     settings->setValue("model_dir", "./models");
     // 人脸识别线程数，建议为1
     settings->setValue("face_recognition_thread_num", 1);
+    settings->setValue("socket_port", 9088);
     settings->endGroup();
 }
 
@@ -46,7 +30,7 @@ void Config::init_settings() {
 Config::Config() {
 
     QFileInfo file_info("setting.ini");
-    settings = new QSettings("setting.ini", QSettings::IniFormat);
+    settings = std::make_shared<QSettings>("setting.ini", QSettings::IniFormat);
     if (!file_info.exists()) {
         init_settings();
     }
@@ -60,35 +44,35 @@ Config::Config() {
     record_interval = settings->value("record_interval").toInt();
     model_dir = settings->value("model_dir").toString();
     face_recognition_thread_num = settings->value("face_recognition_thread_num").toInt();
-
+    socket_port = settings->value("socket_port").toInt();
     settings->endGroup();
 }
 
-const QString &Config::getIndex_file() const {
+const QString &Config::get_index_file() const {
     return index_file;
 }
 
-int Config::getTop_k() const {
+int Config::get_top_k() const {
     return top_k;
 }
 
-int Config::getVector_size() const {
+int Config::get_vector_size() const {
     return vector_size;
 }
 
-int Config::getMax_face_num() const {
+int Config::get_max_face_num() const {
     return max_face_num;
 }
 
-int Config::getRec_interval() const {
+int Config::get_rec_interval() const {
     return rec_interval;
 }
 
-float Config::getRec_threshold() const {
+float Config::get_rec_threshold() const {
     return rec_threshold;
 }
 
-int Config::getRecord_interval() const {
+int Config::get_record_interval() const {
     return record_interval;
 }
 
@@ -98,4 +82,8 @@ const QString &Config::get_model_dir() const {
 
 int Config::get_face_recognition_thread_num() const {
     return face_recognition_thread_num;
+}
+
+int Config::get_socket_port() const {
+    return socket_port;
 }

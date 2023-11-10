@@ -21,7 +21,7 @@ HistoryWidget::HistoryWidget(QWidget *parent) :
     the_select = new QItemSelectionModel();
     the_model->setHorizontalHeaderLabels(QStringList() << "编号" << "姓名" << "工号" << "打卡时间" << "图片");
     ui->tb_history->setModel(the_model);
-    int num = SeetaFace::getInstance()->get_query_num<Attend>();
+    int num = SeetaFace::getInstance().get_query_num<Attend>();
     paging = new PagingWidget();
     paging->initPage(num, 0, page_size_);
     update_table(0);
@@ -38,7 +38,7 @@ void HistoryWidget::update_table(int page) {
     the_model->setHorizontalHeaderLabels(QStringList() << "编号" << "姓名" << "工号" << "打卡时间" << "图片");
 
     // the start index is 0 so sql squery must -1
-    auto rs = SeetaFace::getInstance()->get_query_info<Attend>(page_size_, page - 1);
+    auto rs = SeetaFace::getInstance().get_query_info<Attend>(page_size_, page - 1);
     for (int i = 0; i < rs.size(); i++) {
         ui->tb_history->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
         ui->tb_history->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
@@ -75,7 +75,7 @@ void HistoryWidget::on_pb_back_clicked() {
 
 void HistoryWidget::update_paging() {
 
-    int num = SeetaFace::getInstance()->get_query_num<Attend>();
+    int num = SeetaFace::getInstance().get_query_num<Attend>();
     paging->initPage(num, 0, page_size_);
     update_table(0);
 

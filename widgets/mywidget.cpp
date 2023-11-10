@@ -70,10 +70,8 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     // 记录线程
     auto timer2 = new QTimer(this);
     connect(timer2, &QTimer::timeout, [=]() { emit send_img_signal(QImage(), QRect()); });
-    timer2->setInterval(Config::getInstance()->getRecord_interval() * 1000);
+    timer2->setInterval(Config::getInstance().get_record_interval() * 1000);
     timer2->start();
-
-
     // 初始化界面
     init_widget();
     run();
@@ -83,7 +81,7 @@ void MyWidget::update_frame(QImage qimg, QRect rect) {
     if (!rect.isEmpty()) {
         QDateTime cur_time = QDateTime::currentDateTime();
         // 通过计时调整识别的频率
-        if (last_rec_time.msecsTo(cur_time) > Config::getInstance()->getRec_interval()) {
+        if (last_rec_time.msecsTo(cur_time) > Config::getInstance().get_rec_interval()) {
             emit send_img_signal(qimg, rect);
             last_rec_time = cur_time;
         }

@@ -14,13 +14,13 @@
 
 
 void VectorSearch::create_index() {
-    auto index = faiss::index_factory(Config::getInstance()->getVector_size(), "Flat", faiss::METRIC_INNER_PRODUCT);
+    auto index = faiss::index_factory(Config::getInstance().get_vector_size(), "Flat", faiss::METRIC_INNER_PRODUCT);
     index_ = new faiss::IndexIDMap(index);
     save_index();
 }
 
 void VectorSearch::save_index() {
-    faiss::write_index(index_, Config::getInstance()->getIndex_file().toStdString().c_str());
+    faiss::write_index(index_, Config::getInstance().get_index_file().toStdString().c_str());
 }
 
 void VectorSearch::reset_index() {
@@ -34,12 +34,12 @@ size_t VectorSearch::remove_index(const std::vector<int64_t> &ids) {
 }
 
 bool VectorSearch::load_index() {
-    QFileInfo fileInfo(Config::getInstance()->getIndex_file().toStdString().c_str());
+    QFileInfo fileInfo(Config::getInstance().get_index_file().toStdString().c_str());
     if (!fileInfo.isFile()) {
         qDebug() << "index file is not existed";
         return false;
     }
-    index_ = faiss::read_index(Config::getInstance()->getIndex_file().toStdString().c_str());
+    index_ = faiss::read_index(Config::getInstance().get_index_file().toStdString().c_str());
     return true;
 }
 
@@ -50,10 +50,10 @@ void VectorSearch::add_features(const std::vector<int64_t> &ids, float *features
 }
 
 SearchResult VectorSearch::search(float *feature, int query_number) {
-    D_.resize(Config::getInstance()->getTop_k() * query_number);
-    I_.resize(Config::getInstance()->getTop_k() * query_number);
-    index_->search(query_number, feature, Config::getInstance()->getTop_k(), D_.data(), I_.data());
-    return SearchResult{I_, D_, Config::getInstance()->getTop_k()};
+    D_.resize(Config::getInstance().get_top_k() * query_number);
+    I_.resize(Config::getInstance().get_top_k() * query_number);
+    index_->search(query_number, feature, Config::getInstance().get_top_k(), D_.data(), I_.data());
+    return SearchResult{I_, D_, Config::getInstance().get_top_k()};
 }
 
 VectorSearch::VectorSearch() {

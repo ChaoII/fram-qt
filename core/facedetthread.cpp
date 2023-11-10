@@ -48,7 +48,7 @@ void FaceDetThread::run_detect() {
             QRect rect;
             cv::Mat frame = Utils::crop_img(frame_src);
             if (is_detect) {
-                auto faces = SeetaFace::getInstance()->face_detection(frame);
+                auto faces = SeetaFace::getInstance().face_detection(frame);
                 if (!faces.empty()) {
                     //-----------发送检测到人脸的信号----------
                     rect = Utils::SRect2QRect(faces[0].pos);

@@ -6,7 +6,7 @@
 
 OuterSocket::OuterSocket(QObject *parent) : QObject(parent) {
     tcp_server_ = new QTcpServer(this);
-    tcp_server_->listen(QHostAddress::LocalHost, 9088);
+    tcp_server_->listen(QHostAddress::LocalHost, Config::getInstance().get_socket_port());
     connect(tcp_server_, &QTcpServer::newConnection, this, &OuterSocket::on_new_connect);
 }
 
@@ -55,7 +55,7 @@ void OuterSocket::on_read_ready() {
         if (file_info.exists() && file_info.suffix() == "jpg") {
             QString file_path = file_info.absoluteFilePath();
             auto img = cv::imread(file_path.toStdString());
-            SeetaFace::getInstance()->add_face(img, uid, name);
+            SeetaFace::getInstance().add_face(img, uid, name);
             tcp_socket_ptr->write(QString("0x0001").toUtf8());
         } else {
             tcp_socket_ptr->write(QString("0x0101").toUtf8());
@@ -72,7 +72,7 @@ void OuterSocket::on_read_ready() {
         std::vector<int64_t> index_ids;
         qint64 index_id = QString(rets[1]).toLongLong();
         index_ids.push_back(index_id);
-        bool r = SeetaFace::getInstance()->delete_face_by_ids(index_ids);
+        bool r = SeetaFace::getInstance().delete_face_by_ids(index_ids);
         if (r)
             tcp_socket_ptr->write(QString("0x0002").toUtf8());
         else

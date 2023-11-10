@@ -10,14 +10,9 @@
 class VectorSearch {
 
 public:
-    static VectorSearch *getInstance() {
-        if (pInstance == nullptr) {
-            std::lock_guard<std::mutex> lock(mutex_);
-            if (pInstance == nullptr) {
-                pInstance = new VectorSearch();
-            }
-        }
-        return pInstance;
+    static VectorSearch &getInstance() {
+        static VectorSearch vectorSearch;
+        return vectorSearch;
     }
 
     void create_index();
@@ -39,15 +34,13 @@ private:
 
     VectorSearch();
 
+    ~VectorSearch() = default;
+
     VectorSearch(const VectorSearch &);
 
     VectorSearch &operator=(const VectorSearch &);
 
 private:
-
-    inline static VectorSearch *pInstance = nullptr;
-
-    inline static std::mutex mutex_;
 
     faiss::Index *index_;
 

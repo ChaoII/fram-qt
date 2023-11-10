@@ -55,11 +55,11 @@ void RegisterWidget::on_button_ensure_clicked() {
         auto face_info = register_face_.takeFirst();
         auto item = ui->face_list->takeItem(0);
         ui->face_list->removeItemWidget(item);
-        bool ret = SeetaFace::getInstance()->add_face(face_info.img,
+        bool ret = SeetaFace::getInstance().add_face(face_info.img,
                                                       face_info.uid,
                                                       face_info.name);
         if (!ret) {
-            qWarning() << "currnt face is invailid...";
+            qWarning() << "current face is invalid...";
             QMessageBox::warning(this, "警告",
                                  "当前存在图片未检测到人脸，或其他原因导致人脸录入失败，"
                                  "请确保人脸在画面正中间，切勿大幅晃动！！");
@@ -104,7 +104,7 @@ void RegisterWidget::on_pb_add_clicked() {
     register_face_.push_back(RegisterFace{Utils::QImage2CvMat(img_),
                                           ui->edit_staff_id->text(),
                                           ui->edit_name->text()});
-    if (ui->face_list->count() > Config::getInstance()->getMax_face_num()) {
+    if (ui->face_list->count() > Config::getInstance().get_max_face_num()) {
         auto item = ui->face_list->takeItem(0);
         delete item;
         register_face_.pop_front();
