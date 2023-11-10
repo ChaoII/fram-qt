@@ -12,16 +12,18 @@ FaceDetThread::FaceDetThread(QObject *parent) : QObject(parent) {
 }
 
 void FaceDetThread::stop_thread() {
+    qDebug() << "= stop decode";
     thread_start_ = false;
 }
 
 
 void FaceDetThread::close_detector() {
-    qDebug() << "face_det_thread...........";
+    qDebug() << "= close face detector";
     is_detect = false;
 }
 
 void FaceDetThread::open_detector() {
+    qDebug() << "= open face detector";
     is_detect = true;
 }
 
@@ -29,14 +31,16 @@ FaceDetThread::~FaceDetThread() {
     if (cap_->isOpened()) {
         cap_->release();
     }
+    qDebug() << "= destroy FaceDetThread, thread id:" << QThread::currentThreadId();
 }
 
 void FaceDetThread::run_detect() {
-    qDebug() << "det:" << QThread::currentThreadId();
+    qDebug() << "= enter decode thread, thread id is: " << QThread::currentThreadId();
     cv::Mat frame_src;
     while (thread_start_) {
         if (cap_ && cap_->isOpened()) {
             qApp->processEvents();
+            QThread::msleep(20);
             cap_->read(frame_src);
             if (frame_src.empty()) continue;
             // flip for horize

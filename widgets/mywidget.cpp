@@ -16,14 +16,17 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     ui->setupUi(this);
     this->setAttribute(Qt::WA_QuitOnClose);
 
-    // socket
-    out_socket = new OuterSocket(this);
-    connect(out_socket, &OuterSocket::outer_socket_close_detector_signal,
-            [this]() { qDebug() << "mywindow: send close detector"; emit close_detector_signal(); });
-    connect(out_socket, &OuterSocket::outer_socket_open_detector_signal,
-            [this]() { qDebug() << "mywindow: send open detector"; emit open_detector_signal(); });
+//    this->setWindowFlags(Qt::FramelessWindowHint);
+    // 注册信号槽元对象
+    qRegisterMetaType<FaceInfoWrap>();
+    qRegisterMetaType<QVector<FaceInfoWrap>>();
 
-    qDebug() << "main:" << QThread::currentThreadId();
+    // socket
+    auto out_socket = new OuterSocket(this);
+    connect(out_socket, &OuterSocket::outer_socket_close_detector_signal,
+            [this]() { emit close_detector_signal(); });
+    connect(out_socket, &OuterSocket::outer_socket_open_detector_signal,
+            [this]() { emit open_detector_signal(); });
 
     // 视频解码及人脸检测线程
     auto face_det_thread = new FaceDetThread();
@@ -33,22 +36,22 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     connect(this, &MyWidget::stop_detect_thread_signal, face_det_thread, &FaceDetThread::stop_thread);
     connect(this, &MyWidget::close_detector_signal, face_det_thread, &FaceDetThread::close_detector);
     connect(this, &MyWidget::open_detector_signal, face_det_thread, &FaceDetThread::open_detector);
+    connect(&face_det_thread_, &QThread::finished, face_det_thread, &FaceDetThread::deleteLater);
+
 
     // 人脸识别线程
     auto face_rec_thread = new FaceRecThread();
     face_rec_thread->moveToThread(&face_rec_thread_);
+    connect(this, &MyWidget::send_img_signal, face_rec_thread, &FaceRecThread::face_recognition);
+    connect(face_rec_thread, &FaceRecThread::face_rec_signal, this, &MyWidget::on_face_rec);
+    connect(&face_rec_thread_, &QThread::finished, face_rec_thread, &FaceRecThread::deleteLater);
+
 
     // 打卡记录线程
     auto record_thread = new RecordThread();
     record_thread->moveToThread(&attend_record_thread_);
-    // connect(&worker_thread1,&QThread::finished,face_rec_thread,&QObject::deleteLater);
-    connect(this, &MyWidget::send_img_signal, face_rec_thread, &FaceRecThread::face_recognition, Qt::QueuedConnection);
-
-    // 注册信号槽元对象
-    qRegisterMetaType<FaceInfoWrap>();
-    qRegisterMetaType<QVector<FaceInfoWrap>>();
-    connect(face_rec_thread, &FaceRecThread::face_rec_signal, this, &MyWidget::on_face_rec);
     connect(face_rec_thread, &FaceRecThread::record_signal, record_thread, &RecordThread::record);
+    connect(&attend_record_thread_, &QThread::finished, record_thread, &QThread::deleteLater);
 
     // 人脸库信息窗体
     face_info_widget = new FaceInfoWidget();
@@ -77,7 +80,6 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 }
 
 void MyWidget::update_frame(QImage qimg, QRect rect) {
-
     if (!rect.isEmpty()) {
         QDateTime cur_time = QDateTime::currentDateTime();
         // 通过计时调整识别的频率
@@ -140,16 +142,12 @@ void MyWidget::on_pb_register_clicked() {
     hide_all_widgets();
     face_info_widget->setVisible(true);
     face_info_widget->update_register_widget();
-    face_rec_thread_.quit();
-    face_rec_thread_.wait();
     emit close_detector_signal();
 }
 
 void MyWidget::init_widget() {
     layout()->addWidget(history_widget);
     layout()->addWidget(face_info_widget);
-    hide_all_widgets();
-    history_widget->setVisible(false);
     history_widget->setVisible(false);
     face_info_widget->setVisible(false);
     ui->widget->setVisible(true);
@@ -159,11 +157,6 @@ void MyWidget::on_face_finished() {
     emit open_detector_signal();
     hide_all_widgets();
     ui->widget->setVisible(true);
-    if (!face_rec_thread_.isRunning()) {
-        qDebug() << "start worker_thread1";
-        face_rec_thread_.start();
-        qDebug() << "worker_thread1 is running: " << face_rec_thread_.isRunning();
-    }
 }
 
 void MyWidget::on_history_finished() {
@@ -183,7 +176,6 @@ void MyWidget::paintEvent(QPaintEvent *event) {
     painter.drawImage(0, 0, img_);
 }
 
-
 void MyWidget::run() {
     face_det_thread_.start();
     face_rec_thread_.start();
@@ -196,6 +188,7 @@ MyWidget::~MyWidget() {
     face_rec_thread_.wait();
     attend_record_thread_.quit();
     attend_record_thread_.wait();
+    // 必须先将死循环退出后才能结束线程
     emit stop_detect_thread_signal();
     face_det_thread_.quit();
     face_det_thread_.wait();

@@ -11,6 +11,7 @@ Q_OBJECT
 public:
     explicit FaceRecThread(QObject *parent = nullptr) : QObject(parent) {};
 
+    ~FaceRecThread() override;
 
 private:
     void send_records();

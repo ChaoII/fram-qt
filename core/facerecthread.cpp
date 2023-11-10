@@ -46,3 +46,7 @@ void FaceRecThread::send_records() {
     }
 }
 
+FaceRecThread::~FaceRecThread() {
+    qDebug() << "+ destroy face recognition thread,thread id is:" << QThread::currentThreadId();
+}
+

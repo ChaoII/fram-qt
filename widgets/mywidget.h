@@ -81,6 +81,5 @@ private:
     HistoryWidget *history_widget = nullptr;
     FaceInfoWidget *face_info_widget = nullptr;
     Ui::MyWidget *ui;
-    OuterSocket *out_socket;
 };
 

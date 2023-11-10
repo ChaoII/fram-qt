@@ -7,7 +7,6 @@
 #include "models/models.h"
 
 void RecordThread::record(QVector<FaceInfoWrap> face_infos) {
-
     unique_record(face_infos);
     QString date_str = QDateTime::currentDateTime().toString("yyyyMMdd");
     QDir dir("./attend/" + date_str);
@@ -47,6 +46,5 @@ void RecordThread::unique_record(QVector<FaceInfoWrap> &vec) {
 }
 
 RecordThread::~RecordThread() {
-
-
+    qDebug() << "- destroy RecordThread, thread id is:" << QThread::currentThreadId();
 }
