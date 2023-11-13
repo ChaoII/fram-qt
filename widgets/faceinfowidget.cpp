@@ -83,6 +83,7 @@ void FaceInfoWidget::update_table(int page) {
 
 void FaceInfoWidget::initial_table() {
     //    ui->tb_history->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->tb_staff->setStyleSheet("QTableView::item:selected { background-color: None; }");
     ui->tb_staff->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tb_staff->horizontalHeader()->setMinimumHeight(30);
     ui->tb_staff->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -125,7 +126,6 @@ void FaceInfoWidget::on_pb1_back_clicked() {
     emit face_back_signal();
 }
 
-
 void FaceInfoWidget::on_pb1_delete_clicked() {
     std::vector<int64_t> index_ids;
     // 删除行需要从后往前删除，不然直接报错
@@ -142,16 +142,43 @@ void FaceInfoWidget::on_pb1_delete_clicked() {
 }
 
 
-void FaceInfoWidget::on_tb_staff_clicked(const QModelIndex &index) {
-//    auto item = the_model->item(index.row(),0);
-//    if(Qt::Unchecked == item->checkState()){
-//        item->setCheckState(Qt::Checked);
-//    }else{
-//        item->setCheckState(Qt::Unchecked);
-//    };
-}
-
 void FaceInfoWidget::update_register_widget() {
     update_paging();
 }
+
+void FaceInfoWidget::on_pb1_selectAll_clicked() {
+    int rowCount = the_model->rowCount();
+    for (int i = 0; i < rowCount; i++) {
+        if (Qt::Unchecked == the_model->item(i, 0)->checkState()) {
+            the_model->item(i, 0)->setCheckState(Qt::Checked);
+        }
+    }
+}
+
+void FaceInfoWidget::on_pb1_unSelectAll_clicked() {
+    int rowCount = the_model->rowCount();
+    for (int i = 0; i < rowCount; i++) {
+        if (Qt::Checked == the_model->item(i, 0)->checkState()) {
+            the_model->item(i, 0)->setCheckState(Qt::Unchecked);
+        }
+    }
+}
+
+void FaceInfoWidget::on_pb1_reverseSelect_clicked() {
+    int rowCount = the_model->rowCount();
+    for (int i = 0; i < rowCount; i++) {
+        if (Qt::Checked == the_model->item(i, 0)->checkState()) {
+            the_model->item(i, 0)->setCheckState(Qt::Unchecked);
+        } else if (Qt::Unchecked == the_model->item(i, 0)->checkState()) {
+            the_model->item(i, 0)->setCheckState(Qt::Checked);
+        }
+    }
+}
+
+void FaceInfoWidget::on_cb1_showPicture_stateChanged(int s) {
+
+    qDebug() << s;
+
+}
+
 

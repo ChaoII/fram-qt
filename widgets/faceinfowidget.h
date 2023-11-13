@@ -48,7 +48,14 @@ private slots:
 
     void on_pb1_delete_clicked();
 
-    void on_tb_staff_clicked(const QModelIndex &index);
+    void on_pb1_selectAll_clicked();
+
+    void on_pb1_unSelectAll_clicked();
+
+    void on_pb1_reverseSelect_clicked();
+
+    void on_cb1_showPicture_stateChanged(int);
+
 
 private:
     Ui::FaceInfoWidget *ui;
@@ -62,5 +69,7 @@ private:
     PagingWidget *paging;
 
     RegisterWidget *register_widget;
+
+    int selected_count = 0;
 };
 
