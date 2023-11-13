@@ -55,8 +55,12 @@ void OuterSocket::on_read_ready() {
         if (file_info.exists() && file_info.suffix() == "jpg") {
             QString file_path = file_info.absoluteFilePath();
             auto img = cv::imread(file_path.toStdString());
-            SeetaFace::getInstance().add_face(img, uid, name);
-            tcp_socket_ptr->write(QString("0x0001").toUtf8());
+            bool r = SeetaFace::getInstance().add_face(img, uid, name);
+            if (r) {
+                tcp_socket_ptr->write(QString("0x0001").toUtf8());
+            } else {
+                tcp_socket_ptr->write(QString("0x0101").toUtf8());
+            }
         } else {
             tcp_socket_ptr->write(QString("0x0101").toUtf8());
         }

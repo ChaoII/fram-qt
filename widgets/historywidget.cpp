@@ -53,7 +53,7 @@ void HistoryWidget::update_table(int page) {
         QStandardItem *item1 = new QStandardItem(QString::number(i + 1));
         QStandardItem *item2 = new QStandardItem(rs.at(i).name);
         QStandardItem *item3 = new QStandardItem(rs.at(i).uid);
-        QStandardItem *item4 = new QStandardItem(rs.at(i).attend_time);
+        QStandardItem *item4 = new QStandardItem(QString(rs.at(i).attend_time));
         the_model->setItem(i, 0, item1);
         the_model->setItem(i, 1, item2);
         the_model->setItem(i, 2, item3);

@@ -102,7 +102,7 @@ void MyWidget::update_frame(QImage qimg, QRect rect) {
 
 void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
 
-    QString attend_time = rec_info.time.split(" ")[1].split(".")[0];
+    QString attend_time = rec_info.time.split("T")[1].split(".")[0];
     if (rec_info.code == -1) {
         ui->lb_name->setText("攻击人脸");
         ui->lb_attend_time->setText(attend_time);
