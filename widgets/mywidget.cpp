@@ -94,13 +94,13 @@ void MyWidget::update_frame(QImage qimg, QRect rect) {
     ui->widget_info->setVisible(!rect.isEmpty());
     if (face_info_widget && face_info_widget->isVisible()) {
         face_info_widget->update_register_frame(qimg);
-    };
+    }
     if (!ui->widget->isVisible()) return;
     img_ = qimg.scaled(size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     update();
 }
 
-void MyWidget::on_face_rec(FaceInfoWrap rec_info) {
+void MyWidget::on_face_rec(const FaceInfoWrap &rec_info) {
 
     QString attend_time = rec_info.time.split("T")[1].split(".")[0];
     if (rec_info.code == -1) {

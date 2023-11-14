@@ -23,7 +23,7 @@ public:
 
     void update_register_widget();
 
-    ~FaceInfoWidget();
+    ~FaceInfoWidget() override;
 
 private slots:
 
@@ -34,7 +34,7 @@ private:
 
     void initial_table();
 
-    void update_paging();
+    void update_paging_and_table();
 
 signals:
 
@@ -60,9 +60,9 @@ private slots:
 private:
     Ui::FaceInfoWidget *ui;
 
-    QStandardItemModel *the_model;
+    QStandardItemModel *the_model{};
 
-    QItemSelectionModel *the_select;
+    QItemSelectionModel *the_select{};
 
     int page_size_ = 9;
 

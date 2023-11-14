@@ -13,6 +13,7 @@ HistoryWidget::HistoryWidget(QWidget *parent) :
     ui->tb_history->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tb_history->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); //隐藏垂直滚动条
     ui->tb_history->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); //隐藏水平滚动条
+    ui->tb_history->setSelectionMode(QAbstractItemView::NoSelection);
     ui->tb_history->setMinimumWidth(5);
     ui->tb_history->setAlternatingRowColors(true);
     // 关闭行号

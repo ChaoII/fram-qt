@@ -31,7 +31,7 @@ public:
 
     void update_frame(QImage qimg, QRect rect);
 
-    void on_face_rec(FaceInfoWrap rec_info);
+    void on_face_rec(const FaceInfoWrap& rec_info);
 
     void on_update_time();
 

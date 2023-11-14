@@ -4,22 +4,25 @@
 #include <QCheckBox>
 #include <QVBoxLayout>
 
+
+#define NO_PICTURE_PAGE_SIZE  22;
+#define PICTURE_PAGE_SIZE  9;
+
 FaceInfoWidget::FaceInfoWidget(QWidget *parent) :
         QWidget(parent),
         ui(new Ui::FaceInfoWidget) {
     ui->setupUi(this);
-    initial_table();
+    ui->cb1_showPicture->setCheckState(Qt::Unchecked);
+    page_size_ = NO_PICTURE_PAGE_SIZE;
 
+    initial_table();
     register_widget = new RegisterWidget();
     layout()->addWidget(register_widget);
     register_widget->setVisible(false);
     connect(register_widget, &RegisterWidget::register_finished_signal, this,
             &FaceInfoWidget::handle_register_finished);
-
-    int num = SeetaFace::getInstance().get_query_num<Staff>();
     paging = new PagingWidget();
-    paging->initPage(num, 0, page_size_);
-    update_table(0);
+    update_paging_and_table();
     layout()->addWidget(paging);
     connect(paging, &PagingWidget::pageChanged, this, &FaceInfoWidget::update_table);
 }
@@ -57,14 +60,13 @@ void FaceInfoWidget::update_table(int page) {
 //        ui->tb_staff->setColumnWidth(5, 100);
         ui->tb_staff->setColumnWidth(6, 60);
 
-        QStandardItem *item0 = new QStandardItem();
+        auto item0 = new QStandardItem();
         item0->setCheckable(true);
-
-        QStandardItem *item1 = new QStandardItem(QString::number(i + 1));
-        QStandardItem *item2 = new QStandardItem(QString::number(rs.at(i).index_id));
-        QStandardItem *item3 = new QStandardItem(rs.at(i).name);
-        QStandardItem *item4 = new QStandardItem(rs.at(i).uid);
-        QStandardItem *item5 = new QStandardItem(rs.at(i).register_time);
+        auto item1 = new QStandardItem(QString::number(i + 1));
+        auto item2 = new QStandardItem(QString::number(rs.at(i).index_id));
+        auto item3 = new QStandardItem(rs.at(i).name);
+        auto item4 = new QStandardItem(rs.at(i).uid);
+        auto item5 = new QStandardItem(rs.at(i).register_time);
         the_model->setItem(i, 0, item0);
         the_model->setItem(i, 1, item1);
         the_model->setItem(i, 2, item2);
@@ -72,11 +74,18 @@ void FaceInfoWidget::update_table(int page) {
         the_model->setItem(i, 4, item4);
         the_model->setItem(i, 5, item5);
 
-        ui->tb_staff->setRowHeight(i, 100);
-        QLabel *label = new QLabel();
-        label->resize(60, 100);
-        label->setPixmap(QPixmap(rs.at(i).pic_url).scaled(label->size(), Qt::KeepAspectRatio, Qt::FastTransformation));
-        ui->tb_staff->setIndexWidget(the_model->index(i, 6), label);
+        if (ui->cb1_showPicture->checkState() == Qt::Checked) {
+            ui->tb_staff->setRowHeight(i, 100);
+            auto label = new QLabel();
+            label->resize(60, 100);
+            label->setPixmap(
+                    QPixmap(rs.at(i).pic_url).scaled(label->size(), Qt::KeepAspectRatio, Qt::FastTransformation));
+            ui->tb_staff->setIndexWidget(the_model->index(i, 6), label);
+        } else {
+            ui->tb_staff->setRowHeight(i, 40);
+            auto item6 = new QStandardItem(rs.at(i).pic_url);
+            the_model->setItem(i, 6, item6);
+        }
     }
     ui->tb_staff->selectRow(0);
 }
@@ -90,6 +99,7 @@ void FaceInfoWidget::initial_table() {
     ui->tb_staff->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tb_staff->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); //隐藏垂直滚动条
     ui->tb_staff->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); //隐藏水平滚动条
+    ui->tb_staff->setSelectionMode(QAbstractItemView::NoSelection);
     ui->tb_staff->setMinimumWidth(5);
     ui->tb_staff->setAlternatingRowColors(true);
     // 关闭行号
@@ -101,7 +111,7 @@ void FaceInfoWidget::initial_table() {
     ui->tb_staff->setModel(the_model);
 }
 
-void FaceInfoWidget::update_paging() {
+void FaceInfoWidget::update_paging_and_table() {
     int num = SeetaFace::getInstance().get_query_num<Staff>();
     paging->initPage(num, 0, page_size_);
     update_table(0);
@@ -110,15 +120,14 @@ void FaceInfoWidget::update_paging() {
 void FaceInfoWidget::handle_register_finished() {
     register_widget->setVisible(false);
     paging->setVisible(true);
-    update_paging();
-//    emit finished_signal();
+    update_paging_and_table();
 }
 
 
 void FaceInfoWidget::on_pb1_register_clicked() {
     paging->setVisible(false);
     register_widget->setVisible(true);
-    update_paging();
+    update_paging_and_table();
 }
 
 
@@ -138,12 +147,12 @@ void FaceInfoWidget::on_pb1_delete_clicked() {
         }
     }
     SeetaFace::getInstance().delete_face_by_ids(index_ids);
-    update_paging();
+    update_paging_and_table();
 }
 
 
 void FaceInfoWidget::update_register_widget() {
-    update_paging();
+    update_paging_and_table();
 }
 
 void FaceInfoWidget::on_pb1_selectAll_clicked() {
@@ -176,9 +185,14 @@ void FaceInfoWidget::on_pb1_reverseSelect_clicked() {
 }
 
 void FaceInfoWidget::on_cb1_showPicture_stateChanged(int s) {
-
-    qDebug() << s;
-
+    if (s == 0) {
+        page_size_ = NO_PICTURE_PAGE_SIZE;
+    } else {
+        page_size_ = PICTURE_PAGE_SIZE;
+    }
+    update_paging_and_table();
 }
+
+
 
 
