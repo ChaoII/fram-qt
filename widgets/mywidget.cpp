@@ -9,12 +9,15 @@
 #include <QPainter>
 #include <QTimer>
 #include <QMetaType>
+#include "widgets/MySplashScreen.h"
 #include "historywidget.h"
 
 
 MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     ui->setupUi(this);
     this->setAttribute(Qt::WA_QuitOnClose);
+
+    MySplashScreen::getInstance().update_process("load outer socket component...");
 
 //    this->setWindowFlags(Qt::FramelessWindowHint);
     // 注册信号槽元对象
@@ -28,6 +31,9 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     connect(out_socket, &OuterSocket::outer_socket_open_detector_signal,
             [this]() { emit open_detector_signal(); });
 
+
+    MySplashScreen::getInstance().update_process("load camera device and ready to read frame...");
+
     // 视频解码及人脸检测线程
     auto face_det_thread = new FaceDetThread();
     face_det_thread->moveToThread(&face_det_thread_);
@@ -38,7 +44,7 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     connect(this, &MyWidget::open_detector_signal, face_det_thread, &FaceDetThread::open_detector);
     connect(&face_det_thread_, &QThread::finished, face_det_thread, &FaceDetThread::deleteLater);
 
-
+    MySplashScreen::getInstance().update_process("load face recognition component...");
     // 人脸识别线程
     auto face_rec_thread = new FaceRecThread();
     face_rec_thread->moveToThread(&face_rec_thread_);
@@ -46,27 +52,32 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     connect(face_rec_thread, &FaceRecThread::face_rec_signal, this, &MyWidget::on_face_rec);
     connect(&face_rec_thread_, &QThread::finished, face_rec_thread, &FaceRecThread::deleteLater);
 
-
+    MySplashScreen::getInstance().update_process("load attend data record component...");
     // 打卡记录线程
     auto record_thread = new RecordThread();
     record_thread->moveToThread(&attend_record_thread_);
     connect(face_rec_thread, &FaceRecThread::record_signal, record_thread, &RecordThread::record);
     connect(&attend_record_thread_, &QThread::finished, record_thread, &QThread::deleteLater);
 
+
+    MySplashScreen::getInstance().update_process("load face library component...");
+
     // 人脸库信息窗体
     face_info_widget = new FaceInfoWidget();
     connect(face_info_widget, &FaceInfoWidget::face_back_signal, this, &MyWidget::on_face_finished);
 
+    MySplashScreen::getInstance().update_process("load attend history component...");
+
     // 打卡记录窗体
     history_widget = new HistoryWidget();
     connect(history_widget, &HistoryWidget::history_back_signal, this, &MyWidget::on_history_finished);
-
+    MySplashScreen::getInstance().update_process("init ui date time timer ...");
     // 界面时间
     auto timer1 = new QTimer(this);
     connect(timer1, &QTimer::timeout, this, &MyWidget::on_update_time);
     timer1->setInterval(1000);
     timer1->start();
-
+    MySplashScreen::getInstance().update_process("init record  timer ...");
     // 记录线程
     auto timer2 = new QTimer(this);
     connect(timer2, &QTimer::timeout, [=]() { emit send_img_signal(QImage(), QRect()); });
@@ -75,6 +86,7 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     // 初始化界面
     init_widget();
     run();
+    MySplashScreen::getInstance().update_process("init finished...");
 }
 
 void MyWidget::update_frame(QImage qimg, QRect rect) {

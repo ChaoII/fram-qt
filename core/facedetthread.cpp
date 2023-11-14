@@ -43,7 +43,7 @@ void FaceDetThread::run_detect() {
             QThread::msleep(20);
             cap_->read(frame_src);
             if (frame_src.empty()) continue;
-            // flip for horize
+            // flip for horizontal
             cv::flip(frame_src, frame_src, 1);
             QRect rect;
             cv::Mat frame = Utils::crop_img(frame_src);

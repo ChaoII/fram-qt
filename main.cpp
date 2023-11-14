@@ -5,6 +5,9 @@
 #include <QApplication>
 #include <QFile>
 #include <QDateTime>
+#include <QSplashScreen>
+#include <QtWidgets>
+#include "widgets/MySplashScreen.h"
 #include "widgets/mywidget.h"
 
 void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
@@ -47,7 +50,15 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 //    qInstallMessageHandler(outputMessage);
+    QPixmap pix(":img/face.png");
+
+
+
+    MySplashScreen::getInstance().show();
+
+
     MyWidget w;
+    MySplashScreen::getInstance().finish(&w);
     w.show();
     return a.exec();
 }

@@ -114,6 +114,8 @@ set(PROJECT_SOURCES
     main.cpp
     core/outersocket.cpp
     core/outersocket.h
+        widgets/MySplashScreen.cpp
+        widgets/MySplashScreen.h
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

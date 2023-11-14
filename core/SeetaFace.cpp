@@ -4,45 +4,52 @@
 
 #include "core/SeetaFace.h"
 #include "models/models.h"
+#include "widgets/MySplashScreen.h"
 
 using namespace std;
 using namespace seeta;
 
 SeetaFace::SeetaFace() {
 
+    MySplashScreen::getInstance().update_process("load face detect model...");
     std::string model_dir = Config::getInstance().get_model_dir().toStdString();
     int face_recognition_thread_num = Config::getInstance().get_face_recognition_thread_num();
     ModelSetting fd_setting;
     fd_setting.append(model_dir + "face_detector.csta");
     fd_setting.set_device(ModelSetting::CPU);
+    FD = std::make_shared<FaceDetector>(fd_setting);
+    FD->set(seeta::FaceDetector::PROPERTY_NUMBER_THREADS, face_recognition_thread_num);
     // face_land_marker
+    MySplashScreen::getInstance().update_process("load face landmark model...");
     ModelSetting pd_setting;
     pd_setting.append(model_dir + "face_landmarker_pts5.csta");
     pd_setting.set_device(ModelSetting::CPU);
+    FL = std::make_shared<FaceLandmarker>(pd_setting);
     //face_recognizer
+    MySplashScreen::getInstance().update_process("load face recognition model...");
     ModelSetting fr_setting;
     fr_setting.append(model_dir + "face_recognizer.csta");
     fr_setting.set_device(ModelSetting::CPU);
+    FR = std::make_shared<FaceRecognizer>(fr_setting);
+    FR->set(seeta::FaceRecognizer::PROPERTY_NUMBER_THREADS, face_recognition_thread_num);
     // face_anti_spoofing
+    MySplashScreen::getInstance().update_process("load face anti spoofing model...");
     seeta::ModelSetting fs_setting;
     fs_setting.append(model_dir + "fas_first.csta");
     fs_setting.set_device(ModelSetting::CPU);
-
-    FD = std::make_shared<FaceDetector>(fd_setting);
-    FD->set(seeta::FaceDetector::PROPERTY_NUMBER_THREADS, face_recognition_thread_num);
-    // unsupported set thread number
-    FL = std::make_shared<FaceLandmarker>(pd_setting);
-    FR = std::make_shared<FaceRecognizer>(fr_setting);
-    FR->set(seeta::FaceRecognizer::PROPERTY_NUMBER_THREADS, face_recognition_thread_num);
     FS = std::make_shared<FaceAntiSpoofing>(fs_setting);
     FS->set(seeta::FaceAntiSpoofing::PROPERTY_NUMBER_THREADS, face_recognition_thread_num);
+    // unsupported set thread number
+
+
+    MySplashScreen::getInstance().update_process("init face libraries...");
     init_face_db();
+    MySplashScreen::getInstance().update_process("init file directory...");
     init_file_dir();
 }
 
 void SeetaFace::init_file_dir() {
     QDir dir;
-
     if (!dir.exists(QDir::currentPath() + "/faces")) {
         dir.mkdir(QDir::currentPath() + "/faces");
     };
