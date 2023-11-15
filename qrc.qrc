@@ -1,15 +1,32 @@
 <RCC>
-    <qresource prefix="/">
-        <file>img/face_region.gif</file>
-        <file>img/face.png</file>
-        <file>img/face_region.png</file>
-        <file>img/signin_fail.png</file>
-        <file>img/setting.png</file>
-        <file>img/signin_success.png</file>
-        <file>img/3.png</file>
-        <file>img/4.png</file>
-        <file>img/4_p.png</file>
-        <file>img/3_p.png</file>
-        <file>img/back.png</file>
-    </qresource>
+  <qresource prefix="/">
+    <file>img/icon_clear_btn.png</file>
+    <file>img/icon_clear_btn_hover.png</file>
+    <file>img/icon_entry_btn.png</file>
+    <file>img/icon_entry_btn_hover.png</file>
+    <file>img/icon_num_btn.png</file>
+    <file>img/icon_num_btn_hover.png</file>
+    <file>img/icon_num0.png</file>
+    <file>img/icon_num1.png</file>
+    <file>img/icon_num2.png</file>
+    <file>img/icon_num3.png</file>
+    <file>img/icon_num4.png</file>
+    <file>img/icon_num5.png</file>
+    <file>img/icon_num6.png</file>
+    <file>img/icon_num7.png</file>
+    <file>img/icon_num8.png</file>
+    <file>img/icon_num9.png</file>
+    <file>img/img_bottombar_bg.png</file>
+    <file>img/face_region.gif</file>
+    <file>img/face.png</file>
+    <file>img/face_region.png</file>
+    <file>img/signin_fail.png</file>
+    <file>img/setting.png</file>
+    <file>img/signin_success.png</file>
+    <file>img/3.png</file>
+    <file>img/4.png</file>
+    <file>img/4_p.png</file>
+    <file>img/3_p.png</file>
+    <file>img/back.png</file>
+  </qresource>
 </RCC>

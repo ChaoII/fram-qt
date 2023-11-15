@@ -17,6 +17,38 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     ui->setupUi(this);
     this->setAttribute(Qt::WA_QuitOnClose);
 
+    ui->mpTimeLab->setStyleSheet("QLabel{font-size:30px;color:rgb(200,200,200);}");
+    ui->mpDateLab->setStyleSheet("QLabel{font-size:30px;color:rgb(200,200,200);}");
+    ui->mpWeekLab->setStyleSheet("QLabel{font-size:30px;color:rgb(200,130,200);}");
+
+    ui->pb_welcome->setStyleSheet(
+            "QPushButton { border-radius:120px; }\n"
+            "QPushButton:hover { background-color: #181d24ff;}\n"
+            "QPushButton:pressed {background-color: #18dd24ff; }");
+    ui->pb_history->setStyleSheet(
+            "QPushButton { border-radius:20px; }\n"
+            "QPushButton {border-image:url(:img/3.png)}\n"
+            "QPushButton:hover{border-image:url(:img/3_p.png);background-color: #181d24ff; }\n"
+            "QPushButton:pressed{border-image:url(:img/3_p.png);background-color: #18dd24ff;}\n");
+
+    ui->pb_register->setStyleSheet(
+            "QPushButton { border-radius:20px; }\n"
+            "QPushButton {border-image:url(:img/4.png)}\n"
+            "QPushButton:hover{border-image:url(:img/4_p.png);background-color: #181d24ff; }\n"
+            "QPushButton:pressed{border-image:url(:img/4_p.png);background-color: #18dd24ff;}\n");
+
+
+    ui->gridLayout->setAlignment(ui->pb_history, Qt::AlignHCenter | Qt::AlignVCenter);
+    ui->gridLayout->setAlignment(ui->pb_register, Qt::AlignHCenter | Qt::AlignVCenter);
+    ui->gridLayout->setAlignment(ui->pb_welcome, Qt::AlignHCenter | Qt::AlignTop);
+    ui->gridLayout->setAlignment(ui->mpWeekLab, Qt::AlignHCenter | Qt::AlignVCenter);
+    ui->gridLayout->setAlignment(ui->mpDateLab, Qt::AlignHCenter | Qt::AlignVCenter);
+    ui->gridLayout->setAlignment(ui->mpTimeLab, Qt::AlignHCenter | Qt::AlignVCenter);
+
+    ui->widget_input->setVisible(false);
+
+    connect(ui->widget_input, &InputPage::passwordAuthorized, this, &MyWidget::on_receive_password_authorized);
+
     MySplashScreen::getInstance().update_process("load outer socket component...");
 
 //    this->setWindowFlags(Qt::FramelessWindowHint);
@@ -116,44 +148,58 @@ void MyWidget::on_face_rec(const FaceInfoWrap &rec_info) {
 
     QString attend_time = rec_info.time.split("T")[1].split(".")[0];
     if (rec_info.code == -1) {
-        ui->lb_name->setText("攻击人脸");
-        ui->lb_attend_time->setText(attend_time);
-        ui->lb_pic->setPixmap(QPixmap(":img/signin_fail.png"));
-        ui->pic_library->setPixmap(QPixmap());
-        ui->pic_current->setPixmap(QPixmap());
+        ui->widget_info->setAttendInfo("攻击人脸",
+                                       attend_time,
+                                       QPixmap(":img/signin_fail.png"),
+                                       QPixmap(),
+                                       QPixmap());
+
         Utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 40));
         Utils::setBackgroundColor(ui->widget_info, QColor(255, 0, 0, 40));
     } else if (rec_info.code == 0) {
-        ui->lb_name->setText("未知");
-        ui->lb_attend_time->setText(attend_time);
-        ui->lb_pic->setPixmap(QPixmap(":img/signin_fail.png"));
-        ui->pic_library->setPixmap(QPixmap());
-        ui->pic_current->setPixmap(QPixmap());
+        ui->widget_info->setAttendInfo("未知", attend_time,
+                                       QPixmap(":img/signin_fail.png"),
+                                       QPixmap(),
+                                       QPixmap());
         Utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
         Utils::setBackgroundColor(ui->widget_info, QColor(255, 0, 0, 40));
     } else {
-        ui->lb_name->setText(rec_info.ret.name);
-        ui->lb_attend_time->setText(attend_time);
-        ui->lb_pic->setPixmap(QPixmap(":img/signin_success.png"));
-        ui->pic_library->setPixmap(QPixmap(rec_info.ret.pic_url)
-                                           .scaled(ui->pic_library->size(),
-                                                   Qt::KeepAspectRatio,
-                                                   Qt::SmoothTransformation));
-        ui->pic_current->setPixmap(QPixmap::fromImage(rec_info.ret.img)
-                                           .scaled(ui->pic_current->size(),
-                                                   Qt::KeepAspectRatio,
-                                                   Qt::SmoothTransformation));
+        ui->widget_info->setAttendInfo(rec_info.ret.name, attend_time,
+                                       QPixmap(":img/signin_success.png"),
+                                       QPixmap(rec_info.ret.pic_url),
+                                       QPixmap::fromImage(rec_info.ret.img));
         Utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 0));
         Utils::setBackgroundColor(ui->widget_info, QColor(0, 255, 0, 40));
     }
 }
 
-void MyWidget::on_pb_register_clicked() {
-    hide_all_widgets();
-    face_info_widget->setVisible(true);
-    face_info_widget->update_register_widget();
-    emit close_detector_signal();
+void MyWidget::on_pb_welcome_clicked() {
+    currentClickedButton_ = ButtonsEnum::WelcomeButton;
+    if (ui->widget_input->isVisible()) {
+        ui->widget_input->hideInputWidget();
+        return;
+    }
+    ui->widget_input->showInputWidget();
 }
+
+void MyWidget::on_pb_register_clicked() {
+    currentClickedButton_ = ButtonsEnum::RegisterButton;
+    if (ui->widget_input->isVisible()) {
+        ui->widget_input->hideInputWidget();
+        return;
+    }
+    ui->widget_input->showInputWidget();
+}
+
+void MyWidget::on_pb_history_clicked() {
+    currentClickedButton_ = ButtonsEnum::HistoryButton;
+    if (ui->widget_input->isVisible()) {
+        ui->widget_input->hideInputWidget();
+        return;
+    }
+    ui->widget_input->showInputWidget();
+}
+
 
 void MyWidget::init_widget() {
     layout()->addWidget(history_widget);
@@ -175,7 +221,14 @@ void MyWidget::on_history_finished() {
 }
 
 void MyWidget::on_update_time() {
-    ui->lb_cur_time->setText(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+    auto data_time = QDateTime::currentDateTime();
+    QString date = data_time.toString("yyyy-MM-dd");
+    QString time = data_time.toString("HH:mm:ss");
+    //指定中文显示
+    QLocale locale = QLocale::Chinese;
+    ui->mpDateLab->setText(date);
+    ui->mpWeekLab->setText(locale.toString(data_time, QString("dddd")));
+    ui->mpTimeLab->setText(time);
 }
 
 
@@ -205,11 +258,6 @@ MyWidget::~MyWidget() {
     delete ui;
 }
 
-void MyWidget::on_pb_history_clicked() {
-    hide_all_widgets();
-    history_widget->setVisible(true);
-    history_widget->update_history_widget();
-}
 
 void MyWidget::hide_all_widgets() {
     if (ui->widget->isVisible()) {
@@ -222,4 +270,23 @@ void MyWidget::hide_all_widgets() {
         face_info_widget->setVisible(false);
     }
 }
+
+void MyWidget::on_receive_password_authorized() {
+    if (currentClickedButton_ == ButtonsEnum::HistoryButton) {
+        hide_all_widgets();
+        history_widget->setVisible(true);
+        history_widget->update_history_widget();
+    } else if (currentClickedButton_ == ButtonsEnum::RegisterButton) {
+        hide_all_widgets();
+        face_info_widget->setVisible(true);
+        face_info_widget->update_register_widget();
+        emit close_detector_signal();
+    } else if (currentClickedButton_ == ButtonsEnum::WelcomeButton) {
+        //todo other task such as open the door
+    } else {
+
+    }
+}
+
+
 

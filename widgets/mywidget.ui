@@ -25,7 +25,10 @@
   <property name="windowTitle">
    <string>MyWidget</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -43,33 +46,22 @@
    </property>
    <item>
     <widget class="QWidget" name="widget" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>600</width>
-       <height>1024</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>600</width>
-       <height>1024</height>
-      </size>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="lb_cur_time">
-        <property name="styleSheet">
-         <string notr="true">font: 500 30pt &quot;Futura&quot; ;
-color: rgb(61, 104, 104);</string>
-        </property>
-        <property name="text">
-         <string>2022-05-13 13:35:00</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <spacer name="verticalSpacer">
         <property name="orientation">
@@ -78,268 +70,247 @@ color: rgb(61, 104, 104);</string>
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>580</height>
+          <height>717</height>
          </size>
         </property>
        </spacer>
       </item>
       <item>
-       <widget class="QWidget" name="widget_info" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+       <widget class="InputPage" name="widget_input" native="true"/>
+      </item>
+      <item>
+       <widget class="AttendInfoWidget" name="widget_info" native="true"/>
+      </item>
+      <item>
+       <widget class="QWidget" name="framBottom" native="true">
         <property name="minimumSize">
          <size>
-          <width>0</width>
-          <height>200</height>
+          <width>600</width>
+          <height>280</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>16777215</width>
-          <height>200</height>
+          <width>600</width>
+          <height>280</height>
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">#label_n,#label_t{
-font: 500 18pt &quot;Futura&quot;;
-color: rgb(100, 100, 100);
+         <string notr="true">#framBottom{
+	border-image: url(:/img/img_bottombar_bg.png);
 }
-
-#lb_name,#lb_attend_time{
-font: 500 20pt &quot;Futura&quot;;
-color: rgb(83, 255, 132);
+QLabel{
+font-size:28px;
+color:rgb(0,80,200);
+}
+QPushButton{
+background-color:transparent
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_n">
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="text">
-              <string>姓名:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="lb_name">
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2" rowspan="2">
-            <widget class="QLabel" name="pic_library">
-             <property name="minimumSize">
-              <size>
-               <width>110</width>
-               <height>180</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>110</width>
-               <height>180</height>
-              </size>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="3" rowspan="2">
-            <widget class="QLabel" name="pic_current">
-             <property name="minimumSize">
-              <size>
-               <width>110</width>
-               <height>180</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>110</width>
-               <height>180</height>
-              </size>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
+           <property name="spacing">
+            <number>0</number>
+           </property>
            <item row="1" column="0">
-            <widget class="QLabel" name="label_t">
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
+            <widget class="QLabel" name="mpWeekLab">
              <property name="text">
-              <string>打卡时间:</string>
+              <string>星期一</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="lb_attend_time">
+           <item row="1" column="2">
+            <widget class="QLabel" name="mpTimeLab">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>144</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>10:40</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <widget class="QPushButton" name="pb_register">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" rowspan="3">
+            <widget class="QPushButton" name="pb_welcome">
+             <property name="minimumSize">
+              <size>
+               <width>260</width>
+               <height>240</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>240</width>
+               <height>240</height>
+              </size>
+             </property>
+             <property name="font">
+              <font/>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">/*
+QPushButton{
+	color: rgb(204, 204, 204);
+	border-image: url(:/image/icon_welcom_btn.png);
+/*	outline: none;
+}
+
+QPushButton:hover, QPushButton:pressed{
+	color: rgb(204, 204, 204);
+	border-image: url(:/image/icon_welcom_btn.png);
+/*	outline: none;
+}
+*/</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="pb_history">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
              <property name="styleSheet">
               <string notr="true"/>
              </property>
              <property name="text">
               <string/>
+             </property>
+             <property name="checkable">
+              <bool>false</bool>
+             </property>
+             <property name="autoDefault">
+              <bool>false</bool>
+             </property>
+             <property name="default">
+              <bool>false</bool>
+             </property>
+             <property name="flat">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="mpDateLab">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>144</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>2020-7-27</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
           </layout>
          </item>
-         <item>
-          <widget class="QLabel" name="lb_pic">
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>100</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>100</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap resource="../qrc.qrc">:/img/signin_success.png</pixmap>
-           </property>
-           <property name="scaledContents">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Preferred</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>150</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <widget class="QPushButton" name="pb_history">
-          <property name="minimumSize">
-           <size>
-            <width>100</width>
-            <height>100</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>100</width>
-            <height>100</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">#pb_history{
-		background-image: url(:/img/4.png);
-		border: 5px solid rgba(90,110,200,100);
-		border-radius:20px;
-		background-position:center;
-}
-#pb_history:pressed{
-		background-image: url(:/img/4_p.png);
-		border: 5px solid rgba(200,110,90,100);
-		border-radius:20px;
-		background-position:center;
-}</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pb_register">
-          <property name="minimumSize">
-           <size>
-            <width>100</width>
-            <height>100</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>100</width>
-            <height>100</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">#pb_register{
-		background-image: url(:/img/3.png);
-		border: 5px solid rgba(90,110,200,100);
-		border-radius:20px;
-		background-position:center;
-}
-#pb_register:pressed{
-		background-image: url(:/img/3_p.png);
-		border: 5px solid rgba(200,110,90,100);
-		border-radius:20px;
-		background-position:center;
-}</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
       </item>
      </layout>
     </widget>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../qrc.qrc"/>
- </resources>
+ <customwidgets>
+  <customwidget>
+   <class>AttendInfoWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">attendinfowidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>InputPage</class>
+   <extends>QWidget</extends>
+   <header location="global">inputpage.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
  <connections/>
 </ui>

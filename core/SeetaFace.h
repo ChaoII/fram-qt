@@ -77,7 +77,7 @@ public:
 
         QSqlError sql_error = qx::dao::fetch_by_query(query, models);
         if (sql_error.isValid()) {
-            qDebug() << "select data error ,details:" << sql_error.text();
+            qDebug() << "select data error, details:" << sql_error.text();
         }
         return models;
     }

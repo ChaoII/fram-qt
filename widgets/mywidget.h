@@ -25,13 +25,20 @@ QT_END_NAMESPACE
 class MyWidget : public QWidget {
 Q_OBJECT
 
+    enum class ButtonsEnum {
+        RegisterButton,
+        HistoryButton,
+        WelcomeButton,
+        None,
+    };
+
 public:
 
     explicit MyWidget(QWidget *parent = nullptr);
 
     void update_frame(QImage qimg, QRect rect);
 
-    void on_face_rec(const FaceInfoWrap& rec_info);
+    void on_face_rec(const FaceInfoWrap &rec_info);
 
     void on_update_time();
 
@@ -60,6 +67,10 @@ private slots:
 
     void on_pb_register_clicked();
 
+    void on_pb_welcome_clicked();
+
+    void on_receive_password_authorized();
+
 private:
 
     void init_widget();
@@ -78,6 +89,7 @@ private:
     QThread face_rec_thread_;
     QThread attend_record_thread_;
 
+    ButtonsEnum currentClickedButton_ = ButtonsEnum::None;
     HistoryWidget *history_widget = nullptr;
     FaceInfoWidget *face_info_widget = nullptr;
     Ui::MyWidget *ui;
