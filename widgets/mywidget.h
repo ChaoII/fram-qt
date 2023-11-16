@@ -9,8 +9,8 @@
 #include "core/facerecthread.h"
 #include "core/facedetthread.h"
 #include "core/recordthread.h"
-#include "widgets/faceinfowidget.h"
-#include "widgets/historywidget.h"
+#include "widgets/faceregister/faceinfowidget.h"
+#include "widgets/attendhistory/historywidget.h"
 #include <QMutex>
 #include <QMutexLocker>
 #include <QCloseEvent>

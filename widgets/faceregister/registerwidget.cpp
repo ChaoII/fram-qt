@@ -1,4 +1,4 @@
-#include "widgets/registerwidget.h"
+#include "registerwidget.h"
 #include "ui_registerwidget.h"
 #include "core/SeetaFace.h"
 #include <QPainter>

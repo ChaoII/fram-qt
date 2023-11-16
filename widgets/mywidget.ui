@@ -311,6 +311,8 @@ QPushButton:hover, QPushButton:pressed{
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../qrc.qrc"/>
+ </resources>
  <connections/>
 </ui>

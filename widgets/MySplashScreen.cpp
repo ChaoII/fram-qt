@@ -27,7 +27,7 @@ void MySplashScreen::update_process(const QString &msg) {
     QApplication::processEvents();
     progressBar->setValue(++value);
     this->showMessage(msg, Qt::AlignLeft | Qt::AlignBottom, Qt::white);
-    mySleep(100);
+    mySleep(50);
     qDebug() << value;
     qDebug() << msg;
 }

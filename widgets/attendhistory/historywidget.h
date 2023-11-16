@@ -5,6 +5,7 @@
 #include <QItemSelectionModel>
 #include "core/SeetaFace.h"
 #include "customwidget/pagingwidget.h"
+#include "widgets/attendhistory/attendhistorylist.h"
 
 
 namespace Ui {
@@ -25,11 +26,11 @@ signals:
 
     void history_back_signal();
 
-
 private:
+
     void update_table(int page);
 
-    void update_paging();
+    void update_paging_and_table();
 
 private slots:
 
@@ -44,7 +45,6 @@ private:
 
     int page_size_ = 9;
 
-    PagingWidget *paging = nullptr;
 };
 
 

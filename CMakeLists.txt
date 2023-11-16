@@ -70,11 +70,13 @@ list(APPEND DEPENDS
         SeetaFaceAntiSpoofingX600)
 
 #add QxOrm
-
 include_directories(${QxOrm_DIR}/include)
 link_directories(${QxOrm_DIR}/lib)
 list(APPEND DEPENDS QxOrm)
 include_directories(${CMAKE_SOURCE_DIR}/widgets)
+include_directories(${CMAKE_SOURCE_DIR}/customwidget)
+include_directories(${CMAKE_SOURCE_DIR}/widgets/attendhistory)
+include_directories(${CMAKE_SOURCE_DIR}/widgets/faceregister)
 
 # add source code
 set(PROJECT_SOURCES
@@ -86,35 +88,44 @@ set(PROJECT_SOURCES
         core/facedetthread.cpp
         core/vectorsearch.h
         core/vectorsearch.cpp
-        widgets/mywidget.h
-        widgets/mywidget.cpp
-        widgets/mywidget.ui
-        widgets/registerwidget.h
-        widgets/registerwidget.cpp
-        widgets/registerwidget.ui
-        widgets/historywidget.h
-        widgets/historywidget.cpp
-        widgets/historywidget.ui
-        widgets/faceinfowidget.h
-        widgets/faceinfowidget.cpp
-        widgets/faceinfowidget.ui
-        qrc.qrc
         core/recordthread.h
         core/recordthread.cpp
         core/SeetaFace.h
         core/SeetaFace.cpp
-        utils/struct.h
-        utils/Utils.h
-        utils/Utils.cpp
-        utils/snowflake.hpp
-        utils/config.h
-        utils/config.cpp
-        customwidget/pagingwidget.h
-        customwidget/pagingwidget.cpp
-        customwidget/pagingwidget.ui
-        main.cpp
         core/outersocket.cpp
         core/outersocket.h
+
+        widgets/faceregister/registerwidget.h
+        widgets/faceregister/registerwidget.cpp
+        widgets/faceregister/registerwidget.ui
+        widgets/attendhistory/historywidget.h
+        widgets/attendhistory/historywidget.cpp
+        widgets/attendhistory/historywidget.ui
+        widgets/faceregister/faceinfowidget.h
+        widgets/faceregister/faceinfowidget.cpp
+        widgets/faceregister/faceinfowidget.ui
+        widgets/faceregister/facelist.h
+        widgets/faceregister/facelist.cpp
+        widgets/faceregister/facelist.ui
+
+        widgets/faceregister/facelistitem.h
+        widgets/faceregister/facelistitem.cpp
+        widgets/faceregister/facelistitem.ui
+
+        widgets/faceregister/facelistheader.h
+        widgets/faceregister/facelistheader.cpp
+        widgets/faceregister/facelistheader.ui
+
+
+        widgets/attendhistory/attendinfoitemwidget.h
+        widgets/attendhistory/attendinfoitemwidget.cpp
+        widgets/attendhistory/attendinfoitemwidget.ui
+        widgets/attendhistory/attendhistorylist.h
+        widgets/attendhistory/attendhistorylist.cpp
+        widgets/attendhistory/attendhistorylist.ui
+        widgets/attendhistory/attendhistorylistheader.h
+        widgets/attendhistory/attendhistorylistheader.cpp
+        widgets/attendhistory/attendhistorylistheader.ui
         widgets/MySplashScreen.cpp
         widgets/MySplashScreen.h
         widgets/attendinfowidget.h
@@ -123,6 +134,22 @@ set(PROJECT_SOURCES
         widgets/inputpage.h
         widgets/inputpage.cpp
         widgets/inputpage.ui
+        widgets/mywidget.h
+        widgets/mywidget.cpp
+        widgets/mywidget.ui
+
+        customwidget/pagingwidget.h
+        customwidget/pagingwidget.cpp
+        customwidget/pagingwidget.ui
+        qrc.qrc
+        utils/struct.h
+        utils/Utils.h
+        utils/Utils.cpp
+        utils/snowflake.hpp
+        utils/config.h
+        utils/config.cpp
+        main.cpp
+
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

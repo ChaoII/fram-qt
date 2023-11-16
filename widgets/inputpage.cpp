@@ -17,8 +17,8 @@ InputPage::InputPage(QWidget *parent) :
     ui->setupUi(this);
     this->setStyleSheet(
             "QPushButton{color: rgb(255, 255, 255);border-image:url(:/img/icon_num_btn.png);} "
-            "QPushButton:hover, QPushButton:pressed{color: rgb(255, 255, 255);border-image: url(:/img/icon_num_btn_hover.png);}");
-
+            "QPushButton:hover {color: rgb(255, 255, 255);border-image: url(:/img/icon_num_btn_hover.png);}\n"
+            "QPushButton:pressed {border-image: url(:/img/icon_num_btn_hover.png); background-color:rgba(150,150,150,80)}");
     ui->le_inputContent->setPlaceholderText("请输入密码");
     ui->message->setStyleSheet("QLabel{color:rgb(255,0,0)}");
     init();
@@ -141,7 +141,7 @@ void InputPage::updateCountDown() {
     currentTimeout -= UNIT_TIME;
     if (currentTimeout <= 0) {
         counterTimer->stop();
-        this->close();
+        hideInputWidget();
         passwordContent.clear();
         isFirstKey = true;
     }
@@ -161,6 +161,8 @@ void InputPage::showInputWidget() {
 
 void InputPage::hideInputWidget() {
     counterTimer->stop();
+    passwordContent.clear();
+    ui->message->setText("");
     this->setVisible(false);
 }
 

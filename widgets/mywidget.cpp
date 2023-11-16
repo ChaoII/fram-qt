@@ -10,7 +10,7 @@
 #include <QTimer>
 #include <QMetaType>
 #include "widgets/MySplashScreen.h"
-#include "historywidget.h"
+#include "widgets/attendhistory/historywidget.h"
 
 
 MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
@@ -27,15 +27,15 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
             "QPushButton:pressed {background-color: #18dd24ff; }");
     ui->pb_history->setStyleSheet(
             "QPushButton { border-radius:20px; }\n"
-            "QPushButton {border-image:url(:img/3.png)}\n"
-            "QPushButton:hover{border-image:url(:img/3_p.png);background-color: #181d24ff; }\n"
-            "QPushButton:pressed{border-image:url(:img/3_p.png);background-color: #18dd24ff;}\n");
+            "QPushButton {border-image:url(:img/icon_attendHistory.png)}\n"
+            "QPushButton:hover{border-image:url(:img/icon_attendHistory_pressed.png);background-color: #181d24ff; }\n"
+            "QPushButton:pressed{border-image:url(:img/icon_attendHistory_pressed.png);background-color: #18dd24ff;}\n");
 
     ui->pb_register->setStyleSheet(
             "QPushButton { border-radius:20px; }\n"
-            "QPushButton {border-image:url(:img/4.png)}\n"
-            "QPushButton:hover{border-image:url(:img/4_p.png);background-color: #181d24ff; }\n"
-            "QPushButton:pressed{border-image:url(:img/4_p.png);background-color: #18dd24ff;}\n");
+            "QPushButton {border-image:url(:img/icon_face.png)}\n"
+            "QPushButton:hover{border-image:url(:img/icon_face_pressed.png);background-color: #181d24ff; }\n"
+            "QPushButton:pressed{border-image:url(:img/icon_face_pressed.png);background-color: #18dd24ff;}\n");
 
 
     ui->gridLayout->setAlignment(ui->pb_history, Qt::AlignHCenter | Qt::AlignVCenter);
@@ -45,7 +45,6 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     ui->gridLayout->setAlignment(ui->mpDateLab, Qt::AlignHCenter | Qt::AlignVCenter);
     ui->gridLayout->setAlignment(ui->mpTimeLab, Qt::AlignHCenter | Qt::AlignVCenter);
 
-    ui->widget_input->setVisible(false);
 
     connect(ui->widget_input, &InputPage::passwordAuthorized, this, &MyWidget::on_receive_password_authorized);
 
@@ -117,7 +116,11 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     timer2->start();
     // 初始化界面
     init_widget();
-    run();
+    // 启动后台线程
+    face_det_thread_.start();
+    face_rec_thread_.start();
+    attend_record_thread_.start();
+    emit run_detect_thread_signal();
     MySplashScreen::getInstance().update_process("init finished...");
 }
 
@@ -206,6 +209,8 @@ void MyWidget::init_widget() {
     layout()->addWidget(face_info_widget);
     history_widget->setVisible(false);
     face_info_widget->setVisible(false);
+    ui->widget_input->setVisible(false);
+    ui->widget_info->setVisible(false);
     ui->widget->setVisible(true);
 }
 
@@ -239,12 +244,6 @@ void MyWidget::paintEvent(QPaintEvent *event) {
     painter.drawImage(0, 0, img_);
 }
 
-void MyWidget::run() {
-    face_det_thread_.start();
-    face_rec_thread_.start();
-    attend_record_thread_.start();
-    emit run_detect_thread_signal();
-}
 
 MyWidget::~MyWidget() {
     face_rec_thread_.quit();

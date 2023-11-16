@@ -5,7 +5,7 @@
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
 #include "core/SeetaFace.h"
-#include "widgets/registerwidget.h"
+#include "registerwidget.h"
 #include "customwidget/pagingwidget.h"
 
 
@@ -31,8 +31,6 @@ private slots:
 
 private:
     void update_table(int page);
-
-    void initial_table();
 
     void update_paging_and_table();
 

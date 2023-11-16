@@ -38,8 +38,8 @@ void FaceDetThread::run_detect() {
     qDebug() << "= enter decode thread, thread id is: " << QThread::currentThreadId();
     cv::Mat frame_src;
     while (thread_start_) {
+        qApp->processEvents();
         if (cap_ && cap_->isOpened()) {
-            qApp->processEvents();
             QThread::msleep(20);
             cap_->read(frame_src);
             if (frame_src.empty()) continue;
