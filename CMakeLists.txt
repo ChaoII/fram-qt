@@ -13,30 +13,20 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS .)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Force MSVC to use UTF-8 because that's what we use. Otherwise it uses
-    # the default of whatever Windows sets and causes encoding issues.
-    message(STATUS "You are using MSVC. Forcing to use UTF-8")
-    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
-    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/wd4828>")
-    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/wd4828>")
+    add_compile_options(/utf-8 /wd4828 /wd4267)
 endif ()
 
+
 set(DEPENDS "")
-# add_qt
-#set(QT_VERSION "6" CACHE STRING "Qt version")
-#set(OpenCV_DIR "E:/develop/opencv/x64/vc16/staticlib" CACHE PATH "fastdeploy install directory")
-#set(SEETAFACE_DIR "/home/orangepi/my/seeta-face6/build/" CACHE PATH "seetaface6 install directory")
-#set(QxOrm_DIR "/home/orangepi/my/QxOrm/build/install/" CACHE PATH "QxOrm install directory")
-#set(CMAKE_TOOLCHAIN_FILE "E:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
 
 set(QT_VERSION "6" CACHE STRING "Qt version")
 set(OpenCV_DIR "E:/develop/opencv/x64/vc16/staticlib" CACHE PATH "opencv install directory")
 set(SEETAFACE_DIR "E:/develop/SeetaFace" CACHE PATH "seetaface6 install directory")
 set(QxOrm_DIR "E:/develop/QxOrm" CACHE PATH "QxOrm install directory")
-set(CMAKE_TOOLCHAIN_FILE "E:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
+
+# add qt
 find_package(Qt${QT_VERSION} COMPONENTS Widgets Sql Concurrent Network REQUIRED)
 list(APPEND DEPENDS Qt${QT_VERSION}::Widgets Qt${QT_VERSION}::Sql Qt${QT_VERSION}::Concurrent Qt${QT_VERSION}::Network)
 
@@ -47,7 +37,6 @@ list(APPEND DEPENDS ${OpenCV_LIBS})
 #add faiss
 find_package(OpenMP REQUIRED)
 list(APPEND DEPENDS OpenMP::OpenMP_CXX)
-
 find_package(faiss REQUIRED)
 list(APPEND DEPENDS faiss)
 
@@ -57,7 +46,7 @@ if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "AMD64" OR "x68_64")
 elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64")
     set(ARCH "arm64")
 else ()
-    message(FATAL "cpu arch x86 and aarch64 only be surrorted")
+    message(FATAL "cpu arch x86 and aarch64 only be supported")
 endif ()
 message(${SEETAFACE_DIR}/lib/${ARCH})
 include_directories(${SEETAFACE_DIR}/include)
@@ -73,85 +62,38 @@ list(APPEND DEPENDS
 include_directories(${QxOrm_DIR}/include)
 link_directories(${QxOrm_DIR}/lib)
 list(APPEND DEPENDS QxOrm)
+
+#add include directory
 include_directories(${CMAKE_SOURCE_DIR}/widgets)
 include_directories(${CMAKE_SOURCE_DIR}/customwidget)
 include_directories(${CMAKE_SOURCE_DIR}/widgets/attendhistory)
 include_directories(${CMAKE_SOURCE_DIR}/widgets/faceregister)
 
+# add src
+aux_source_directory(models MODELS_SRC)
+aux_source_directory(core CORE_SRC)
+aux_source_directory(widgets/faceregister REGISTER_SRC)
+aux_source_directory(widgets/attendhistory ATTEND_SRC)
+aux_source_directory(widgets WIDGETS_SRC)
+aux_source_directory(customwidget CUSTOM_WIDGETS_SRC)
+aux_source_directory(utils UTILS_SRC)
+
+
+message(${REGISTER_SRC})
+message(${WIDGETS_SRC})
+
 # add source code
 set(PROJECT_SOURCES
-        models/models.h
-        models/models.cpp
-        core/facerecthread.h
-        core/facerecthread.cpp
-        core/facedetthread.h
-        core/facedetthread.cpp
-        core/vectorsearch.h
-        core/vectorsearch.cpp
-        core/recordthread.h
-        core/recordthread.cpp
-        core/SeetaFace.h
-        core/SeetaFace.cpp
-        core/outersocket.cpp
-        core/outersocket.h
-
-        widgets/faceregister/registerwidget.h
-        widgets/faceregister/registerwidget.cpp
-        widgets/faceregister/registerwidget.ui
-        widgets/attendhistory/historywidget.h
-        widgets/attendhistory/historywidget.cpp
-        widgets/attendhistory/historywidget.ui
-        widgets/faceregister/faceinfowidget.h
-        widgets/faceregister/faceinfowidget.cpp
-        widgets/faceregister/faceinfowidget.ui
-        widgets/faceregister/facelist.h
-        widgets/faceregister/facelist.cpp
-        widgets/faceregister/facelist.ui
-
-        widgets/faceregister/facelistitem.h
-        widgets/faceregister/facelistitem.cpp
-        widgets/faceregister/facelistitem.ui
-
-        widgets/faceregister/facelistheader.h
-        widgets/faceregister/facelistheader.cpp
-        widgets/faceregister/facelistheader.ui
-
-
-        widgets/attendhistory/attendinfoitemwidget.h
-        widgets/attendhistory/attendinfoitemwidget.cpp
-        widgets/attendhistory/attendinfoitemwidget.ui
-        widgets/attendhistory/attendhistorylist.h
-        widgets/attendhistory/attendhistorylist.cpp
-        widgets/attendhistory/attendhistorylist.ui
-        widgets/attendhistory/attendhistorylistheader.h
-        widgets/attendhistory/attendhistorylistheader.cpp
-        widgets/attendhistory/attendhistorylistheader.ui
-        widgets/MySplashScreen.cpp
-        widgets/MySplashScreen.h
-        widgets/attendinfowidget.h
-        widgets/attendinfowidget.cpp
-        widgets/attendinfowidget.ui
-        widgets/inputpage.h
-        widgets/inputpage.cpp
-        widgets/inputpage.ui
-        widgets/mywidget.h
-        widgets/mywidget.cpp
-        widgets/mywidget.ui
-
-        customwidget/pagingwidget.h
-        customwidget/pagingwidget.cpp
-        customwidget/pagingwidget.ui
+        ${MODELS_SRC}
+        ${CORE_SRC}
+        ${REGISTER_SRC}
+        ${ATTEND_SRC}
+        ${WIDGETS_SRC}
+        ${CUSTOM_WIDGETS_SRC}
+        ${UTILS_SRC}
         qrc.qrc
-        utils/struct.h
-        utils/Utils.h
-        utils/Utils.cpp
-        utils/snowflake.hpp
-        utils/config.h
-        utils/config.cpp
         main.cpp
-
 )
-
 
 set(THEME_COLOR 1f64fd)
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

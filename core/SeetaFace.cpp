@@ -65,13 +65,15 @@ void SeetaFace::init_face_db() {
     qx::QxSqlDatabase::getSingleton()->setUserName("root");
     qx::QxSqlDatabase::getSingleton()->setPassword("");
     qx::QxSqlDatabase::getSingleton()->setFormatSqlQueryBeforeLogging(false);
-    qx::QxSqlDatabase::getSingleton()->setDisplayTimerDetails(false);
-    qx::QxSqlDatabase::getSingleton()->setVerifyOffsetRelation(true);
+    qx::QxSqlDatabase::getSingleton()->setVerifyOffsetRelation(false);
     qx::QxSqlDatabase::getSingleton()->setTraceSqlQuery(false);
-    qx::QxSqlDatabase::getSingleton()->setTraceSqlBoundValues(false);
-
     qx::QxSqlDatabase::getSingleton()->setTraceSqlBoundValuesOnError(false);
     qx::QxSqlDatabase::getSingleton()->setTraceSqlRecord(false);
+    qx::QxSqlDatabase::getSingleton()->setTraceSqlBoundValues(false);
+    qx::QxSqlDatabase::getSingleton()->setTraceSqlBoundValuesOnError(false);
+    qx::QxSqlDatabase::getSingleton()->setTraceSqlOnlySlowQueriesDatabase(false);
+    qx::QxSqlDatabase::getSingleton()->setTraceSqlOnlySlowQueriesTotal(false);
+    qx::QxSqlDatabase::getSingleton()->setDisplayTimerDetails(false);
 
 
     QSqlError staff_error = qx::dao::create_table<Staff>();
