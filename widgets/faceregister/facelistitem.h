@@ -19,15 +19,25 @@ public:
                  const QString &registerTime,
                  const QString &pictureUrl);
 
+    bool getCheckedStatus();
+
+    void setCheckStatus(bool isCheckedStatus);
+
+
     ~FaceListItem();
+
+signals:
+
+    void checkBoxStatusChanged_signal(bool, QString);
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
-    void changeCheckBoxStatus();
+    void changeCheckBoxStatus(bool isCheckStatus);
 
 private:
+    int hintSize;
     bool isChecked = false;
     Ui::FaceListItem *ui;
 };

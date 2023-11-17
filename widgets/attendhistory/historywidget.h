@@ -34,7 +34,7 @@ private:
 
 private slots:
 
-    void on_pb_back_clicked();
+    void on_tb_back_clicked();
 
 private:
     Ui::HistoryWidget *ui;

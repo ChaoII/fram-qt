@@ -8,6 +8,16 @@ FaceListItem::FaceListItem(QWidget *parent) :
     ui->setupUi(this);
     this->setAttribute(Qt::WA_StyledBackground, true);
     ui->lb_checkBox->installEventFilter(this);
+    int minSize = ui->lb_checkBox->size().width() < ui->lb_checkBox->size().height()
+                  ? ui->lb_checkBox->size().width()
+                  : ui->lb_checkBox->size().height();
+    hintSize = int(0.6 * minSize);
+    ui->lb_checkBox->setAlignment(Qt::AlignCenter);
+    ui->lb_checkBox->setPixmap(QPixmap(":/img/icon_unchecked.png")
+                                       .scaled(hintSize, hintSize,
+                                               Qt::KeepAspectRatio,
+                                               Qt::SmoothTransformation));
+
 }
 
 FaceListItem::~FaceListItem() {
@@ -35,19 +45,39 @@ bool FaceListItem::eventFilter(QObject *watched, QEvent *event) {
     //拦截发往label子控件的鼠标按下事件
     if (watched == ui->lb_checkBox) {
         if (event->type() == QEvent::MouseButtonPress) {
-            changeCheckBoxStatus();
+            isChecked = !isChecked;
+            changeCheckBoxStatus(isChecked);
+            emit checkBoxStatusChanged_signal(isChecked, ui->lb_indexId->text());
             return true;
         }
     }
     return QWidget::eventFilter(watched, event);
 }
 
-void FaceListItem::changeCheckBoxStatus() {
-    isChecked = !isChecked;
-    if (isChecked) {
-        ui->lb_checkBox->setPixmap(QPixmap(":/img/signin_fail.png"));
+void FaceListItem::changeCheckBoxStatus(bool isCheckStatus) {
+
+    if (isCheckStatus) {
+
+        ui->lb_checkBox->setPixmap(QPixmap(":/img/icon_checked.png")
+                                           .scaled(hintSize, hintSize,
+                                                   Qt::KeepAspectRatio,
+                                                   Qt::SmoothTransformation));
     } else {
-        ui->lb_checkBox->setPixmap(QPixmap(":/img/signin_success.png"));
+        ui->lb_checkBox->setPixmap(QPixmap(":/img/icon_unchecked.png")
+                                           .scaled(hintSize, hintSize,
+                                                   Qt::KeepAspectRatio,
+                                                   Qt::SmoothTransformation));
     }
 }
+
+bool FaceListItem::getCheckedStatus() {
+    return isChecked;
+}
+
+void FaceListItem::setCheckStatus(bool isCheckedStatus) {
+    isChecked = isCheckedStatus;
+    changeCheckBoxStatus(isChecked);
+    emit checkBoxStatusChanged_signal(isChecked, ui->lb_indexId->text());
+}
+
 

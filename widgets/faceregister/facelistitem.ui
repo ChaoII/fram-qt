@@ -59,7 +59,10 @@
       </size>
      </property>
      <property name="text">
-      <string>复选框</string>
+      <string/>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -200,6 +203,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../qrc.qrc"/>
+ </resources>
  <connections/>
 </ui>

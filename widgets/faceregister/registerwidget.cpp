@@ -11,8 +11,14 @@ RegisterWidget::RegisterWidget(QWidget *parent) :
         ui(new Ui::RegisterWidget) {
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
-    setWindowFlags(Qt::FramelessWindowHint);
-    init_lw();
+    ui->frame->setStyleSheet("#frame{border:3px solid rgb(200,200,200);}"
+                             "QFrame{font-size:18px;}"
+                             "QFrame .QLineEdit {font-size:18px;\n"
+                             "border:1px solid rgba(150,150,150,100);\n"
+                             "border-radius:3px;\n"
+                             "background-color:rgba(200,200,200,40)}\n"
+                             "QListWidget{font-size:12px}");
+    initialRegisterFaceListWidget();
 }
 
 RegisterWidget::~RegisterWidget() {
@@ -23,20 +29,20 @@ RegisterWidget::~RegisterWidget() {
 void RegisterWidget::update_frame(const QImage &img) {
     if (img.isNull()) return;
     img_ = img;
-    QImage img_scaled = img.scaled(ui->pic->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QImage img_scaled = img.scaled(ui->pic->size(), Qt::AspectRatioMode::IgnoreAspectRatio, Qt::SmoothTransformation);
     ui->pic->setPixmap(QPixmap::fromImage(img_scaled));
     update();
 }
 
-void RegisterWidget::on_push_back_clicked() {
+void RegisterWidget::on_tb_back_clicked() {
     if (register_face_.empty()) {
         clear_register_info();
         emit register_finished_signal();
     } else {
-        QMessageBox *msg_box = new QMessageBox(QMessageBox::Warning,
-                                               "警告", "人脸信息还未保存，"
-                                                       "请回到注册界面点击确认按钮保存人脸信息.",
-                                               QMessageBox::Yes | QMessageBox::Cancel, this);
+        auto msg_box = new QMessageBox(QMessageBox::Warning,
+                                       "警告", "人脸信息还未保存，"
+                                               "请回到注册界面点击确认按钮保存人脸信息.",
+                                       QMessageBox::Yes | QMessageBox::Cancel, this);
         msg_box->setDefaultButton(QMessageBox::Yes);
         msg_box->button(QMessageBox::Yes)->setText("确认");
         msg_box->button(QMessageBox::Cancel)->setText("取消");
@@ -50,14 +56,14 @@ void RegisterWidget::on_push_back_clicked() {
 }
 
 
-void RegisterWidget::on_button_ensure_clicked() {
+void RegisterWidget::on_tb_ensure_clicked() {
     while (!register_face_.isEmpty()) {
         auto face_info = register_face_.takeFirst();
-        auto item = ui->face_list->takeItem(0);
-        ui->face_list->removeItemWidget(item);
+        auto item = ui->lw_faceList->takeItem(0);
+        ui->lw_faceList->removeItemWidget(item);
         bool ret = SeetaFace::getInstance().add_face(face_info.img,
-                                                      face_info.uid,
-                                                      face_info.name);
+                                                     face_info.uid,
+                                                     face_info.name);
         if (!ret) {
             qWarning() << "current face is invalid...";
             QMessageBox::warning(this, "警告",
@@ -71,15 +77,16 @@ void RegisterWidget::on_button_ensure_clicked() {
     emit register_finished_signal();
 }
 
-void RegisterWidget::init_lw() {
-    ui->face_list->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->face_list->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->face_list->setIconSize(QSize(140, 150));
-    ui->face_list->setResizeMode(QListView::Adjust);
-    ui->face_list->setViewMode(QListView::IconMode);
-    ui->face_list->setMovement(QListView::Static);
-    ui->face_list->setSpacing(20);
-    connect(ui->face_list, &QListWidget::itemDoubleClicked, this, [=](QListWidgetItem *item) {
+void RegisterWidget::initialRegisterFaceListWidget() {
+    ui->lw_faceList->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->lw_faceList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->lw_faceList->setIconSize(QSize(140, 150));
+    ui->lw_faceList->setResizeMode(QListView::Fixed);
+    ui->lw_faceList->setViewMode(QListView::IconMode);
+    ui->lw_faceList->setMovement(QListView::Static);
+    ui->lw_faceList->setSpacing(14);
+    ui->lw_faceList->setItemAlignment(Qt::AlignCenter);
+    connect(ui->lw_faceList, &QListWidget::itemDoubleClicked, this, [=](QListWidgetItem *item) {
         int index = item->listWidget()->currentRow();
         register_face_.removeAt(index);
     });
@@ -88,25 +95,29 @@ void RegisterWidget::init_lw() {
 void RegisterWidget::clear_register_info() {
     ui->edit_name->setText("");
     ui->edit_staff_id->setText("");
-    ui->face_list->clear();
+    ui->lw_faceList->clear();
 }
 
 
-void RegisterWidget::on_pb_add_clicked() {
+void RegisterWidget::on_tb_add_clicked() {
     if (ui->edit_name->text().isEmpty() || ui->edit_staff_id->text().isEmpty()) {
-        auto ret = QMessageBox::warning(this, "warning", "staff id and name must be not empty", QMessageBox::Yes);
+        QMessageBox::warning(this, "warning", "工号和姓名不能为空", QMessageBox::Yes);
         return;
     }
-    QListWidgetItem *item = new QListWidgetItem;
+    if (img_.isNull()) {
+        QMessageBox::warning(this, "warning", "请检查摄像头是否正确显示画面", QMessageBox::Yes);
+        return;
+    }
+    auto item = new QListWidgetItem;
     item->setText(ui->edit_name->text());
     item->setIcon(QIcon(QPixmap::fromImage(img_)));
-    ui->face_list->addItem(item);
+    ui->lw_faceList->addItem(item);
     register_face_.push_back(RegisterFace{Utils::QImage2CvMat(img_),
                                           ui->edit_staff_id->text(),
                                           ui->edit_name->text()});
-    if (ui->face_list->count() > Config::getInstance().get_max_face_num()) {
-        auto item = ui->face_list->takeItem(0);
-        delete item;
+    if (ui->lw_faceList->count() > Config::getInstance().get_max_face_num()) {
+        auto ele = ui->lw_faceList->takeItem(0);
+        delete ele;
         register_face_.pop_front();
     }
 }

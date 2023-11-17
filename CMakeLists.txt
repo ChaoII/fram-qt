@@ -152,5 +152,7 @@ set(PROJECT_SOURCES
 
 )
 
+
+set(THEME_COLOR 1f64fd)
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${DEPENDS})

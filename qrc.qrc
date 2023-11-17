@@ -1,5 +1,16 @@
 <RCC>
   <qresource prefix="/">
+    <file>img/icon_add.png</file>
+    <file>img/icon_ensure.png</file>
+    <file>img/icon_return1.png</file>
+    <file>img/icon_refresh.png</file>
+    <file>img/icon_delete.png</file>
+    <file>img/icon_register.png</file>
+    <file>img/icon_InvetSelectAll.png</file>
+    <file>img/icon_selectAll.png</file>
+    <file>img/icon_unselectAll.png</file>
+    <file>img/icon_checked.png</file>
+    <file>img/icon_unchecked.png</file>
     <file>img/icon_attendHistory.png</file>
     <file>img/icon_attendHistory_pressed.png</file>
     <file>img/icon_face.png</file>

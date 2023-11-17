@@ -30,15 +30,15 @@ signals:
 
 private slots:
 
-    void on_push_back_clicked();
+    void on_tb_back_clicked();
 
-    void on_button_ensure_clicked();
+    void on_tb_ensure_clicked();
 
-    void on_pb_add_clicked();
+    void on_tb_add_clicked();
 
 private:
 
-    void init_lw();
+    void initialRegisterFaceListWidget();
 
     void clear_register_info();
 
