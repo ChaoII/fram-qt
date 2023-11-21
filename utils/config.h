@@ -49,6 +49,10 @@ public:
 
     int get_socket_port() const;
 
+    int get_camera_index() const;
+
+    bool get_framelessStatus() const;
+
 private:
     explicit Config();
 
@@ -70,6 +74,8 @@ private:
     QString model_dir;
     int face_recognition_thread_num;
     int socket_port;
+    int camera_index;
+    bool isFrameless;
 };
 
 

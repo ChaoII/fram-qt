@@ -15,11 +15,17 @@
 
 MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     ui->setupUi(this);
+    this->ui->tb_close->setVisible(false);
     this->setAttribute(Qt::WA_QuitOnClose);
+    if (Config::getInstance().get_framelessStatus()) {
+        this->setWindowFlags(Qt::FramelessWindowHint);
+        this->ui->tb_close->setVisible(true);
+    }
 
-    ui->mpTimeLab->setStyleSheet("QLabel{font-size:30px;color:rgb(200,200,200);}");
-    ui->mpDateLab->setStyleSheet("QLabel{font-size:30px;color:rgb(200,200,200);}");
-    ui->mpWeekLab->setStyleSheet("QLabel{font-size:30px;color:rgb(200,130,200);}");
+
+    ui->mpTimeLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,200,200);}");
+    ui->mpDateLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,200,200);}");
+    ui->mpWeekLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,130,200);}");
 
     ui->pb_welcome->setStyleSheet(
             "QPushButton { border-radius:120px; }\n"
@@ -203,6 +209,10 @@ void MyWidget::on_pb_history_clicked() {
     ui->widget_input->showInputWidget();
 }
 
+void MyWidget::on_tb_close_clicked() {
+    close();
+}
+
 
 void MyWidget::init_widget() {
     layout()->addWidget(history_widget);
@@ -286,6 +296,13 @@ void MyWidget::on_receive_password_authorized() {
 
     }
 }
+
+void MyWidget::on_tb_fullscreen_clicked() {
+
+    this->showFullScreen();
+}
+
+
 
 
 

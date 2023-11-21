@@ -23,6 +23,8 @@ void Config::init_settings() {
     // 人脸识别线程数，建议为1
     settings->setValue("face_recognition_thread_num", 1);
     settings->setValue("socket_port", 9088);
+    settings->setValue("camera_index", 0);
+    settings->setValue("isFrameless", false);
     settings->endGroup();
 }
 
@@ -45,6 +47,8 @@ Config::Config() {
     model_dir = settings->value("model_dir").toString();
     face_recognition_thread_num = settings->value("face_recognition_thread_num").toInt();
     socket_port = settings->value("socket_port").toInt();
+    camera_index = settings->value("camera_index").toInt();
+    isFrameless = settings->value("isFrameless").toBool();
     settings->endGroup();
 }
 
@@ -86,4 +90,12 @@ int Config::get_face_recognition_thread_num() const {
 
 int Config::get_socket_port() const {
     return socket_port;
+}
+
+int Config::get_camera_index() const {
+    return camera_index;
+}
+
+bool Config::get_framelessStatus() const {
+    return isFrameless;
 }

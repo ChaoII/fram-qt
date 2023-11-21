@@ -6,7 +6,7 @@
 
 
 FaceDetThread::FaceDetThread(QObject *parent) : QObject(parent) {
-    cap_ = std::make_shared<cv::VideoCapture>(0);
+    cap_ = std::make_shared<cv::VideoCapture>(Config::getInstance().get_camera_index());
     cap_->set(cv::CAP_PROP_FRAME_WIDTH, 640);
     cap_->set(cv::CAP_PROP_FRAME_HEIGHT, 480);
 }
@@ -42,6 +42,7 @@ void FaceDetThread::run_detect() {
         if (cap_ && cap_->isOpened()) {
             QThread::msleep(20);
             cap_->read(frame_src);
+            cv::cvtColor(frame_src, frame_src, cv::COLOR_YUV2BGR_NV12);
             if (frame_src.empty()) continue;
             // flip for horizontal
             cv::flip(frame_src, frame_src, 1);

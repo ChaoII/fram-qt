@@ -53,7 +53,6 @@ int main(int argc, char *argv[]) {
     QPixmap pix(":img/face.png");
 
 
-
     MySplashScreen::getInstance().show();
 
 

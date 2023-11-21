@@ -21,7 +21,6 @@ cv::Mat Utils::crop_img(const cv::Mat &img, cv::Size target_size) {
     float rate_w = w * 1.0f / target_size.width;
     float rate_h = h * 1.0f / target_size.height;
     float w_d_h = target_size.width * 1.0f / target_size.height;
-
     cv::Mat img_crop;
     if (rate_h < rate_w) {
         int h_t = h;
@@ -29,7 +28,6 @@ cv::Mat Utils::crop_img(const cv::Mat &img, cv::Size target_size) {
         int gap_w = (w - w_t) / 2;
         cv::Rect rect(gap_w, 0, w_t, h_t);
         img(rect).copyTo(img_crop);
-
     } else {
         int w_t = w;
         int h_t = w_t / w_d_h;
