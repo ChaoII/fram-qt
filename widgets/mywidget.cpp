@@ -22,6 +22,7 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
         this->ui->tb_close->setVisible(true);
     }
 
+    setWindowIcon(QIcon(":img/icon-64x64.png"));
 
     ui->mpTimeLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,200,200);}");
     ui->mpDateLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,200,200);}");
@@ -31,18 +32,18 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
             "QPushButton { border-radius:120px; }\n"
             "QPushButton:hover { background-color: #181d24ff;}\n"
             "QPushButton:pressed {background-color: #18dd24ff; }");
+
     ui->pb_history->setStyleSheet(
             "QPushButton { border-radius:20px; }\n"
             "QPushButton {border-image:url(:img/icon_attendHistory.png)}\n"
-            "QPushButton:hover{border-image:url(:img/icon_attendHistory_pressed.png);background-color: #181d24ff; }\n"
-            "QPushButton:pressed{border-image:url(:img/icon_attendHistory_pressed.png);background-color: #18dd24ff;}\n");
+            "QPushButton:hover:!pressed {border-image:url(:img/icon_attendHistory.png);background-color: #181d24ff; }\n"
+            "QPushButton:hover:pressed{border-image:url(:img/icon_attendHistory_pressed.png);background-color: #18dd24ff;}\n");
 
     ui->pb_register->setStyleSheet(
             "QPushButton { border-radius:20px; }\n"
             "QPushButton {border-image:url(:img/icon_face.png)}\n"
-            "QPushButton:hover{border-image:url(:img/icon_face_pressed.png);background-color: #181d24ff; }\n"
-            "QPushButton:pressed{border-image:url(:img/icon_face_pressed.png);background-color: #18dd24ff;}\n");
-
+            "QPushButton:hover:!pressed{border-image:url(:img/icon_face.png);background-color: #181d24ff; }\n"
+            "QPushButton:hover:pressed{border-image:url(:img/icon_face_pressed.png);background-color: #18dd24ff;}\n");
 
     ui->gridLayout->setAlignment(ui->pb_history, Qt::AlignHCenter | Qt::AlignVCenter);
     ui->gridLayout->setAlignment(ui->pb_register, Qt::AlignHCenter | Qt::AlignVCenter);
@@ -149,7 +150,7 @@ void MyWidget::update_frame(QImage qimg, QRect rect) {
         face_info_widget->update_register_frame(qimg);
     }
     if (!ui->widget->isVisible()) return;
-    img_ = qimg.scaled(size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    img_ = qimg.scaled(size(), Qt::IgnoreAspectRatio, Qt::FastTransformation);
     update();
 }
 
@@ -159,7 +160,7 @@ void MyWidget::on_face_rec(const FaceInfoWrap &rec_info) {
     if (rec_info.code == -1) {
         ui->widget_info->setAttendInfo("攻击人脸",
                                        attend_time,
-                                       QPixmap(":img/signin_fail.png"),
+                                       QPixmap(":img/icon_fail.png"),
                                        QPixmap(),
                                        QPixmap());
 
@@ -167,14 +168,14 @@ void MyWidget::on_face_rec(const FaceInfoWrap &rec_info) {
         Utils::setBackgroundColor(ui->widget_info, QColor(255, 0, 0, 40));
     } else if (rec_info.code == 0) {
         ui->widget_info->setAttendInfo("未知", attend_time,
-                                       QPixmap(":img/signin_fail.png"),
+                                       QPixmap(":img/icon_fail.png"),
                                        QPixmap(),
                                        QPixmap());
         Utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
         Utils::setBackgroundColor(ui->widget_info, QColor(255, 0, 0, 40));
     } else {
         ui->widget_info->setAttendInfo(rec_info.ret.name, attend_time,
-                                       QPixmap(":img/signin_success.png"),
+                                       QPixmap(":img/icon_success.png"),
                                        QPixmap(rec_info.ret.pic_url),
                                        QPixmap::fromImage(rec_info.ret.img));
         Utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 0));
@@ -210,7 +211,12 @@ void MyWidget::on_pb_history_clicked() {
 }
 
 void MyWidget::on_tb_close_clicked() {
-    close();
+    currentClickedButton_ = ButtonsEnum::CloseButton;
+    if (ui->widget_input->isVisible()) {
+        ui->widget_input->hideInputWidget();
+        return;
+    }
+    ui->widget_input->showInputWidget();
 }
 
 
@@ -249,8 +255,13 @@ void MyWidget::on_update_time() {
 
 void MyWidget::paintEvent(QPaintEvent *event) {
     if (!ui->widget->isVisible()) return;
-    if (img_.isNull()) return;
     QPainter painter(this);
+    if (img_.isNull()) {
+        // 绘制一个灰色的矩形
+        QRect rectangle(0, 0, this->width(), this->height());
+        painter.setBrush(QColor(30, 30, 30));
+        painter.drawRect(rectangle);
+    }
     painter.drawImage(0, 0, img_);
 }
 
@@ -292,14 +303,36 @@ void MyWidget::on_receive_password_authorized() {
         emit close_detector_signal();
     } else if (currentClickedButton_ == ButtonsEnum::WelcomeButton) {
         //todo other task such as open the door
+    } else if (currentClickedButton_ == ButtonsEnum::CloseButton) {
+        close();
     } else {
-
+        // todo
     }
 }
 
 void MyWidget::on_tb_fullscreen_clicked() {
 
     this->showFullScreen();
+}
+
+void MyWidget::mousePressEvent(QMouseEvent *event) {
+//    if (isActiveWindow()) {
+//        event->ignore();
+//    } else {
+//        activateWindow();
+//        event->accept();
+//    }
+    if (isTopLevel()) {
+        qDebug() << "--1231----";
+    } else {
+        qDebug() << "-----3333-----";
+    }
+
+    if (!isActiveWindow()) {
+        activateWindow();
+        qDebug() << "------------------";
+    }
+    QWidget::mousePressEvent(event);
 }
 
 

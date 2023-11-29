@@ -24,7 +24,9 @@ void Config::init_settings() {
     settings->setValue("face_recognition_thread_num", 1);
     settings->setValue("socket_port", 9088);
     settings->setValue("camera_index", 0);
-    settings->setValue("isFrameless", false);
+    settings->setValue("is_frameless", false);
+    settings->setValue("is_write_log", false);
+    settings->setValue("log_file", "");
     settings->endGroup();
 }
 
@@ -48,7 +50,9 @@ Config::Config() {
     face_recognition_thread_num = settings->value("face_recognition_thread_num").toInt();
     socket_port = settings->value("socket_port").toInt();
     camera_index = settings->value("camera_index").toInt();
-    isFrameless = settings->value("isFrameless").toBool();
+    is_frameless = settings->value("is_frameless").toBool();
+    is_write_log = settings->value("is_write_log").toBool();
+    log_file = settings->value("log_file").toString();
     settings->endGroup();
 }
 
@@ -97,5 +101,13 @@ int Config::get_camera_index() const {
 }
 
 bool Config::get_framelessStatus() const {
-    return isFrameless;
+    return is_frameless;
+}
+
+bool Config::get_is_write_log() const {
+    return is_write_log;
+}
+
+QString Config::get_log_file() const {
+    return log_file;
 }

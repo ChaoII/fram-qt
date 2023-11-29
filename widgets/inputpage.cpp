@@ -2,10 +2,8 @@
 #include "ui_inputpage.h"
 
 #define INPUT_MAX_COUNT     6
-#define MAX_FACE            4
-#define UNIT_TIME           (1000)               // ms
+#define UNIT_TIME           (1000)            // ms
 #define INPUT_TIMEOUT       (10 * UNIT_TIME) // ms
-#define NOTIFY_TIMEOUT      (1 * UNIT_TIME)
 #define PASSWORD            "123456"
 
 InputPage::InputPage(QWidget *parent) :
@@ -17,8 +15,8 @@ InputPage::InputPage(QWidget *parent) :
     ui->setupUi(this);
     this->setStyleSheet(
             "QPushButton{color: rgb(255, 255, 255);border-image:url(:/img/icon_num_btn.png);} "
-            "QPushButton:hover {color: rgb(255, 255, 255);border-image: url(:/img/icon_num_btn_hover.png);}\n"
-            "QPushButton:pressed {border-image: url(:/img/icon_num_btn_hover.png); background-color:rgba(150,150,150,80)}");
+            "QPushButton:hover:!pressed {color: rgb(255, 255, 255);border-image: url(:/img/icon_num_btn.png);}\n"
+            "QPushButton:pressed:pressed {border-image: url(:/img/icon_num_btn_hover.png); background-color:rgba(150,150,150,80)}");
     ui->le_inputContent->setPlaceholderText("请输入密码");
     ui->message->setStyleSheet("QLabel{color:rgb(255,0,0)}");
     init();
@@ -133,6 +131,8 @@ void InputPage::on_pb_ensure_clicked() {
     } else {
         ui->message->setText("密码错误！");
     }
+    passwordContent.clear();
+    ui->le_inputContent->clear();
     emit reSetCountDown(INPUT_TIMEOUT);
 }
 
@@ -143,6 +143,7 @@ void InputPage::updateCountDown() {
         counterTimer->stop();
         hideInputWidget();
         passwordContent.clear();
+        ui->le_inputContent->clear();
         isFirstKey = true;
     }
     ui->lb_timeout->setText(QString::number(currentTimeout / UNIT_TIME));
@@ -156,12 +157,15 @@ void InputPage::onReSetCountDown(int swTimeOut) {
 
 void InputPage::showInputWidget() {
     this->setVisible(true);
+    passwordContent.clear();
+    ui->le_inputContent->clear();
     onReSetCountDown(INPUT_TIMEOUT);
 }
 
 void InputPage::hideInputWidget() {
     counterTimer->stop();
     passwordContent.clear();
+    ui->le_inputContent->clear();
     ui->message->setText("");
     this->setVisible(false);
 }

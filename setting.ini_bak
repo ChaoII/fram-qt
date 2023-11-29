@@ -22,4 +22,8 @@ socket_port = 9088
 camera_index = 0
 #界面是否开启无头模式
 isFrameless = false
+# 是否开启日志
+write_log = False
+# 日志文件名
+log_file = "log.txt"
 

@@ -29,6 +29,7 @@ Q_OBJECT
         RegisterButton,
         HistoryButton,
         WelcomeButton,
+        CloseButton,
         None,
     };
 
@@ -85,6 +86,9 @@ private:
 
     void on_history_finished();
 
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
 
 private:
     QImage img_;

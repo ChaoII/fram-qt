@@ -11,8 +11,8 @@ class MySplashScreen : public QSplashScreen {
 public:
 
     static MySplashScreen &getInstance() {
-        static QPixmap pix(":img/face.png");
-        static MySplashScreen mySplashScreen(pix.scaled(300, 300));
+        static QPixmap pix(":img/face_splash.png");
+        static MySplashScreen mySplashScreen(pix.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation));
         return mySplashScreen;
     }
 

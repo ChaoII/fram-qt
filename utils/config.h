@@ -53,6 +53,10 @@ public:
 
     bool get_framelessStatus() const;
 
+    bool get_is_write_log() const;
+
+    QString get_log_file() const;
+
 private:
     explicit Config();
 
@@ -75,7 +79,9 @@ private:
     int face_recognition_thread_num;
     int socket_port;
     int camera_index;
-    bool isFrameless;
+    bool is_frameless;
+    bool is_write_log;
+    QString log_file;
 };
 
 

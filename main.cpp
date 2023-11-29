@@ -5,10 +5,10 @@
 #include <QApplication>
 #include <QFile>
 #include <QDateTime>
-#include <QSplashScreen>
 #include <QtWidgets>
 #include "widgets/MySplashScreen.h"
 #include "widgets/mywidget.h"
+#include "utils/config.h"
 
 void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
     static QMutex mutex;
@@ -38,7 +38,11 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 #else
     QString message = QString("[%1]|【%2】| %3").arg(current_date_time, text, msg);
 #endif
-    QFile file("log.txt");
+    QString logFile = Config::getInstance().get_log_file();
+    if (logFile.isEmpty()) {
+        logFile = "log.txt";
+    }
+    QFile file(logFile);
     file.open(QIODevice::WriteOnly | QIODevice::Append);
     QTextStream text_stream(&file);
     text_stream << message << "\r\n";
@@ -48,16 +52,23 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 }
 
 int main(int argc, char *argv[]) {
+#ifdef __LINUX__
+    qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
+#else
+    qputenv("QT_IM_MODULE", QByteArray("Qt5Input"));
+#endif
     QApplication a(argc, argv);
-//    qInstallMessageHandler(outputMessage);
-    QPixmap pix(":img/face.png");
-
-
+    if (Config::getInstance().get_is_write_log()) {
+        qInstallMessageHandler(outputMessage);
+    }
     MySplashScreen::getInstance().show();
-
-
     MyWidget w;
     MySplashScreen::getInstance().finish(&w);
+#ifdef __LINUX__
+    w.setMaximumSize(1000,1000);
+    w.showFullScreen();
+#else
     w.show();
+#endif
     return a.exec();
 }

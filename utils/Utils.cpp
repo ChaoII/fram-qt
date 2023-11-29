@@ -6,7 +6,7 @@
 
 
 SeetaImageData Utils::CvMat2Simg(cv::Mat &img) {
-    SeetaImageData data;
+    SeetaImageData data{};
     data.width = img.cols;
     data.height = img.rows;
     data.channels = img.channels();
@@ -41,7 +41,7 @@ cv::Mat Utils::crop_img(const cv::Mat &img, cv::Size target_size) {
 QImage Utils::CvMat2QImage(const cv::Mat &img) {
     if(img.channels()!=3){
         qDebug()<<"unsupported cv image chich channel is:" <<img.channels();
-        return QImage();
+        return {};
     }
     int height = img.rows;
     int width = img.cols;
@@ -55,14 +55,14 @@ QImage Utils::CvMat2QImage(const cv::Mat &img) {
 cv::Mat Utils::QImage2CvMat(const QImage &img){
     if(img.format()!=QImage::Format_RGB888){
         qDebug()<<"QImage only support Format_RGB888,but the QImage format is:"<<img.format();
-        return cv::Mat();
+        return {};
     }
     auto swap = img.rgbSwapped();
     return cv::Mat(swap.height(),swap.width(),CV_8UC3,(unsigned char*)swap.bits(),(size_t)swap.bytesPerLine()).clone();
 }
 
 SeetaRect Utils::QRect2SRect(const QRect& rect){
-    SeetaRect s_rect;
+    SeetaRect s_rect{};
     s_rect.x = rect.x();
     s_rect.y = rect.y();
     s_rect.width = rect.width();
@@ -88,7 +88,7 @@ qint64 Utils::get_uuid()
 QByteArray Utils::floatArray2QByteArray(float *buffer, int size)
 {
     QByteArray array;
-    int byte_num = sizeof(float)*size;
+    size_t byte_num = sizeof(float)*size;
     array.resize(byte_num);
     memcpy(array.data(), buffer, byte_num);
     return array;

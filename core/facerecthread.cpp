@@ -11,8 +11,9 @@ void FaceRecThread::face_recognition(const QImage &img, const QRect &rect) {
     //人脸活体检测
     auto status = Status::REAL;
     FaceInfoWrap info{-1, QDateTime::currentDateTime().toString("yyyy-MM-ddThh:mm:ss.zzzzzz"), {}};
+#ifndef __LINUX__
     status = SeetaFace::getInstance().face_anti_spoofing(img_, rect_, points);
-
+#endif
     if (status == Status::SPOOF) {
         qCritical() << "攻击人脸";
     } else {
@@ -32,7 +33,6 @@ void FaceRecThread::face_recognition(const QImage &img, const QRect &rect) {
     }
     emit face_rec_signal(info);
 }
-
 
 void FaceRecThread::send_records() {
     QDateTime cur_time = QDateTime::currentDateTime();
