@@ -7,7 +7,7 @@
 
 FaceDetThread::FaceDetThread(QObject *parent) : QObject(parent) {
 
-#ifdef __LINUX__
+#ifdef __linux__
     cap_ = std::make_shared<cv::VideoCapture>("v4l2src device=/dev/video11 ! video/x-raw,format=NV12,width=640,"
                                              "height=480,framerate=30/1 ! appsink",cv::CAP_GSTREAMER);
 #else
@@ -48,7 +48,7 @@ void FaceDetThread::run_detect() {
         if (cap_ && cap_->isOpened()) {
             QThread::msleep(20);
             cap_->read(frame_src);
-#ifdef __LINUX__
+#ifdef __linux__
             cv::cvtColor(frame_src, frame_src, cv::COLOR_YUV2BGR_NV12);
 #endif
             if (frame_src.empty()) continue;

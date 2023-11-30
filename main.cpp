@@ -52,7 +52,7 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 }
 
 int main(int argc, char *argv[]) {
-#ifdef __LINUX__
+#ifndef __linux__
     qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
 #else
     qputenv("QT_IM_MODULE", QByteArray("Qt5Input"));
@@ -64,7 +64,8 @@ int main(int argc, char *argv[]) {
     MySplashScreen::getInstance().show();
     MyWidget w;
     MySplashScreen::getInstance().finish(&w);
-#ifdef __LINUX__
+
+#ifdef __linux__
     w.setMaximumSize(1000,1000);
     w.showFullScreen();
 #else

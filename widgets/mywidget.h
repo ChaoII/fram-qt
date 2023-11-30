@@ -72,8 +72,6 @@ private slots:
 
     void on_tb_close_clicked();
 
-    void on_tb_fullscreen_clicked();
-
     void on_receive_password_authorized();
 
 private:

@@ -21,7 +21,7 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
         this->setWindowFlags(Qt::FramelessWindowHint);
         this->ui->tb_close->setVisible(true);
     }
-
+    this->setWindowFlags(windowFlags() | Qt::Window | Qt::WindowStaysOnTopHint);
     setWindowIcon(QIcon(":img/icon-64x64.png"));
 
     ui->mpTimeLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,200,200);}");
@@ -310,27 +310,18 @@ void MyWidget::on_receive_password_authorized() {
     }
 }
 
-void MyWidget::on_tb_fullscreen_clicked() {
-
-    this->showFullScreen();
-}
 
 void MyWidget::mousePressEvent(QMouseEvent *event) {
-//    if (isActiveWindow()) {
-//        event->ignore();
-//    } else {
-//        activateWindow();
-//        event->accept();
-//    }
-    if (isTopLevel()) {
-        qDebug() << "--1231----";
-    } else {
-        qDebug() << "-----3333-----";
-    }
-
     if (!isActiveWindow()) {
-        activateWindow();
-        qDebug() << "------------------";
+        qDebug() << "not activate";
+    } else {
+        qDebug() << "activate";
+    }
+    if (!isFullScreen()) {
+//        this->showFullScreen();
+        qDebug() << "not full screen";
+    } else {
+        qDebug() << "fullscreen";
     }
     QWidget::mousePressEvent(event);
 }
