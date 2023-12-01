@@ -27,8 +27,12 @@ set(QxOrm_DIR "E:/develop/QxOrm" CACHE PATH "QxOrm install directory")
 
 
 # add qt
-find_package(Qt${QT_VERSION} COMPONENTS Widgets Sql Concurrent Network REQUIRED)
-list(APPEND DEPENDS Qt${QT_VERSION}::Widgets Qt${QT_VERSION}::Sql Qt${QT_VERSION}::Concurrent Qt${QT_VERSION}::Network)
+find_package(Qt${QT_VERSION} COMPONENTS Widgets Sql Concurrent Network Multimedia REQUIRED)
+list(APPEND DEPENDS Qt${QT_VERSION}::Widgets
+        Qt${QT_VERSION}::Sql
+        Qt${QT_VERSION}::Concurrent
+        Qt${QT_VERSION}::Network
+        Qt${QT_VERSION}::Multimedia)
 
 #add opencv
 find_package(OpenCV REQUIRED)
@@ -78,9 +82,11 @@ aux_source_directory(widgets WIDGETS_SRC)
 aux_source_directory(customwidget CUSTOM_WIDGETS_SRC)
 aux_source_directory(utils UTILS_SRC)
 
-
-message(${REGISTER_SRC})
-message(${WIDGETS_SRC})
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    aux_source_directory(utils/wavPlayer WAVE_SRC)
+    list(APPEND UTILS_SRC ${WAVE_SRC})
+    list(APPEND DEPENDS asound)
+endif ()
 
 # add source code
 set(PROJECT_SOURCES

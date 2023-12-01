@@ -9,9 +9,11 @@
 #include "core/facerecthread.h"
 #include "core/facedetthread.h"
 #include "core/recordthread.h"
+#include "core/AudioPlayThread.h"
 #include "widgets/faceregister/faceinfowidget.h"
 #include "widgets/attendhistory/historywidget.h"
 #include <QMutex>
+#include <QProcess>
 #include <QMutexLocker>
 #include <QCloseEvent>
 #include "core/outersocket.h"
@@ -43,8 +45,6 @@ public:
 
     void on_update_time();
 
-    void run();
-
     void paintEvent(QPaintEvent *event) override;
 
     ~MyWidget() override;
@@ -61,6 +61,8 @@ signals:
 
     void open_detector_signal();
 
+    void face_recognition_success_audio_signal();
+
 
 private slots:
 
@@ -74,6 +76,10 @@ private slots:
 
     void on_receive_password_authorized();
 
+    void on_changeAudioPlayStatus();
+
+    void on_detectNetworkConnectStatus();
+
 private:
 
     void init_widget();
@@ -85,19 +91,18 @@ private:
     void on_history_finished();
 
 
-protected:
-    void mousePressEvent(QMouseEvent *event) override;
-
 private:
     QImage img_;
     QDateTime last_rec_time = QDateTime::currentDateTime();
     QThread face_det_thread_;
     QThread face_rec_thread_;
     QThread attend_record_thread_;
-
+    QThread audio_play_thread_;
     ButtonsEnum currentClickedButton_ = ButtonsEnum::None;
     HistoryWidget *history_widget = nullptr;
     FaceInfoWidget *face_info_widget = nullptr;
+    QProcess *pingCmd = nullptr;
     Ui::MyWidget *ui;
+    bool isAudioFinished = true;
 };
 

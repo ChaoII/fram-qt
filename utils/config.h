@@ -57,6 +57,8 @@ public:
 
     QString get_log_file() const;
 
+    QString get_gateway() const;
+
 private:
     explicit Config();
 
@@ -82,6 +84,7 @@ private:
     bool is_frameless;
     bool is_write_log;
     QString log_file;
+    QString gateway;
 };
 
 

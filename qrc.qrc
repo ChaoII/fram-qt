@@ -37,5 +37,10 @@
     <file>img/face_splash.png</file>
     <file>img/icon_fail.png</file>
     <file>img/icon_success.png</file>
+    <file>img/icon_connect.png</file>
+    <file>img/icon_disconnect.png</file>
+    <file>img/icon_wifi_connect.png</file>
+    <file>img/icon_wifi_disconnect.png</file>
+    <file>img/audio_thanks.wav</file>
   </qresource>
 </RCC>

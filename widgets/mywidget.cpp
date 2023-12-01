@@ -8,6 +8,7 @@
 #include "ui_mywidget.h"
 #include <QPainter>
 #include <QTimer>
+#include <QHostInfo>
 #include <QMetaType>
 #include "widgets/MySplashScreen.h"
 #include "widgets/attendhistory/historywidget.h"
@@ -26,7 +27,7 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 
     ui->mpTimeLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,200,200);}");
     ui->mpDateLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,200,200);}");
-    ui->mpWeekLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,130,200);}");
+    ui->mpWeekLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,200,200);}");
 
     ui->pb_welcome->setStyleSheet(
             "QPushButton { border-radius:120px; }\n"
@@ -57,7 +58,6 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 
     MySplashScreen::getInstance().update_process("load outer socket component...");
 
-//    this->setWindowFlags(Qt::FramelessWindowHint);
     // 注册信号槽元对象
     qRegisterMetaType<FaceInfoWrap>();
     qRegisterMetaType<QVector<FaceInfoWrap>>();
@@ -91,12 +91,19 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     connect(&face_rec_thread_, &QThread::finished, face_rec_thread, &FaceRecThread::deleteLater);
 
     MySplashScreen::getInstance().update_process("load attend data record component...");
+
+    // 声音播放线程
+    auto audio_play_thread = new AudioPlayThread();
+    audio_play_thread->moveToThread(&audio_play_thread_);
+    connect(this, &MyWidget::face_recognition_success_audio_signal, audio_play_thread, &AudioPlayThread::playAudio);
+    connect(audio_play_thread, &AudioPlayThread::playAudioFinished, this, &MyWidget::on_changeAudioPlayStatus);
+    connect(&audio_play_thread_, &QThread::finished, audio_play_thread, &QThread::deleteLater);
+
     // 打卡记录线程
     auto record_thread = new RecordThread();
     record_thread->moveToThread(&attend_record_thread_);
     connect(face_rec_thread, &FaceRecThread::record_signal, record_thread, &RecordThread::record);
     connect(&attend_record_thread_, &QThread::finished, record_thread, &QThread::deleteLater);
-
 
     MySplashScreen::getInstance().update_process("load face library component...");
 
@@ -121,12 +128,19 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     connect(timer2, &QTimer::timeout, [=]() { emit send_img_signal(QImage(), QRect()); });
     timer2->setInterval(Config::getInstance().get_record_interval() * 1000);
     timer2->start();
+    // 检测网络情况
+    auto timer3 = new QTimer(this);
+    connect(timer2, &QTimer::timeout, this, &MyWidget::on_detectNetworkConnectStatus);
+    timer3->start(1000);
+    pingCmd = new QProcess(this);
+
     // 初始化界面
     init_widget();
     // 启动后台线程
     face_det_thread_.start();
     face_rec_thread_.start();
     attend_record_thread_.start();
+    audio_play_thread_.start();
     emit run_detect_thread_signal();
     MySplashScreen::getInstance().update_process("init finished...");
 }
@@ -157,7 +171,7 @@ void MyWidget::update_frame(QImage qimg, QRect rect) {
 void MyWidget::on_face_rec(const FaceInfoWrap &rec_info) {
 
     QString attend_time = rec_info.time.split("T")[1].split(".")[0];
-    if (rec_info.code == -1) {
+    if (rec_info.status == RecognitionStatus::SPOOF) {
         ui->widget_info->setAttendInfo("攻击人脸",
                                        attend_time,
                                        QPixmap(":img/icon_fail.png"),
@@ -166,20 +180,27 @@ void MyWidget::on_face_rec(const FaceInfoWrap &rec_info) {
 
         Utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 40));
         Utils::setBackgroundColor(ui->widget_info, QColor(255, 0, 0, 40));
-    } else if (rec_info.code == 0) {
+    } else if (rec_info.status == RecognitionStatus::Unknown) {
         ui->widget_info->setAttendInfo("未知", attend_time,
                                        QPixmap(":img/icon_fail.png"),
                                        QPixmap(),
                                        QPixmap());
         Utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
         Utils::setBackgroundColor(ui->widget_info, QColor(255, 0, 0, 40));
-    } else {
+    } else if (rec_info.status == RecognitionStatus::Success) {
         ui->widget_info->setAttendInfo(rec_info.ret.name, attend_time,
                                        QPixmap(":img/icon_success.png"),
                                        QPixmap(rec_info.ret.pic_url),
                                        QPixmap::fromImage(rec_info.ret.img));
+
+        if (isAudioFinished) {
+            isAudioFinished = false;
+            emit face_recognition_success_audio_signal();
+        }
         Utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 0));
         Utils::setBackgroundColor(ui->widget_info, QColor(0, 255, 0, 40));
+    } else {
+        qDebug() << "识别结果为【None】";
     }
 }
 
@@ -218,7 +239,6 @@ void MyWidget::on_tb_close_clicked() {
     }
     ui->widget_input->showInputWidget();
 }
-
 
 void MyWidget::init_widget() {
     layout()->addWidget(history_widget);
@@ -311,20 +331,37 @@ void MyWidget::on_receive_password_authorized() {
 }
 
 
-void MyWidget::mousePressEvent(QMouseEvent *event) {
-    if (!isActiveWindow()) {
-        qDebug() << "not activate";
-    } else {
-        qDebug() << "activate";
-    }
-    if (!isFullScreen()) {
-//        this->showFullScreen();
-        qDebug() << "not full screen";
-    } else {
-        qDebug() << "fullscreen";
-    }
-    QWidget::mousePressEvent(event);
+void MyWidget::on_changeAudioPlayStatus() {
+    isAudioFinished = true;
 }
+
+void MyWidget::on_detectNetworkConnectStatus() {
+    QStringList pingParameters;
+    pingParameters << Config::getInstance().get_gateway();
+#if defined(__linux__) || defined(__APPLE__)
+    pingParameters << "-c";
+#else
+    pingParameters << "-n";
+#endif
+    pingParameters << "1";
+    pingCmd->start("ping", pingParameters);
+    bool connectStatus = false;
+#if defined(__linux__) || defined(__APPLE__)
+    QString keyStr = "ttl";
+#else
+    QString keyStr = "TTL";
+#endif
+    if (pingCmd->waitForFinished(200)) {
+        QString res = QString::fromLocal8Bit(pingCmd->readAll());
+        if (res.indexOf(keyStr) != -1) {
+            connectStatus = true;
+        }
+    }
+    auto pic_url = connectStatus ? ":img/icon_wifi_connect.png" : ":img/icon_wifi_disconnect.png";
+    ui->lb_net->setPixmap(QPixmap(pic_url));
+}
+
+
 
 
 

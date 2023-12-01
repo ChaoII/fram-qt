@@ -41,9 +41,16 @@ struct FaceRecRet {
     float score;
 };
 
+enum class RecognitionStatus {
+    Success,
+    Unknown,
+    SPOOF,
+    None
+};
+
 // 人脸识别结果封装
 struct FaceInfoWrap {
-    int code;
+    RecognitionStatus status = RecognitionStatus::Unknown;
     QString time;
     FaceRecRet ret;
 };

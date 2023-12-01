@@ -26,4 +26,5 @@ isFrameless = false
 write_log = false
 # 日志文件名
 log_file = "log.txt"
-
+# 默认网关
+gateway = "172.168.1.254"

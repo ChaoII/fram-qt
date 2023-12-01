@@ -27,6 +27,7 @@ void Config::init_settings() {
     settings->setValue("is_frameless", false);
     settings->setValue("is_write_log", false);
     settings->setValue("log_file", "");
+    settings->setValue("gateway", "127.168.1.254");
     settings->endGroup();
 }
 
@@ -53,6 +54,7 @@ Config::Config() {
     is_frameless = settings->value("is_frameless").toBool();
     is_write_log = settings->value("is_write_log").toBool();
     log_file = settings->value("log_file").toString();
+    gateway = settings->value("gateway").toString();
     settings->endGroup();
 }
 
@@ -110,4 +112,8 @@ bool Config::get_is_write_log() const {
 
 QString Config::get_log_file() const {
     return log_file;
+}
+
+QString Config::get_gateway() const {
+    return gateway;
 }
