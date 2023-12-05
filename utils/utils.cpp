@@ -2,10 +2,10 @@
 // Created by aichao on 2022/5/11.
 //
 
-#include "Utils.h"
+#include "utils.h"
 
 
-SeetaImageData Utils::CvMat2Simg(cv::Mat &img) {
+SeetaImageData utils::cvMatToSImg(cv::Mat &img) {
     SeetaImageData data{};
     data.width = img.cols;
     data.height = img.rows;
@@ -14,7 +14,7 @@ SeetaImageData Utils::CvMat2Simg(cv::Mat &img) {
     return data;
 }
 
-cv::Mat Utils::crop_img(const cv::Mat &img, cv::Size target_size) {
+cv::Mat utils::cropImg(const cv::Mat &img, cv::Size target_size) {
 
     int h = img.rows;
     int w = img.cols;
@@ -38,9 +38,9 @@ cv::Mat Utils::crop_img(const cv::Mat &img, cv::Size target_size) {
     return img_crop;
 }
 
-QImage Utils::CvMat2QImage(const cv::Mat &img) {
-    if(img.channels()!=3){
-        qDebug()<<"unsupported cv image chich channel is:" <<img.channels();
+QImage utils::cvMat2QImage(const cv::Mat &img) {
+    if (img.channels() != 3) {
+        qDebug() << "unsupported cv image chich channel is:" << img.channels();
         return {};
     }
     int height = img.rows;
@@ -52,16 +52,17 @@ QImage Utils::CvMat2QImage(const cv::Mat &img) {
     return q_img;
 }
 
-cv::Mat Utils::QImage2CvMat(const QImage &img){
-    if(img.format()!=QImage::Format_RGB888){
-        qDebug()<<"QImage only support Format_RGB888,but the QImage format is:"<<img.format();
+cv::Mat utils::qImageToCvMat(const QImage &img) {
+    if (img.format() != QImage::Format_RGB888) {
+        qDebug() << "QImage only support Format_RGB888,but the QImage format is:" << img.format();
         return {};
     }
     auto swap = img.rgbSwapped();
-    return cv::Mat(swap.height(),swap.width(),CV_8UC3,(unsigned char*)swap.bits(),(size_t)swap.bytesPerLine()).clone();
+    return cv::Mat(swap.height(), swap.width(), CV_8UC3, (unsigned char *) swap.bits(),
+                   (size_t) swap.bytesPerLine()).clone();
 }
 
-SeetaRect Utils::QRect2SRect(const QRect& rect){
+SeetaRect utils::qRectToSRect(const QRect &rect) {
     SeetaRect s_rect{};
     s_rect.x = rect.x();
     s_rect.y = rect.y();
@@ -70,7 +71,7 @@ SeetaRect Utils::QRect2SRect(const QRect& rect){
     return s_rect;
 }
 
-QRect Utils::SRect2QRect(const SeetaRect& s_rect){
+QRect utils::sRectToQRect(const SeetaRect &s_rect) {
     QRect q_rect;
     q_rect.setX(s_rect.x);
     q_rect.setY(s_rect.y);
@@ -79,23 +80,20 @@ QRect Utils::SRect2QRect(const SeetaRect& s_rect){
     return q_rect;
 }
 
-qint64 Utils::get_uuid()
-{
-    uuid.init(1,1);
-    return uuid.nextid();
+qint64 utils::getUuid() {
+    uuid_.init(1, 1);
+    return uuid_.nextid();
 }
 
-QByteArray Utils::floatArray2QByteArray(float *buffer, int size)
-{
+QByteArray utils::floatArray2QByteArray(float *buffer, int size) {
     QByteArray array;
-    size_t byte_num = sizeof(float)*size;
+    size_t byte_num = sizeof(float) * size;
     array.resize(byte_num);
     memcpy(array.data(), buffer, byte_num);
     return array;
 }
 
-void Utils::setBackgroundColor(QWidget *w, QColor color)
-{
+void utils::setBackgroundColor(QWidget *w, QColor color) {
     w->setAutoFillBackground(true);
     QPalette palette = w->palette();
     palette.setColor(QPalette::Window, color);

@@ -21,7 +21,7 @@
 #include <seeta/FaceRecognizer.h>
 #include <seeta/FaceTracker.h>
 #include <seeta/FaceAntiSpoofing.h>
-#include "utils/Utils.h"
+#include "utils/utils.h"
 #include "utils/struct.h"
 #include "models/models.h"
 #include "core/vectorsearch.h"

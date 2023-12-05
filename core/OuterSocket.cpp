@@ -30,7 +30,7 @@ QString messageFlagToStr(const MessageFlag &flag) {
 
 OuterSocket::OuterSocket(QObject *parent) : QObject(parent) {
     tcp_server_ = new QTcpServer(this);
-    tcp_server_->listen(QHostAddress::Any, Config::getInstance().get_socket_port());
+    tcp_server_->listen(QHostAddress::Any, Config::getInstance().get_socketPort());
     connect(tcp_server_, &QTcpServer::newConnection, this, &OuterSocket::on_new_connect);
 }
 

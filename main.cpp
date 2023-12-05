@@ -38,7 +38,7 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 #else
     QString message = QString("[%1]|【%2】| %3").arg(current_date_time, text, msg);
 #endif
-    QString logFile = Config::getInstance().get_log_file();
+    QString logFile = Config::getInstance().get_logFile();
     if (logFile.isEmpty()) {
         logFile = "log.txt";
     }
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     qputenv("QT_IM_MODULE", QByteArray("Qt5Input"));
 #endif
     QApplication a(argc, argv);
-    if (Config::getInstance().get_is_write_log()) {
+    if (Config::getInstance().get_isWriteLog()) {
         qInstallMessageHandler(outputMessage);
     }
     MySplashScreen::getInstance().show();

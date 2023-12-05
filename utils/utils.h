@@ -15,23 +15,23 @@
 
 using snowflake_t = snowflake<1534832906275L, std::mutex>;
 
-class Utils {
+class utils {
 
 public:
 
-    static SeetaImageData CvMat2Simg(cv::Mat &img);
+    static SeetaImageData cvMatToSImg(cv::Mat &img);
 
-    static cv::Mat crop_img(const cv::Mat &img, cv::Size target_size = cv::Size(600, 1024));
+    static cv::Mat cropImg(const cv::Mat &img, cv::Size target_size = cv::Size(600, 1024));
 
-    static QImage CvMat2QImage(const cv::Mat &img);
+    static QImage cvMat2QImage(const cv::Mat &img);
 
-    static cv::Mat QImage2CvMat(const QImage &img);
+    static cv::Mat qImageToCvMat(const QImage &img);
 
-    static SeetaRect QRect2SRect(const QRect &rect);
+    static SeetaRect qRectToSRect(const QRect &rect);
 
-    static QRect SRect2QRect(const SeetaRect &s_rect);
+    static QRect sRectToQRect(const SeetaRect &s_rect);
 
-    static qint64 get_uuid();
+    static qint64 getUuid();
 
     static QByteArray floatArray2QByteArray(float *buffer, int size);
 
@@ -71,6 +71,6 @@ public:
 
 private:
 
-    inline static snowflake_t uuid = snowflake_t();
+    inline static snowflake_t uuid_ = snowflake_t();
 };
 

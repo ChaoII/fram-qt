@@ -125,7 +125,7 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     // 记录线程
     auto timer2 = new QTimer(this);
     connect(timer2, &QTimer::timeout, [=]() { emit sendImageSignal(QImage(), QRect()); });
-    timer2->setInterval(Config::getInstance().get_record_interval() * 1000);
+    timer2->setInterval(Config::getInstance().get_recordInterval() * 1000);
     timer2->start();
     // 检测网络情况
     auto timer3 = new QTimer(this);
@@ -161,7 +161,7 @@ void MyWidget::on_updateFrame(QImage qimg, QRect rect) {
     if (!rect.isEmpty()) {
         QDateTime cur_time = QDateTime::currentDateTime();
         // 通过计时调整识别的频率
-        if (last_rec_time_.msecsTo(cur_time) > Config::getInstance().get_rec_interval()) {
+        if (last_rec_time_.msecsTo(cur_time) > Config::getInstance().get_recInterval()) {
             emit sendImageSignal(qimg, rect);
             last_rec_time_ = cur_time;
         }
@@ -169,7 +169,7 @@ void MyWidget::on_updateFrame(QImage qimg, QRect rect) {
         painter.setPen(QPen(QColor(Qt::green)));
         painter.drawRect(rect);
     } else {
-        Utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
+        utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
     }
     ui->widget_info->setVisible(!rect.isEmpty());
     if (face_info_widget_ && face_info_widget_->isVisible()) {
@@ -190,15 +190,15 @@ void MyWidget::on_faceRec(const FaceInfoWrap &rec_info) {
                                        QPixmap(),
                                        QPixmap());
 
-        Utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 40));
-        Utils::setBackgroundColor(ui->widget_info, QColor(255, 0, 0, 40));
+        utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 40));
+        utils::setBackgroundColor(ui->widget_info, QColor(255, 0, 0, 40));
     } else if (rec_info.status == RecognitionStatus::Unknown) {
         ui->widget_info->setAttendInfo("未知", attend_time,
                                        QPixmap(":img/icon_fail.png"),
                                        QPixmap(),
                                        QPixmap());
-        Utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
-        Utils::setBackgroundColor(ui->widget_info, QColor(255, 0, 0, 40));
+        utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
+        utils::setBackgroundColor(ui->widget_info, QColor(255, 0, 0, 40));
     } else if (rec_info.status == RecognitionStatus::Success) {
         ui->widget_info->setAttendInfo(rec_info.ret.name, attend_time,
                                        QPixmap(":img/icon_success.png"),
@@ -209,8 +209,8 @@ void MyWidget::on_faceRec(const FaceInfoWrap &rec_info) {
             is_audio_finished_ = false;
             emit faceRecognitionSuccessAudioSignal();
         }
-        Utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 0));
-        Utils::setBackgroundColor(ui->widget_info, QColor(0, 255, 0, 40));
+        utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 0));
+        utils::setBackgroundColor(ui->widget_info, QColor(0, 255, 0, 40));
     } else {
         qDebug() << "识别结果为【None】";
     }

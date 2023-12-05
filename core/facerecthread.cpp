@@ -6,8 +6,8 @@ void FaceRecThread::face_recognition(const QImage &img, const QRect &rect) {
         send_records();
         return;
     }
-    auto img_ = Utils::QImage2CvMat(img);
-    auto rect_ = Utils::QRect2SRect(rect);
+    auto img_ = utils::qImageToCvMat(img);
+    auto rect_ = utils::qRectToSRect(rect);
     auto points = SeetaFace::getInstance().face_marker(img_, rect_);
     //人脸活体检测
     auto status = Status::REAL;
@@ -22,7 +22,7 @@ void FaceRecThread::face_recognition(const QImage &img, const QRect &rect) {
     } else {
         //人脸识别
         auto ret = SeetaFace::getInstance().face_recognition(img_, points);
-        if (ret.second < Config::getInstance().get_rec_threshold() || ret.second > 1) {
+        if (ret.second < Config::getInstance().get_recThreshold() || ret.second > 1) {
             info = FaceInfoWrap{RecognitionStatus::Unknown,
                                 QDateTime::currentDateTime().toString("yyyy-MM-ddThh:mm:ss.zzzzzz"), {}};
             qWarning() << "未知人脸: " << "score: " << qPrintable(QString::asprintf("%.2f", ret.second));
@@ -41,7 +41,7 @@ void FaceRecThread::face_recognition(const QImage &img, const QRect &rect) {
 
 void FaceRecThread::send_records() {
     QDateTime cur_time = QDateTime::currentDateTime();
-    if (last_record_time_.secsTo(cur_time) > Config::getInstance().get_record_interval()) {
+    if (last_record_time_.secsTo(cur_time) > Config::getInstance().get_recInterval()) {
         if (!records_.empty()) {
             emit record_signal(records_);
             // 打卡机记录存储后清空缓存

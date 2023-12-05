@@ -6,7 +6,7 @@
 
 #include <QWidget>
 #include "core/SeetaFace.h"
-#include "utils/Utils.h"
+#include "utils/utils.h"
 
 
 class FaceDetThread : public QObject {

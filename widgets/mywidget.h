@@ -5,7 +5,7 @@
 #pragma once
 
 #include <QWidget>
-#include "utils/Utils.h"
+#include "utils/utils.h"
 #include "core/facerecthread.h"
 #include "core/facedetthread.h"
 #include "core/recordthread.h"

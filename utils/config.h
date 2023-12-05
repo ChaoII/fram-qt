@@ -1,23 +1,7 @@
 #pragma once
 
 #include <QSettings>
-#include <mutex>
 #include <QDebug>
-
-//// 向量索引topk
-//#define TOP_K 5
-////  faiss 向量索引文件名
-//#define INDEX_FILE "faceindex.vec"
-//// 人脸特征向量长度
-//#define VECTOR_SIZE 1024
-//// 單次注册人脸时允许录入 的最大人脸数
-//#define MAX_FACE 3
-//// 人脸识别算法间隔(ms)
-//#define REC_INTERVAL 500
-//// 人脸识别阈值
-//#define REC_THRESHOLD 0.6
-//// 打卡缓存时间(s)
-//#define RECORD_INTERVAL 5
 
 
 class Config : public QObject {
@@ -44,41 +28,42 @@ public:
         static Config config;
         return config;
     };
+
     //Base
-    [[nodiscard]] const QString &get_index_file() const;
+    [[nodiscard]] const QString &get_indexFile() const;
 
-    [[nodiscard]] int get_top_k() const;
+    [[nodiscard]] int get_topK() const;
 
-    [[nodiscard]] int get_vector_size() const;
+    [[nodiscard]] int get_vectorSize() const;
 
-    [[nodiscard]] int get_max_face_num() const;
+    [[nodiscard]] int get_maxFaceNum() const;
 
-    [[nodiscard]] int get_rec_interval() const;
+    [[nodiscard]] int get_recInterval() const;
 
-    [[nodiscard]] float get_rec_threshold() const;
+    [[nodiscard]] float get_recThreshold() const;
 
-    [[nodiscard]] int get_record_interval() const;
+    [[nodiscard]] int get_recordInterval() const;
 
-    [[nodiscard]] const QString &get_model_dir() const;
+    [[nodiscard]] const QString &get_modelDir() const;
 
-    [[nodiscard]] int get_face_recognition_thread_num() const;
+    [[nodiscard]] int get_faceRecognitionThreadNum() const;
 
-    [[nodiscard]] int get_socket_port() const;
+    [[nodiscard]] int get_socketPort() const;
 
-    [[nodiscard]] bool get_is_write_log() const;
+    [[nodiscard]] bool get_isWriteLog() const;
 
-    [[nodiscard]] QString get_log_file() const;
+    [[nodiscard]] QString get_logFile() const;
 
     [[nodiscard]] QString get_gateway() const;
 
     // Camera
-    [[nodiscard]] CameraType get_camera_type() const;
+    [[nodiscard]] CameraType get_cameraType() const;
 
-    [[nodiscard]] int get_camera_index() const;
+    [[nodiscard]] int get_cameraIndex() const;
 
-    [[nodiscard]] int get_frame_width() const;
+    [[nodiscard]] int get_frameWidth() const;
 
-    [[nodiscard]] int get_frame_height() const;
+    [[nodiscard]] int get_frameHeight() const;
 
     // Display
     [[nodiscard]] bool get_framelessStatus() const;
@@ -95,7 +80,7 @@ private:
     Config &operator=(const Config &) = delete;
 
 private:
-    std::shared_ptr<QSettings> settings;
+    std::shared_ptr<QSettings> settings_;
 
     // Base
     QString index_file;

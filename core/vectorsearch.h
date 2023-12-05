@@ -5,7 +5,7 @@
 #include <vector>
 #include <faiss/Index.h>
 #include "utils/config.h"
-#include "utils/Utils.h"
+#include "utils/utils.h"
 
 class VectorSearch {
 

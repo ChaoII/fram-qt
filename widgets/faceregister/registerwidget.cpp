@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QDebug>
 #include <QMessageBox>
-#include "utils/Utils.h"
+#include "utils/utils.h"
 
 RegisterWidget::RegisterWidget(QWidget *parent) :
         QWidget(parent),
@@ -114,10 +114,10 @@ void RegisterWidget::on_tb_add_clicked() {
     item->setText(ui->edit_name->text());
     item->setIcon(QIcon(QPixmap::fromImage(img_)));
     ui->lw_faceList->addItem(item);
-    register_face_.push_back(RegisterFace{Utils::QImage2CvMat(img_),
+    register_face_.push_back(RegisterFace{utils::qImageToCvMat(img_),
                                           ui->edit_staff_id->text(),
                                           ui->edit_name->text()});
-    if (ui->lw_faceList->count() > Config::getInstance().get_max_face_num()) {
+    if (ui->lw_faceList->count() > Config::getInstance().get_maxFaceNum()) {
         auto ele = ui->lw_faceList->takeItem(0);
         delete ele;
         register_face_.pop_front();

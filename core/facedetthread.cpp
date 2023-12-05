@@ -4,32 +4,29 @@
 
 #include "facedetthread.h"
 
-#define FRAME_WIDTH  640
-#define FRAME_HEIGHT 480
-
 
 FaceDetThread::FaceDetThread(QObject *parent) : QObject(parent) {
 #ifdef __linux__
     QString v4l2_pipeline;
-    if (Config::getInstance().get_camera_type() == Config::CameraType::MIPI) {
+    if (Config::getInstance().get_cameraType() == Config::CameraType::MIPI) {
         v4l2_pipeline = QString(
                 "v4l2src device=/dev/video%1 ! video/x-raw, format=NV12, width=%2, height=%3, framerate=30/1 ! appsink")
-                .arg(Config::getInstance().get_camera_index())
-                .arg(Config::getInstance().get_frame_width())
-                .arg(Config::getInstance().get_frame_height());
-    } else if (Config::getInstance().get_camera_type() == Config::CameraType::USB) {
+                .arg(Config::getInstance().get_cameraIndex())
+                .arg(Config::getInstance().get_frameWidth())
+                .arg(Config::getInstance().get_frameHeight());
+    } else if (Config::getInstance().get_cameraType() == Config::CameraType::USB) {
         v4l2_pipeline = QString(
                 "v4l2src device=/dev/video%1 ! image/jpeg, width=%2, height=%3, framerate=30/1 ! mppjpegdec ! videoconvert ! appsink")
-                .arg(Config::getInstance().get_camera_index())
-                .arg(Config::getInstance().get_frame_width())
-                .arg(Config::getInstance().get_frame_height());
+                .arg(Config::getInstance().get_cameraIndex())
+                .arg(Config::getInstance().get_frameWidth())
+                .arg(Config::getInstance().get_frameHeight());
     }
     qDebug() << v4l2_pipeline;
     cap_ = std::make_shared<cv::VideoCapture>(v4l2_pipeline.toStdString(), cv::CAP_GSTREAMER);
 #else
-    cap_ = std::make_shared<cv::VideoCapture>(Config::getInstance().get_camera_index());
-    cap_->set(cv::CAP_PROP_FRAME_WIDTH, Config::getInstance().get_frame_width());
-    cap_->set(cv::CAP_PROP_FRAME_HEIGHT, Config::getInstance().get_frame_height());
+    cap_ = std::make_shared<cv::VideoCapture>(Config::getInstance().get_cameraIndex());
+    cap_->set(cv::CAP_PROP_FRAME_WIDTH, Config::getInstance().get_frameWidth());
+    cap_->set(cv::CAP_PROP_FRAME_HEIGHT, Config::getInstance().get_frameHeight());
 #endif
 }
 
@@ -65,7 +62,7 @@ void FaceDetThread::run_detect() {
             QThread::msleep(20);
             cap_->read(frame_src);
 #ifdef __linux__
-            if (Config::getInstance().get_camera_type() == Config::CameraType::MIPI) {
+            if (Config::getInstance().get_cameraType() == Config::CameraType::MIPI) {
                 cv::cvtColor(frame_src, frame_src, cv::COLOR_YUV2BGR_NV12);
             }
 #endif
@@ -73,15 +70,15 @@ void FaceDetThread::run_detect() {
             // flip for horizontal
             cv::flip(frame_src, frame_src, 1);
             QRect rect;
-            cv::Mat frame = Utils::crop_img(frame_src);
+            cv::Mat frame = utils::cropImg(frame_src);
             if (is_detect) {
                 auto faces = SeetaFace::getInstance().face_detection(frame);
                 if (!faces.empty()) {
                     //-----------发送检测到人脸的信号----------
-                    rect = Utils::SRect2QRect(faces[0].pos);
+                    rect = utils::sRectToQRect(faces[0].pos);
                 }
             }
-            QImage q_img = Utils::CvMat2QImage(frame);
+            QImage q_img = utils::cvMat2QImage(frame);
             emit img_send_signal(q_img, rect);
         }
     }
