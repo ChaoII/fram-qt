@@ -5,6 +5,7 @@
 #include "audioplaythread.h"
 #include <QApplication>
 #include <QThread>
+#include <QDebug>
 
 #ifdef __linux__
 #include "utils/wavPlayer/play_wav.h"
@@ -15,7 +16,10 @@ void AudioPlayThread::playAudio() {
     startSound->play();
 #else
     // play_wav_signal(":img/audio_thanks.wav");
-    system("aplay /home/aichao/FRAM/audio_thanks.wav");
+    int ret = system("aplay /home/aichao/FRAM/audio_thanks.wav");
+    if (ret < 0) {
+        qDebug() << "播放语音失败";
+    }
     QThread::msleep(1000);
     emit playAudioFinished();
 #endif

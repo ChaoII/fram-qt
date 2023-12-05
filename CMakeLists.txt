@@ -24,13 +24,12 @@ set(QT_VERSION "6" CACHE STRING "Qt version")
 set(OpenCV_DIR "E:/develop/opencv/x64/vc16/staticlib" CACHE PATH "opencv install directory")
 set(SEETAFACE_DIR "E:/develop/SeetaFace" CACHE PATH "seetaface6 install directory")
 set(QxOrm_DIR "E:/develop/QxOrm" CACHE PATH "QxOrm install directory")
-
+set(CMAKE_BUILD_TYPE "Release")
 
 # add qt
-find_package(Qt${QT_VERSION} COMPONENTS Widgets Sql Concurrent Network Multimedia REQUIRED)
+find_package(Qt${QT_VERSION} COMPONENTS Widgets Sql Network Multimedia REQUIRED)
 list(APPEND DEPENDS Qt${QT_VERSION}::Widgets
         Qt${QT_VERSION}::Sql
-        Qt${QT_VERSION}::Concurrent
         Qt${QT_VERSION}::Network
         Qt${QT_VERSION}::Multimedia)
 
@@ -78,8 +77,8 @@ aux_source_directory(models MODELS_SRC)
 aux_source_directory(core CORE_SRC)
 aux_source_directory(widgets/faceregister REGISTER_SRC)
 aux_source_directory(widgets/attendhistory ATTEND_SRC)
+aux_source_directory(widgets/commonwidgets COMMON_WIDGETS_SRC)
 aux_source_directory(widgets WIDGETS_SRC)
-aux_source_directory(widgets/commonwidgets CUSTOM_WIDGETS_SRC)
 aux_source_directory(utils UTILS_SRC)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -95,7 +94,7 @@ set(PROJECT_SOURCES
         ${REGISTER_SRC}
         ${ATTEND_SRC}
         ${WIDGETS_SRC}
-        ${CUSTOM_WIDGETS_SRC}
+        ${COMMON_WIDGETS_SRC}
         ${UTILS_SRC}
         qrc.qrc
         main.cpp

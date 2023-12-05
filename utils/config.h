@@ -38,7 +38,7 @@ public:
 
     [[nodiscard]] int get_maxFaceNum() const;
 
-    [[nodiscard]] int get_recInterval() const;
+    [[nodiscard]] float get_recInterval() const;
 
     [[nodiscard]] float get_recThreshold() const;
 
@@ -87,13 +87,12 @@ private:
     int top_k;
     int vector_size;
     int max_face_num;
-    int rec_interval;
+    float rec_interval;
     float rec_threshold;
     int record_interval;
     QString model_dir;
     int face_recognition_thread_num;
     int socket_port;
-
     bool is_write_log;
     QString log_file;
     QString gateway;

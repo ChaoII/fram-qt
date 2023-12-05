@@ -8,7 +8,7 @@ Config::Config() {
     index_file = settings_->value("index_file").toString();
     vector_size = settings_->value("vector_size").toInt();
     max_face_num = settings_->value("max_face_num").toInt();
-    rec_interval = settings_->value("rec_interval").toInt();
+    rec_interval = settings_->value("rec_interval").toFloat();
     rec_threshold = settings_->value("rec_threshold").toFloat();
     record_interval = settings_->value("record_interval").toInt();
     model_dir = settings_->value("model_dir").toString();
@@ -48,7 +48,7 @@ int Config::get_maxFaceNum() const {
     return max_face_num;
 }
 
-int Config::get_recInterval() const {
+float Config::get_recInterval() const {
     return rec_interval;
 }
 

@@ -124,6 +124,7 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     MySplashScreen::getInstance().updateProcess("init record  timer ...");
     // 记录线程
     auto timer2 = new QTimer(this);
+    // 隔一段时间发送一组空的过去，避免数据堆积
     connect(timer2, &QTimer::timeout, [=]() { emit sendImageSignal(QImage(), QRect()); });
     timer2->setInterval(Config::getInstance().get_recordInterval() * 1000);
     timer2->start();
@@ -139,9 +140,15 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     connect(timer4, &QTimer::timeout, this, [&]() {
         QDateTime cur_time = QDateTime::currentDateTime();
         if (last_rec_time_.secsTo(cur_time) > Config::getInstance().get_displayOffInterval()) {
-            QProcess::execute("xset", QStringList() << "dpms" << "force" << "off");
+            if (!is_display_off_) {
+                QProcess::execute("xset", QStringList() << "dpms" << "force" << "off");
+                is_display_off_ = true;
+            }
         } else {
-            QProcess::execute("xset", QStringList() << "dpms" << "force" << "on");
+            if (is_display_off_) {
+                QProcess::execute("xset", QStringList() << "dpms" << "force" << "on");
+                is_display_off_ = false;
+            }
         }
     });
     timer4->start(1000);
@@ -160,8 +167,8 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 void MyWidget::on_updateFrame(QImage qimg, QRect rect) {
     if (!rect.isEmpty()) {
         QDateTime cur_time = QDateTime::currentDateTime();
-        // 通过计时调整识别的频率
-        if (last_rec_time_.msecsTo(cur_time) > Config::getInstance().get_recInterval()) {
+        // 通过计时调整识别的频率0.5秒识别一次
+        if (last_rec_time_.msecsTo(cur_time) > static_cast<int>(Config::getInstance().get_recInterval() * 1000)) {
             emit sendImageSignal(qimg, rect);
             last_rec_time_ = cur_time;
         }

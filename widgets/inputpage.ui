@@ -30,7 +30,7 @@ QPushButton:hover, QPushButton:pressed{
      <item>
       <layout class="QGridLayout" name="gridLayout_3">
        <property name="spacing">
-        <number>10</number>
+        <number>20</number>
        </property>
        <item row="1" column="0">
         <widget class="QPushButton" name="pb_1">
@@ -42,14 +42,14 @@ QPushButton:hover, QPushButton:pressed{
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="text">
@@ -82,14 +82,14 @@ QPushButton:hover, QPushButton:pressed{
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="text">
@@ -122,14 +122,14 @@ QPushButton:hover, QPushButton:pressed{
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="text">
@@ -162,14 +162,14 @@ QPushButton:hover, QPushButton:pressed{
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="text">
@@ -202,14 +202,14 @@ QPushButton:hover, QPushButton:pressed{
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -247,14 +247,14 @@ QPushButton:hover, QPushButton:pressed{
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="text">
@@ -287,14 +287,14 @@ QPushButton:hover, QPushButton:pressed{
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="text">
@@ -327,14 +327,14 @@ QPushButton:hover, QPushButton:pressed{
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="text">
@@ -367,14 +367,14 @@ QPushButton:hover, QPushButton:pressed{
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -412,14 +412,14 @@ QPushButton:hover, QPushButton:pressed{
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="text">
@@ -452,14 +452,14 @@ QPushButton:hover, QPushButton:pressed{
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="text">
@@ -492,14 +492,14 @@ QPushButton:hover, QPushButton:pressed{
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
-           <height>80</height>
+           <width>100</width>
+           <height>100</height>
           </size>
          </property>
          <property name="text">
@@ -547,19 +547,6 @@ QPushButton:hover, QPushButton:pressed{
    </item>
    <item row="2" column="0">
     <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>93</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="2">
-    <spacer name="horizontalSpacer_2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -625,6 +612,19 @@ QPushButton:hover, QPushButton:pressed{
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+   </item>
+   <item row="2" column="2">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>93</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

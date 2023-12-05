@@ -106,6 +106,7 @@ private:
     FaceInfoWidget *face_info_widget_ = nullptr;
     QProcess *ping_cmd_ = nullptr;
     bool is_audio_finished_ = true;
+    bool is_display_off_ = false;
     Ui::MyWidget *ui;
 
 };

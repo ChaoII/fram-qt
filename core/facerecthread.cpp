@@ -41,7 +41,7 @@ void FaceRecThread::faceRecognition(const QImage &img, const QRect &rect) {
 
 void FaceRecThread::sendRecords() {
     QDateTime cur_time = QDateTime::currentDateTime();
-    if (last_record_time_.secsTo(cur_time) > Config::getInstance().get_recInterval()) {
+    if (last_record_time_.secsTo(cur_time) > Config::getInstance().get_recordInterval()) {
         if (!records_.empty()) {
             emit recordSignal(records_);
             // 打卡机记录存储后清空缓存

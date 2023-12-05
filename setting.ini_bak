@@ -6,8 +6,8 @@ index_file = "faceindex.vec"
 vector_size = 1024
 # 单次注册人脸时允许录入 的最大人脸数
 max_face_num = 3
-# 人脸识别算法间隔(ms)
-rec_interval = 500
+# 人脸识别算法间隔(s)
+rec_interval = 0.5
 # 人脸识别阈值
 rec_threshold = 0.6
 # 打卡缓存时间(s)
@@ -19,7 +19,7 @@ global_thread_num = 1
 # socket服务端端口
 socket_port = 9088
 # 是否开启日志
-write_log = false
+is_write_log = false
 # 日志文件名
 log_file = "log.txt"
 # 默认网关
