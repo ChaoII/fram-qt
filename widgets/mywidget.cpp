@@ -130,9 +130,24 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     timer2->start();
     // 检测网络情况
     auto timer3 = new QTimer(this);
-    connect(timer2, &QTimer::timeout, this, &MyWidget::on_detectNetworkConnectStatus);
+    connect(timer3, &QTimer::timeout, this, &MyWidget::on_detectNetworkConnectStatus);
     timer3->start(1000);
     pingCmd = new QProcess(this);
+
+    // 屏幕休眠
+#ifdef __linux__
+    auto timer4 = new QTimer(this);
+    connect(timer4, &QTimer::timeout, this, [&]() {
+        QDateTime cur_time = QDateTime::currentDateTime();
+        if (last_rec_time.secsTo(cur_time) > Config::getInstance().get_displayOffInterval()) {
+            QProcess::execute("xset", QStringList() << "dpms" << "force" << "off");
+        } else {
+            QProcess::execute("xset", QStringList() << "dpms" << "force" << "on");
+        }
+    });
+    timer4->start(1000);
+#endif
+
 
     // 初始化界面
     init_widget();
@@ -359,6 +374,13 @@ void MyWidget::on_detectNetworkConnectStatus() {
     }
     auto pic_url = connectStatus ? ":img/icon_wifi_connect.png" : ":img/icon_wifi_disconnect.png";
     ui->lb_net->setPixmap(QPixmap(pic_url));
+}
+
+void MyWidget::mousePressEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton) {
+        last_rec_time = QDateTime::currentDateTime();
+    }
+    QWidget::mousePressEvent(event);
 }
 
 

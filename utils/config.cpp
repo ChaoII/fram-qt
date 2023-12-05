@@ -16,7 +16,6 @@ Config::Config() {
     model_dir = settings->value("model_dir").toString();
     face_recognition_thread_num = settings->value("face_recognition_thread_num").toInt();
     socket_port = settings->value("socket_port").toInt();
-    is_frameless = settings->value("is_frameless").toBool();
     is_write_log = settings->value("is_write_log").toBool();
     log_file = settings->value("log_file").toString();
     gateway = settings->value("gateway").toString();
@@ -27,6 +26,11 @@ Config::Config() {
     camera_index = settings->value("camera_index").toInt();
     frame_width = settings->value("frame_width").toInt();
     frame_height = settings->value("frame_height").toInt();
+    settings->endGroup();
+
+    settings->beginGroup("Display");
+    is_frameless = settings->value("is_frameless").toBool();
+    display_off_interval = settings->value("display_off_interval").toInt();
     settings->endGroup();
 
 }
@@ -71,7 +75,6 @@ int Config::get_socket_port() const {
     return socket_port;
 }
 
-
 bool Config::get_framelessStatus() const {
     return is_frameless;
 }
@@ -102,4 +105,8 @@ int Config::get_frame_width() const {
 
 int Config::get_frame_height() const {
     return frame_height;
+}
+
+int Config::get_displayOffInterval() const {
+    return display_off_interval;
 }

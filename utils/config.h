@@ -44,7 +44,7 @@ public:
         static Config config;
         return config;
     };
-
+    //Base
     [[nodiscard]] const QString &get_index_file() const;
 
     [[nodiscard]] int get_top_k() const;
@@ -65,15 +65,13 @@ public:
 
     [[nodiscard]] int get_socket_port() const;
 
-    [[nodiscard]] bool get_framelessStatus() const;
-
     [[nodiscard]] bool get_is_write_log() const;
 
     [[nodiscard]] QString get_log_file() const;
 
     [[nodiscard]] QString get_gateway() const;
 
-    // camera
+    // Camera
     [[nodiscard]] CameraType get_camera_type() const;
 
     [[nodiscard]] int get_camera_index() const;
@@ -81,6 +79,11 @@ public:
     [[nodiscard]] int get_frame_width() const;
 
     [[nodiscard]] int get_frame_height() const;
+
+    // Display
+    [[nodiscard]] bool get_framelessStatus() const;
+
+    [[nodiscard]] int get_displayOffInterval() const;
 
 private:
     explicit Config();
@@ -94,7 +97,7 @@ private:
 private:
     std::shared_ptr<QSettings> settings;
 
-    // base
+    // Base
     QString index_file;
     int top_k;
     int vector_size;
@@ -106,16 +109,19 @@ private:
     int face_recognition_thread_num;
     int socket_port;
 
-    bool is_frameless;
     bool is_write_log;
     QString log_file;
     QString gateway;
 
-    // camera
+    // Camera
     int camera_type;
     int camera_index;
     int frame_width;
     int frame_height;
+
+    //Display
+    bool is_frameless;
+    int display_off_interval;
 };
 
 

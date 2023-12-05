@@ -80,6 +80,8 @@ private slots:
 
     void on_detectNetworkConnectStatus();
 
+    void mousePressEvent(QMouseEvent *event) override;
+
 private:
 
     void init_widget();
@@ -102,7 +104,8 @@ private:
     HistoryWidget *history_widget = nullptr;
     FaceInfoWidget *face_info_widget = nullptr;
     QProcess *pingCmd = nullptr;
-    Ui::MyWidget *ui;
     bool isAudioFinished = true;
+    Ui::MyWidget *ui;
+
 };
 
