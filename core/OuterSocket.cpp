@@ -92,7 +92,7 @@ void OuterSocket::execAddFace(const QStringList &rets, QTcpSocket *tcpSocketPtr)
     if (file_info.exists() && file_info.suffix() == "jpg") {
         QString file_path = file_info.absoluteFilePath();
         auto img = cv::imread(file_path.toStdString());
-        bool r = SeetaFace::getInstance().add_face(img, uid, name);
+        bool r = SeetaFace::getInstance().addFace(img, uid, name);
         if (r) {
             tcpSocketPtr->write(QString("0x0001").toUtf8());
         } else {
@@ -114,7 +114,7 @@ void OuterSocket::execDeleteFace(const QStringList &rets, QTcpSocket *tcpSocketP
     std::vector<int64_t> index_ids;
     qint64 index_id = QString(rets[1]).toLongLong();
     index_ids.push_back(index_id);
-    bool r = SeetaFace::getInstance().delete_face_by_ids(index_ids);
+    bool r = SeetaFace::getInstance().deleteFaceByIds(index_ids);
     if (r)
         tcpSocketPtr->write(QString("0x0002").toUtf8());
     else

@@ -38,34 +38,34 @@ public:
         return seetaFace;
     }
 
-    bool add_face(cv::Mat &img, const QString &uid, const QString &name);
+    bool addFace(cv::Mat &img, const QString &uid, const QString &name);
 
-    bool delete_face(const QString &uid);
+    bool deleteFace(const QString &uid);
 
-    void build_face_index_from_db();
+    void buildFaceIndexFromDb();
 
-    QString get_facepath_from_index_id(qint64 index_id);
+    QString getFacePathFromIndexId(qint64 index_id);
 
-    Staff get_faceinfo_from_index_id(qint64 index_id);
+    Staff getFaceInfoFromIndexId(qint64 index_id);
 
-    bool update_face(cv::Mat &img, const QString &uid, const QString &name);
+    bool updateFace(cv::Mat &img, const QString &uid, const QString &name);
 
-    bool extract_feature(cv::Mat &img, float *feature);
+    bool extractFeature(cv::Mat &img, float *feature);
 
-    std::vector<SeetaFaceInfo> face_detection(cv::Mat &img);
+    std::vector<SeetaFaceInfo> faceDetection(cv::Mat &img);
 
-    QPair<int64_t, float> face_recognition(cv::Mat &img, std::vector<SeetaPointF> points);
+    QPair<int64_t, float> faceRecognition(cv::Mat &img, std::vector<SeetaPointF> points);
 
-    std::vector<SeetaPointF> face_marker(cv::Mat &img, const SeetaRect &rect);
+    std::vector<SeetaPointF> faceMarker(cv::Mat &img, const SeetaRect &rect);
 
-    bool face_quality_authorize(cv::Mat &img);
+    bool faceQualityAuthorize(cv::Mat &img);
 
-    Status face_anti_spoofing(cv::Mat &img, const SeetaRect &rect, std::vector<SeetaPointF> points);
+    Status faceAntiSpoofing(cv::Mat &img, const SeetaRect &rect, std::vector<SeetaPointF> points);
 
-    bool delete_face_by_ids(const std::vector<int64_t> &ids);
+    bool deleteFaceByIds(const std::vector<int64_t> &ids);
 
     template<class T>
-    QVector<T> get_query_info(int row_num_pre_page, int current_page_index) {
+    QVector<T> getQueryInfo(int row_num_pre_page, int current_page_index) {
         QVector<T> models;
         qx_query query;
         int start_row = current_page_index * row_num_pre_page;
@@ -83,7 +83,7 @@ public:
     }
 
     template<class T>
-    int get_query_num() {
+    int getQueryNum() {
         qx_query query;
         int ret = qx::dao::count<T>(query);
         return ret;
@@ -99,15 +99,15 @@ private:
 
     SeetaFace &operator=(const SeetaFace &);
 
-    void init_file_dir();
+    void initFileDir();
 
-    void init_face_db();
+    void initFaceDb();
 
 private:
-    std::shared_ptr<seeta::FaceDetector> FD = nullptr;
-    std::shared_ptr<seeta::FaceLandmarker> FL = nullptr;
-    std::shared_ptr<seeta::FaceRecognizer> FR = nullptr;
-    std::shared_ptr<seeta::FaceAntiSpoofing> FS = nullptr;
+    std::shared_ptr<seeta::FaceDetector> FD_ = nullptr;
+    std::shared_ptr<seeta::FaceLandmarker> FL_ = nullptr;
+    std::shared_ptr<seeta::FaceRecognizer> FR_ = nullptr;
+    std::shared_ptr<seeta::FaceAntiSpoofing> FS_ = nullptr;
 };
 
 

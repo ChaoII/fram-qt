@@ -34,13 +34,13 @@ FaceInfoWidget::~FaceInfoWidget() {
 }
 
 void FaceInfoWidget::updateTable(int page) {
-    auto Staffs = SeetaFace::getInstance().get_query_info<Staff>(hint_page_size_, page - 1);
+    auto Staffs = SeetaFace::getInstance().getQueryInfo<Staff>(hint_page_size_, page - 1);
     this->ui->faceList->addItemWidgets(Staffs);
 }
 
 
 void FaceInfoWidget::updatePagingAndTable() {
-    int num = SeetaFace::getInstance().get_query_num<Staff>();
+    int num = SeetaFace::getInstance().getQueryNum<Staff>();
     paging_->initPage(num, 0, hint_page_size_);
     updateTable(0);
 }
@@ -67,7 +67,7 @@ void FaceInfoWidget::on_tb_back_clicked() {
 
 void FaceInfoWidget::on_tb_delete_clicked() {
     auto index_ids = this->ui->faceList->getCheckedIndexIds();
-    SeetaFace::getInstance().delete_face_by_ids(index_ids);
+    SeetaFace::getInstance().deleteFaceByIds(index_ids);
     updatePagingAndTable();
 }
 

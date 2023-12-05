@@ -63,7 +63,7 @@ void RegisterWidget::on_tb_ensure_clicked() {
         auto face_info = register_face_.takeFirst();
         auto item = ui->lw_faceList->takeItem(0);
         ui->lw_faceList->removeItemWidget(item);
-        bool ret = SeetaFace::getInstance().add_face(face_info.img,
+        bool ret = SeetaFace::getInstance().addFace(face_info.img,
                                                      face_info.uid,
                                                      face_info.name);
         if (!ret) {

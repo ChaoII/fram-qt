@@ -13,27 +13,29 @@
 #endif
 
 
-void VectorSearch::create_index() {
-    auto index = faiss::index_factory(Config::getInstance().get_vectorSize(), "Flat", faiss::METRIC_INNER_PRODUCT);
+void VectorSearch::createIndex() {
+    auto index = faiss::index_factory(Config::getInstance().get_vectorSize(),
+                                      "Flat",
+                                      faiss::METRIC_INNER_PRODUCT);
     index_ = new faiss::IndexIDMap(index);
-    save_index();
+    saveIndex();
 }
 
-void VectorSearch::save_index() {
+void VectorSearch::saveIndex() {
     faiss::write_index(index_, Config::getInstance().get_indexFile().toStdString().c_str());
 }
 
-void VectorSearch::reset_index() {
+void VectorSearch::resetIndex() {
     index_->reset();
 }
 
-size_t VectorSearch::remove_index(const std::vector<int64_t> &ids) {
+size_t VectorSearch::removeIndex(const std::vector<int64_t> &ids) {
     size_t num = index_->remove_ids(faiss::IDSelectorArray{ids.size(), ids.data()});
-    save_index();
+    saveIndex();
     return num;
 }
 
-bool VectorSearch::load_index() {
+bool VectorSearch::loadIndex() {
     QFileInfo fileInfo(Config::getInstance().get_indexFile().toStdString().c_str());
     if (!fileInfo.isFile()) {
         qDebug() << "index file is not existed";
@@ -43,10 +45,10 @@ bool VectorSearch::load_index() {
     return true;
 }
 
-void VectorSearch::add_features(const std::vector<int64_t> &ids, float *features) {
+void VectorSearch::addFeatures(const std::vector<int64_t> &ids, float *features) {
     int feature_num = ids.size();
     index_->add_with_ids(feature_num, features, ids.data());
-    save_index();
+    saveIndex();
 }
 
 SearchResult VectorSearch::search(float *feature, int query_number) {
@@ -57,7 +59,7 @@ SearchResult VectorSearch::search(float *feature, int query_number) {
 }
 
 VectorSearch::VectorSearch() {
-    if (!load_index()) {
-        create_index();
+    if (!loadIndex()) {
+        createIndex();
     }
 }

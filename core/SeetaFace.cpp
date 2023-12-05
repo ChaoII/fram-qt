@@ -17,38 +17,38 @@ SeetaFace::SeetaFace() {
     ModelSetting fd_setting;
     fd_setting.append(model_dir + "face_detector.csta");
     fd_setting.set_device(ModelSetting::CPU);
-    FD = std::make_shared<FaceDetector>(fd_setting);
-    FD->set(seeta::FaceDetector::PROPERTY_NUMBER_THREADS, face_recognition_thread_num);
+    FD_ = std::make_shared<FaceDetector>(fd_setting);
+    FD_->set(seeta::FaceDetector::PROPERTY_NUMBER_THREADS, face_recognition_thread_num);
     // face_land_marker
     MySplashScreen::getInstance().updateProcess("load face landmark model...");
     ModelSetting pd_setting;
     pd_setting.append(model_dir + "face_landmarker_pts5.csta");
     pd_setting.set_device(ModelSetting::CPU);
-    FL = std::make_shared<FaceLandmarker>(pd_setting);
+    FL_ = std::make_shared<FaceLandmarker>(pd_setting);
     //face_recognizer
     MySplashScreen::getInstance().updateProcess("load face recognition model...");
     ModelSetting fr_setting;
     fr_setting.append(model_dir + "face_recognizer.csta");
     fr_setting.set_device(ModelSetting::CPU);
-    FR = std::make_shared<FaceRecognizer>(fr_setting);
-    FR->set(seeta::FaceRecognizer::PROPERTY_NUMBER_THREADS, face_recognition_thread_num);
+    FR_ = std::make_shared<FaceRecognizer>(fr_setting);
+    FR_->set(seeta::FaceRecognizer::PROPERTY_NUMBER_THREADS, face_recognition_thread_num);
     // face_anti_spoofing
     MySplashScreen::getInstance().updateProcess("load face anti spoofing model...");
     seeta::ModelSetting fs_setting;
     fs_setting.append(model_dir + "fas_first.csta");
     fs_setting.set_device(ModelSetting::CPU);
-    FS = std::make_shared<FaceAntiSpoofing>(fs_setting);
-    FS->set(seeta::FaceAntiSpoofing::PROPERTY_NUMBER_THREADS, face_recognition_thread_num);
+    FS_ = std::make_shared<FaceAntiSpoofing>(fs_setting);
+    FS_->set(seeta::FaceAntiSpoofing::PROPERTY_NUMBER_THREADS, face_recognition_thread_num);
     // unsupported set thread number
 
 
     MySplashScreen::getInstance().updateProcess("init face libraries...");
-    init_face_db();
+    initFaceDb();
     MySplashScreen::getInstance().updateProcess("init file directory...");
-    init_file_dir();
+    initFileDir();
 }
 
-void SeetaFace::init_file_dir() {
+void SeetaFace::initFileDir() {
     QDir dir;
     if (!dir.exists(QDir::currentPath() + "/faces")) {
         dir.mkdir(QDir::currentPath() + "/faces");
@@ -58,7 +58,7 @@ void SeetaFace::init_file_dir() {
     };
 }
 
-void SeetaFace::init_face_db() {
+void SeetaFace::initFaceDb() {
     qx::QxSqlDatabase::getSingleton()->setDriverName("QSQLITE");
     qx::QxSqlDatabase::getSingleton()->setDatabaseName("data.db");
     qx::QxSqlDatabase::getSingleton()->setHostName("localhost");
@@ -88,13 +88,13 @@ void SeetaFace::init_face_db() {
 
     QFileInfo fileInfo(Config::getInstance().get_indexFile().toStdString().c_str());
     if (!fileInfo.exists()) {
-        build_face_index_from_db();
+        buildFaceIndexFromDb();
     }
 }
 
-bool SeetaFace::add_face(cv::Mat &img, const QString &uid, const QString &name) {
-    unique_ptr<float[]> feature(new float[FR->GetExtractFeatureSize()]);
-    bool ret = SeetaFace::getInstance().extract_feature(img, feature.get());
+bool SeetaFace::addFace(cv::Mat &img, const QString &uid, const QString &name) {
+    unique_ptr<float[]> feature(new float[FR_->GetExtractFeatureSize()]);
+    bool ret = SeetaFace::getInstance().extractFeature(img, feature.get());
     if (!ret) return false;
     qint64 uuid = utils::getUuid();
     QDir dir("./faces/" + uid);
@@ -108,7 +108,7 @@ bool SeetaFace::add_face(cv::Mat &img, const QString &uid, const QString &name) 
     staff.uid = uid;
     staff.name = name;
     staff.pic_url = file_path;
-    staff.feature = utils::floatArray2QByteArray(feature.get(), FR->GetExtractFeatureSize());
+    staff.feature = utils::floatArray2QByteArray(feature.get(), FR_->GetExtractFeatureSize());
     staff.register_time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     auto sql_error = qx::dao::insert(staff);
     if (sql_error.isValid()) {
@@ -116,12 +116,12 @@ bool SeetaFace::add_face(cv::Mat &img, const QString &uid, const QString &name) 
         return false;
     }
     cv::imwrite(file_path.toStdString(), img);
-    VectorSearch::getInstance().add_features({uuid}, feature.get());
+    VectorSearch::getInstance().addFeatures({uuid}, feature.get());
     qDebug() << "新增人脸成功，name:" << name << "uid:" << uid;
     return true;
 }
 
-bool SeetaFace::delete_face(const QString &uid) {
+bool SeetaFace::deleteFace(const QString &uid) {
     Staff staff;
     qx_query query;
     query.where("uid").isEqualTo(uid);
@@ -134,7 +134,7 @@ bool SeetaFace::delete_face(const QString &uid) {
     return true;
 }
 
-void SeetaFace::build_face_index_from_db() {
+void SeetaFace::buildFaceIndexFromDb() {
     std::vector<Staff> staffs;
     QSqlError sql_error = qx::dao::fetch_all(staffs);
     if (sql_error.isValid()) {
@@ -147,10 +147,10 @@ void SeetaFace::build_face_index_from_db() {
         auto feature = utils::QByteArray2Vector<float>(staff.feature);
         features.insert(features.end(), feature.begin(), feature.end());
     }
-    VectorSearch::getInstance().add_features(ids, features.data());
+    VectorSearch::getInstance().addFeatures(ids, features.data());
 }
 
-QString SeetaFace::get_facepath_from_index_id(qint64 index_id) {
+QString SeetaFace::getFacePathFromIndexId(qint64 index_id) {
     Staff staff;
     qx_query query;
     query.where("index_id").isEqualTo(index_id);
@@ -162,7 +162,7 @@ QString SeetaFace::get_facepath_from_index_id(qint64 index_id) {
     return staff.pic_url;
 }
 
-Staff SeetaFace::get_faceinfo_from_index_id(qint64 index_id) {
+Staff SeetaFace::getFaceInfoFromIndexId(qint64 index_id) {
     Staff staff;
     qx_query query;
     query.where("index_id").isEqualTo(index_id);
@@ -174,14 +174,14 @@ Staff SeetaFace::get_faceinfo_from_index_id(qint64 index_id) {
     return staff;
 }
 
-bool SeetaFace::update_face(cv::Mat &img, const QString &uid, const QString &name) {
+bool SeetaFace::updateFace(cv::Mat &img, const QString &uid, const QString &name) {
     Staff staff;
     staff.uid = uid;
     staff.name = name;
     qx_query query;
-    unique_ptr<float[]> feature(new float[FR->GetExtractFeatureSize()]);
-    SeetaFace::getInstance().extract_feature(img, feature.get());
-    staff.feature = utils::floatArray2QByteArray(feature.get(), FR->GetExtractFeatureSize());
+    unique_ptr<float[]> feature(new float[FR_->GetExtractFeatureSize()]);
+    SeetaFace::getInstance().extractFeature(img, feature.get());
+    staff.feature = utils::floatArray2QByteArray(feature.get(), FR_->GetExtractFeatureSize());
     query.where("uid").isEqualTo(uid);
     auto sql_error = qx::dao::update_by_query<Staff>(query, staff);
     if (sql_error.isValid()) {
@@ -192,22 +192,22 @@ bool SeetaFace::update_face(cv::Mat &img, const QString &uid, const QString &nam
     return true;
 }
 
-bool SeetaFace::extract_feature(cv::Mat &img, float *feature) {
+bool SeetaFace::extractFeature(cv::Mat &img, float *feature) {
 
     SeetaImageData data = utils::cvMatToSImg(img);
-    auto faces = FD->detect(data);
+    auto faces = FD_->detect(data);
     if (faces.size <= 0) {
         return false;
     }
     SeetaPointF points[5];
-    FL->mark(data, faces.data[0].pos, points);
-    FR->Extract(data, points, feature);
+    FL_->mark(data, faces.data[0].pos, points);
+    FR_->Extract(data, points, feature);
     return true;
 }
 
-std::vector<SeetaFaceInfo> SeetaFace::face_detection(cv::Mat &img) {
+std::vector<SeetaFaceInfo> SeetaFace::faceDetection(cv::Mat &img) {
     SeetaImageData data = utils::cvMatToSImg(img);
-    auto faces_ = FD->detect(data);
+    auto faces_ = FD_->detect(data);
     std::vector<SeetaFaceInfo> faces;
     for (int i = 0; i < faces_.size; i++) {
         faces.push_back(faces_.data[i]);
@@ -220,40 +220,37 @@ std::vector<SeetaFaceInfo> SeetaFace::face_detection(cv::Mat &img) {
     return faces;
 }
 
-QPair<int64_t, float> SeetaFace::face_recognition(cv::Mat &img,
-                                                  std::vector<SeetaPointF> points) {
+QPair<int64_t, float> SeetaFace::faceRecognition(cv::Mat &img, std::vector<SeetaPointF> points) {
     SeetaImageData data = utils::cvMatToSImg(img);
-    unique_ptr<float[]> feature(new float[FR->GetExtractFeatureSize()]);
-    FR->Extract(data, points.data(), feature.get());
+    unique_ptr<float[]> feature(new float[FR_->GetExtractFeatureSize()]);
+    FR_->Extract(data, points.data(), feature.get());
     SearchResult result = VectorSearch::getInstance().search(feature.get(), 3);
     return {result.I[0], result.D[0]};
 }
 
-std::vector<SeetaPointF> SeetaFace::face_marker(cv::Mat &img,
-                                                const SeetaRect &rect) {
+std::vector<SeetaPointF> SeetaFace::faceMarker(cv::Mat &img, const SeetaRect &rect) {
     SeetaImageData data = utils::cvMatToSImg(img);
-    int point_nums = FL->number();
+    int point_nums = FL_->number();
     std::vector<SeetaPointF> points(point_nums);
-    FL->mark(data, rect, points.data());
+    FL_->mark(data, rect, points.data());
     return points;
 }
 
-bool SeetaFace::face_quality_authorize(cv::Mat &img) {
-    shared_ptr<float> feature(new float[FR->GetExtractFeatureSize()]);
-    bool rt = extract_feature(img, feature.get());
+bool SeetaFace::faceQualityAuthorize(cv::Mat &img) {
+    shared_ptr<float> feature(new float[FR_->GetExtractFeatureSize()]);
+    bool rt = extractFeature(img, feature.get());
     if (!rt) {
         return false;
     }
     return true;
 }
 
-Status SeetaFace::face_anti_spoofing(cv::Mat &img, const SeetaRect &rect,
-                                     std::vector<SeetaPointF> points) {
+Status SeetaFace::faceAntiSpoofing(cv::Mat &img, const SeetaRect &rect, std::vector<SeetaPointF> points) {
     SeetaImageData data = utils::cvMatToSImg(img);
-    return FS->Predict(data, rect, points.data());
+    return FS_->Predict(data, rect, points.data());
 }
 
-bool SeetaFace::delete_face_by_ids(const std::vector<int64_t> &ids) {
+bool SeetaFace::deleteFaceByIds(const std::vector<int64_t> &ids) {
     QVariantList variant_ids;
     for (auto &id: ids) {
         variant_ids.append(QVariant::fromValue(id));
@@ -278,7 +275,7 @@ bool SeetaFace::delete_face_by_ids(const std::vector<int64_t> &ids) {
         qDebug() << "delete data error , details:" << sql_error.text();
         return false;
     }
-    size_t nums = VectorSearch::getInstance().remove_index(ids);
+    size_t nums = VectorSearch::getInstance().removeIndex(ids);
     if (nums != ids.size()) {
         qDebug() << "delete failed";
         return false;

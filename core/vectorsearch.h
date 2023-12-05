@@ -15,17 +15,17 @@ public:
         return vectorSearch;
     }
 
-    void create_index();
+    void createIndex();
 
-    bool load_index();
+    bool loadIndex();
 
-    void save_index();
+    void saveIndex();
 
-    void reset_index();
+    void resetIndex();
 
-    size_t remove_index(const std::vector<int64_t> &ids);
+    size_t removeIndex(const std::vector<int64_t> &ids);
 
-    void add_features(const std::vector<int64_t> &ids, float *features);
+    void addFeatures(const std::vector<int64_t> &ids, float *features);
 
     SearchResult search(float *feature, int query_number);
 

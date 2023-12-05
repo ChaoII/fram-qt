@@ -8,12 +8,12 @@ void FaceRecThread::face_recognition(const QImage &img, const QRect &rect) {
     }
     auto img_ = utils::qImageToCvMat(img);
     auto rect_ = utils::qRectToSRect(rect);
-    auto points = SeetaFace::getInstance().face_marker(img_, rect_);
+    auto points = SeetaFace::getInstance().faceMarker(img_, rect_);
     //人脸活体检测
     auto status = Status::REAL;
     FaceInfoWrap info{};
 #ifndef __linux__
-    status = SeetaFace::getInstance().face_anti_spoofing(img_, rect_, points);
+    status = SeetaFace::getInstance().faceAntiSpoofing(img_, rect_, points);
 #endif
     if (status == Status::SPOOF) {
         info = FaceInfoWrap{RecognitionStatus::SPOOF,
@@ -21,13 +21,13 @@ void FaceRecThread::face_recognition(const QImage &img, const QRect &rect) {
                             {}};
     } else {
         //人脸识别
-        auto ret = SeetaFace::getInstance().face_recognition(img_, points);
+        auto ret = SeetaFace::getInstance().faceRecognition(img_, points);
         if (ret.second < Config::getInstance().get_recThreshold() || ret.second > 1) {
             info = FaceInfoWrap{RecognitionStatus::Unknown,
                                 QDateTime::currentDateTime().toString("yyyy-MM-ddThh:mm:ss.zzzzzz"), {}};
             qWarning() << "未知人脸: " << "score: " << qPrintable(QString::asprintf("%.2f", ret.second));
         } else {
-            auto r = SeetaFace::getInstance().get_faceinfo_from_index_id(ret.first);
+            auto r = SeetaFace::getInstance().getFaceInfoFromIndexId(ret.first);
             info = FaceInfoWrap{RecognitionStatus::Success,
                                 QDateTime::currentDateTime().toString("yyyy-MM-ddThh:mm:ss.zzzzzz"),
                                 {r.uid, r.name, r.pic_url, img, ret.second}};
