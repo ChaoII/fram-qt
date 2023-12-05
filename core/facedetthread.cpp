@@ -30,18 +30,18 @@ FaceDetThread::FaceDetThread(QObject *parent) : QObject(parent) {
 #endif
 }
 
-void FaceDetThread::stop_thread() {
+void FaceDetThread::stopThread() {
     qDebug() << "= stop decode";
     thread_start_ = false;
 }
 
 
-void FaceDetThread::close_detector() {
+void FaceDetThread::closeDetector() {
     qDebug() << "= close face detector";
     is_detect = false;
 }
 
-void FaceDetThread::open_detector() {
+void FaceDetThread::openDetector() {
     qDebug() << "= open face detector";
     is_detect = true;
 }
@@ -53,7 +53,7 @@ FaceDetThread::~FaceDetThread() {
     qDebug() << "= destroy FaceDetThread, thread id:" << QThread::currentThreadId();
 }
 
-void FaceDetThread::run_detect() {
+void FaceDetThread::runDetect() {
     qDebug() << "= enter decode thread, thread id is: " << QThread::currentThreadId();
     cv::Mat frame_src;
     while (thread_start_) {
@@ -79,7 +79,7 @@ void FaceDetThread::run_detect() {
                 }
             }
             QImage q_img = utils::cvMat2QImage(frame);
-            emit img_send_signal(q_img, rect);
+            emit imgSendSignal(q_img, rect);
         }
     }
 }

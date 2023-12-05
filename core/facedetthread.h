@@ -5,7 +5,7 @@
 #pragma once
 
 #include <QWidget>
-#include "core/SeetaFace.h"
+#include "core/seetaface.h"
 #include "utils/utils.h"
 
 
@@ -19,21 +19,21 @@ public:
 
 signals:
 
-    void img_send_signal(QImage, QRect);
+    void imgSendSignal(QImage, QRect);
 
 public slots:
 
     ///运行检测线程，包括解码+人脸检测
-    void run_detect();
+    void runDetect();
 
     ///停止检测线程，停止解码+人脸检测
-    void stop_thread();
+    void stopThread();
 
     ///关闭人脸检测器仅做视频解码
-    void close_detector();
+    void closeDetector();
 
     ///开启人脸检测器，解码+人脸检测
-    void open_detector();
+    void openDetector();
 
 
 private:

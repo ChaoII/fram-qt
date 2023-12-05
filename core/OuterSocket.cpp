@@ -31,13 +31,13 @@ QString messageFlagToStr(const MessageFlag &flag) {
 OuterSocket::OuterSocket(QObject *parent) : QObject(parent) {
     tcp_server_ = new QTcpServer(this);
     tcp_server_->listen(QHostAddress::Any, Config::getInstance().get_socketPort());
-    connect(tcp_server_, &QTcpServer::newConnection, this, &OuterSocket::on_new_connect);
+    connect(tcp_server_, &QTcpServer::newConnection, this, &OuterSocket::on_newConnect);
 }
 
-void OuterSocket::on_new_connect() {
+void OuterSocket::on_newConnect() {
     auto tcp_socket = tcp_server_->nextPendingConnection();
     qDebug() << "> new connection ip: " << tcp_socket->peerAddress().toString() << " port: " << tcp_socket->peerPort();
-    connect(tcp_socket, &QTcpSocket::readyRead, this, &OuterSocket::on_read_ready);
+    connect(tcp_socket, &QTcpSocket::readyRead, this, &OuterSocket::on_readReady);
     connect(tcp_socket, &QTcpSocket::disconnected, this, [=]() {
         qDebug() << "> connect shutdown ip: " << tcp_socket->peerAddress().toString() << " port: "
                  << tcp_socket->peerPort();
@@ -52,7 +52,7 @@ void OuterSocket::on_new_connect() {
 //0x0202 字符串格式不正确，添加人脸必须包含flag,image_path,uid,name
 //0x0203 字符串格式不正确，删除人脸必须包含flag,index_id
 
-void OuterSocket::on_read_ready() {
+void OuterSocket::on_readReady() {
     auto tcp_socket_ptr = dynamic_cast<QTcpSocket *> (sender());
     QString buffer;
     buffer = tcp_socket_ptr->readAll();
@@ -76,7 +76,7 @@ void OuterSocket::on_read_ready() {
 }
 
 void OuterSocket::execAddFace(const QStringList &rets, QTcpSocket *tcpSocketPtr) {
-    emit outer_socket_close_detector_signal();
+    emit outerSocketCloseDetectorSignal();
     QThread::msleep(200);
     qDebug() << "> adding face ....";
     if (rets.size() < 4) {
@@ -102,7 +102,7 @@ void OuterSocket::execAddFace(const QStringList &rets, QTcpSocket *tcpSocketPtr)
         tcpSocketPtr->write(QString("0x0101").toUtf8());
     }
     QThread::msleep(200);
-    emit outer_socket_open_detector_signal();
+    emit outerSocketOpenDetectorSignal();
 }
 
 void OuterSocket::execDeleteFace(const QStringList &rets, QTcpSocket *tcpSocketPtr) {

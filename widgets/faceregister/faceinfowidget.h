@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
-#include "core/SeetaFace.h"
+#include "core/seetaface.h"
 #include "registerwidget.h"
 #include "customwidget/pagingwidget.h"
 

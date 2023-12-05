@@ -7,7 +7,7 @@
 #include "models/models.h"
 
 void RecordThread::record(QVector<FaceInfoWrap> face_infos) {
-    unique_record(face_infos);
+    uniqueRecord(face_infos);
     QString date_str = QDateTime::currentDateTime().toString("yyyyMMdd");
     QDir dir("./attend/" + date_str);
     if (!dir.exists()) {
@@ -31,7 +31,7 @@ void RecordThread::record(QVector<FaceInfoWrap> face_infos) {
     }
 }
 
-void RecordThread::unique_record(QVector<FaceInfoWrap> &vec) {
+void RecordThread::uniqueRecord(QVector<FaceInfoWrap> &vec) {
     std::sort(vec.begin(), vec.end(), [](FaceInfoWrap &vec1, FaceInfoWrap &vec2) {
         return vec1.ret.uid < vec2.ret.uid;
     });

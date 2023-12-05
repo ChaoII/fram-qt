@@ -1,6 +1,6 @@
 #include "registerwidget.h"
 #include "ui_registerwidget.h"
-#include "core/SeetaFace.h"
+#include "core/seetaface.h"
 #include <QPainter>
 #include <QDebug>
 #include <QMessageBox>

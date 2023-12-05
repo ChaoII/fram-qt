@@ -22,7 +22,7 @@ public slots:
     void record(QVector<FaceInfoWrap>);
 
 private:
-    void unique_record(QVector<FaceInfoWrap> &vec);
+    void uniqueRecord(QVector<FaceInfoWrap> &vec);
 
 };
 

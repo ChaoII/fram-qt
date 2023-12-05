@@ -2,7 +2,7 @@
 // Created by AC on 2023/11/30.
 //
 
-#include "AudioPlayThread.h"
+#include "audioplaythread.h"
 #include <QApplication>
 #include <QThread>
 

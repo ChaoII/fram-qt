@@ -2,7 +2,7 @@
 // Created by aichao on 2022/5/11.
 //
 
-#include "core/SeetaFace.h"
+#include "core/seetaface.h"
 #include "models/models.h"
 #include "widgets/MySplashScreen.h"
 

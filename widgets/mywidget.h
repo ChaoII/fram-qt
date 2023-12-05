@@ -9,7 +9,7 @@
 #include "core/facerecthread.h"
 #include "core/facedetthread.h"
 #include "core/recordthread.h"
-#include "core/AudioPlayThread.h"
+#include "core/audioplaythread.h"
 #include "widgets/faceregister/faceinfowidget.h"
 #include "widgets/attendhistory/historywidget.h"
 #include <QMutex>

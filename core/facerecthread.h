@@ -2,7 +2,7 @@
 #pragma once
 
 #include <QThread>
-#include "SeetaFace.h"
+#include "seetaface.h"
 
 using Status = seeta::FaceAntiSpoofing::Status;
 
@@ -14,18 +14,18 @@ public:
     ~FaceRecThread() override;
 
 private:
-    void send_records();
+    void sendRecords();
 
 signals:
 
-    void face_rec_signal(FaceInfoWrap);
+    void faceRecognitionSignal(FaceInfoWrap);
 
-    void record_signal(QVector<FaceInfoWrap>);
+    void recordSignal(QVector<FaceInfoWrap>);
 
 
 public slots:
 
-    void face_recognition(const QImage &img, const QRect &rect);
+    void faceRecognition(const QImage &img, const QRect &rect);
 
 private:
     QDateTime last_record_time_ = QDateTime::currentDateTime();    // 上次打卡记录时间

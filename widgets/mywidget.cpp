@@ -63,9 +63,9 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 
     // socket
     auto out_socket = new OuterSocket(this);
-    connect(out_socket, &OuterSocket::outer_socket_close_detector_signal,
+    connect(out_socket, &OuterSocket::outerSocketCloseDetectorSignal,
             [this]() { emit closeDetectorSignal(); });
-    connect(out_socket, &OuterSocket::outer_socket_open_detector_signal,
+    connect(out_socket, &OuterSocket::outerSocketOpenDetectorSignal,
             [this]() { emit openDetectorSignal(); });
 
 
@@ -74,19 +74,19 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     // 视频解码及人脸检测线程
     auto face_det_thread = new FaceDetThread();
     face_det_thread->moveToThread(&face_det_thread_);
-    connect(face_det_thread, &FaceDetThread::img_send_signal, this, &MyWidget::on_updateFrame);
-    connect(this, &MyWidget::runDetectThreadSignal, face_det_thread, &FaceDetThread::run_detect);
-    connect(this, &MyWidget::stopDetectThreadSignal, face_det_thread, &FaceDetThread::stop_thread);
-    connect(this, &MyWidget::closeDetectorSignal, face_det_thread, &FaceDetThread::close_detector);
-    connect(this, &MyWidget::openDetectorSignal, face_det_thread, &FaceDetThread::open_detector);
+    connect(face_det_thread, &FaceDetThread::imgSendSignal, this, &MyWidget::on_updateFrame);
+    connect(this, &MyWidget::runDetectThreadSignal, face_det_thread, &FaceDetThread::runDetect);
+    connect(this, &MyWidget::stopDetectThreadSignal, face_det_thread, &FaceDetThread::stopThread);
+    connect(this, &MyWidget::closeDetectorSignal, face_det_thread, &FaceDetThread::closeDetector);
+    connect(this, &MyWidget::openDetectorSignal, face_det_thread, &FaceDetThread::openDetector);
     connect(&face_det_thread_, &QThread::finished, face_det_thread, &FaceDetThread::deleteLater);
 
     MySplashScreen::getInstance().updateProcess("load face recognition component...");
     // 人脸识别线程
     auto face_rec_thread = new FaceRecThread();
     face_rec_thread->moveToThread(&face_rec_thread_);
-    connect(this, &MyWidget::sendImageSignal, face_rec_thread, &FaceRecThread::face_recognition);
-    connect(face_rec_thread, &FaceRecThread::face_rec_signal, this, &MyWidget::on_faceRec);
+    connect(this, &MyWidget::sendImageSignal, face_rec_thread, &FaceRecThread::faceRecognition);
+    connect(face_rec_thread, &FaceRecThread::faceRecognitionSignal, this, &MyWidget::on_faceRec);
     connect(&face_rec_thread_, &QThread::finished, face_rec_thread, &FaceRecThread::deleteLater);
 
     MySplashScreen::getInstance().updateProcess("load attend data record component...");
@@ -101,7 +101,7 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     // 打卡记录线程
     auto record_thread = new RecordThread();
     record_thread->moveToThread(&attend_record_thread_);
-    connect(face_rec_thread, &FaceRecThread::record_signal, record_thread, &RecordThread::record);
+    connect(face_rec_thread, &FaceRecThread::recordSignal, record_thread, &RecordThread::record);
     connect(&attend_record_thread_, &QThread::finished, record_thread, &QThread::deleteLater);
 
     MySplashScreen::getInstance().updateProcess("load face library component...");

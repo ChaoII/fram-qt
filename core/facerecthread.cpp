@@ -1,9 +1,9 @@
 #include "facerecthread.h"
 #include "utils/struct.h"
 
-void FaceRecThread::face_recognition(const QImage &img, const QRect &rect) {
+void FaceRecThread::faceRecognition(const QImage &img, const QRect &rect) {
     if (rect.isEmpty()) {
-        send_records();
+        sendRecords();
         return;
     }
     auto img_ = utils::qImageToCvMat(img);
@@ -36,14 +36,14 @@ void FaceRecThread::face_recognition(const QImage &img, const QRect &rect) {
             records_.append(info);
         }
     }
-    emit face_rec_signal(info);
+    emit faceRecognitionSignal(info);
 }
 
-void FaceRecThread::send_records() {
+void FaceRecThread::sendRecords() {
     QDateTime cur_time = QDateTime::currentDateTime();
     if (last_record_time_.secsTo(cur_time) > Config::getInstance().get_recInterval()) {
         if (!records_.empty()) {
-            emit record_signal(records_);
+            emit recordSignal(records_);
             // 打卡机记录存储后清空缓存
             records_.clear();
         }

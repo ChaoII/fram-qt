@@ -7,8 +7,8 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QDebug>
-#include "core/SeetaFace.h"
-#include "core/Dao.h"
+#include "core/seetaface.h"
+#include "core/dao.h"
 
 enum class MessageFlag {
     AddFace,
@@ -62,15 +62,15 @@ private:
 
 signals:
 
-    void outer_socket_close_detector_signal();
+    void outerSocketCloseDetectorSignal();
 
-    void outer_socket_open_detector_signal();
+    void outerSocketOpenDetectorSignal();
 
 public slots:
 
-    void on_new_connect();
+    void on_newConnect();
 
-    void on_read_ready();
+    void on_readReady();
 
 private:
     QTcpServer *tcp_server_;
