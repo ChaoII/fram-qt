@@ -29,7 +29,9 @@ RegisterWidget::~RegisterWidget() {
 void RegisterWidget::update_frame(const QImage &img) {
     if (img.isNull()) return;
     img_ = img;
-    QImage img_scaled = img.scaled(ui->pic->size(), Qt::AspectRatioMode::IgnoreAspectRatio, Qt::SmoothTransformation);
+    QImage img_scaled = img.scaled(ui->pic->size(),
+                                   Qt::AspectRatioMode::IgnoreAspectRatio,
+                                   Qt::FastTransformation);
     ui->pic->setPixmap(QPixmap::fromImage(img_scaled));
     update();
 }

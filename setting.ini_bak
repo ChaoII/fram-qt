@@ -18,8 +18,6 @@ model_dir = "E:/develop/SeetaFace/models/"
 global_thread_num = 1
 # socket服务端端口
 socket_port = 9088
-#摄像头驱动索引
-camera_index = 0
 #界面是否开启无头模式
 isFrameless = false
 # 是否开启日志
@@ -28,3 +26,10 @@ write_log = false
 log_file = "log.txt"
 # 默认网关
 gateway = "172.168.1.254"
+[Camera]
+# 0:usb摄像头 1：mipi摄像头
+camera_type = 0
+#摄像头驱动索引 如果是linux则对应/dev/videoxx
+camera_index = 0
+frame_width = 640
+frame_height = 480

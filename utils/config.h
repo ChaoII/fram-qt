@@ -22,47 +22,70 @@
 
 class Config : public QObject {
 public:
+    enum class CameraType {
+        USB,
+        MIPI,
+        None
+    };
+
+    static CameraType cameraTypeIndexToCameraType(int camera_type_index) {
+        switch (camera_type_index) {
+            case 0:
+                return CameraType::USB;
+            case 1:
+                return CameraType::MIPI;
+            default:
+                return CameraType::None;
+        }
+    }
+
+public:
     static Config &getInstance() {
         static Config config;
         return config;
     };
 
-    void init_settings();
+    [[nodiscard]] const QString &get_index_file() const;
 
-    const QString &get_index_file() const;
+    [[nodiscard]] int get_top_k() const;
 
-    int get_top_k() const;
+    [[nodiscard]] int get_vector_size() const;
 
-    int get_vector_size() const;
+    [[nodiscard]] int get_max_face_num() const;
 
-    int get_max_face_num() const;
+    [[nodiscard]] int get_rec_interval() const;
 
-    int get_rec_interval() const;
+    [[nodiscard]] float get_rec_threshold() const;
 
-    float get_rec_threshold() const;
+    [[nodiscard]] int get_record_interval() const;
 
-    int get_record_interval() const;
+    [[nodiscard]] const QString &get_model_dir() const;
 
-    const QString &get_model_dir() const;
+    [[nodiscard]] int get_face_recognition_thread_num() const;
 
-    int get_face_recognition_thread_num() const;
+    [[nodiscard]] int get_socket_port() const;
 
-    int get_socket_port() const;
+    [[nodiscard]] bool get_framelessStatus() const;
 
-    int get_camera_index() const;
+    [[nodiscard]] bool get_is_write_log() const;
 
-    bool get_framelessStatus() const;
+    [[nodiscard]] QString get_log_file() const;
 
-    bool get_is_write_log() const;
+    [[nodiscard]] QString get_gateway() const;
 
-    QString get_log_file() const;
+    // camera
+    [[nodiscard]] CameraType get_camera_type() const;
 
-    QString get_gateway() const;
+    [[nodiscard]] int get_camera_index() const;
+
+    [[nodiscard]] int get_frame_width() const;
+
+    [[nodiscard]] int get_frame_height() const;
 
 private:
     explicit Config();
 
-    ~Config() = default;
+    ~Config() override = default;
 
     Config(const Config &) = delete;
 
@@ -70,6 +93,8 @@ private:
 
 private:
     std::shared_ptr<QSettings> settings;
+
+    // base
     QString index_file;
     int top_k;
     int vector_size;
@@ -80,11 +105,17 @@ private:
     QString model_dir;
     int face_recognition_thread_num;
     int socket_port;
-    int camera_index;
+
     bool is_frameless;
     bool is_write_log;
     QString log_file;
     QString gateway;
+
+    // camera
+    int camera_type;
+    int camera_index;
+    int frame_width;
+    int frame_height;
 };
 
 

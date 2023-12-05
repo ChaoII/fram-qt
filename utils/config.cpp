@@ -2,43 +2,9 @@
 #include <QFileInfo>
 
 
-void Config::init_settings() {
-    // 向量索引topk
-    settings->beginGroup("Base");
-    settings->setValue("top_k", 5);
-    //  faiss 向量索引文件名
-    settings->setValue("index_file", "faceindex.vec");
-    // 人脸特征向量长度
-    settings->setValue("vector_size", 1024);
-    // 单次注册人脸时允许录入 的最大人脸数
-    settings->setValue("max_face_num", 3);
-    // 人脸识别算法间隔(ms)
-    settings->setValue("rec_interval", 500);
-    // 人脸识别阈值
-    settings->setValue("rec_threshold", 0.6);
-    // 打卡缓存时间(s)
-    settings->setValue("record_interval", 5);
-    // 模型路径
-    settings->setValue("model_dir", "./models");
-    // 人脸识别线程数，建议为1
-    settings->setValue("face_recognition_thread_num", 1);
-    settings->setValue("socket_port", 9088);
-    settings->setValue("camera_index", 0);
-    settings->setValue("is_frameless", false);
-    settings->setValue("is_write_log", false);
-    settings->setValue("log_file", "");
-    settings->setValue("gateway", "127.168.1.254");
-    settings->endGroup();
-}
-
-
 Config::Config() {
 
-    QFileInfo file_info("setting.ini");
     settings = std::make_shared<QSettings>("setting.ini", QSettings::IniFormat);
-    if (!file_info.exists()) {
-        init_settings();
-    }
     settings->beginGroup("Base");
     top_k = settings->value("top_k").toInt();
     index_file = settings->value("index_file").toString();
@@ -50,12 +16,19 @@ Config::Config() {
     model_dir = settings->value("model_dir").toString();
     face_recognition_thread_num = settings->value("face_recognition_thread_num").toInt();
     socket_port = settings->value("socket_port").toInt();
-    camera_index = settings->value("camera_index").toInt();
     is_frameless = settings->value("is_frameless").toBool();
     is_write_log = settings->value("is_write_log").toBool();
     log_file = settings->value("log_file").toString();
     gateway = settings->value("gateway").toString();
     settings->endGroup();
+
+    settings->beginGroup("Camera");
+    camera_type = settings->value("camera_type").toInt();
+    camera_index = settings->value("camera_index").toInt();
+    frame_width = settings->value("frame_width").toInt();
+    frame_height = settings->value("frame_height").toInt();
+    settings->endGroup();
+
 }
 
 const QString &Config::get_index_file() const {
@@ -98,9 +71,6 @@ int Config::get_socket_port() const {
     return socket_port;
 }
 
-int Config::get_camera_index() const {
-    return camera_index;
-}
 
 bool Config::get_framelessStatus() const {
     return is_frameless;
@@ -116,4 +86,20 @@ QString Config::get_log_file() const {
 
 QString Config::get_gateway() const {
     return gateway;
+}
+
+int Config::get_camera_index() const {
+    return camera_index;
+}
+
+Config::CameraType Config::get_camera_type() const {
+    return cameraTypeIndexToCameraType(camera_type);
+}
+
+int Config::get_frame_width() const {
+    return frame_width;
+}
+
+int Config::get_frame_height() const {
+    return frame_height;
 }

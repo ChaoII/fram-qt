@@ -52,6 +52,7 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 }
 
 int main(int argc, char *argv[]) {
+
 #ifndef __linux__
     qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
 #else
@@ -66,6 +67,8 @@ int main(int argc, char *argv[]) {
     MySplashScreen::getInstance().finish(&w);
 
 #ifdef __linux__
+    // 隐藏鼠标，因为有触屏
+    QApplication::setOverrideCursor(Qt::BlankCursor);
     w.setMaximumSize(1000,1000);
     w.showFullScreen();
 #else
