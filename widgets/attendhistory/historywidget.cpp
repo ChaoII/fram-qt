@@ -13,15 +13,15 @@ HistoryWidget::HistoryWidget(QWidget *parent) :
 
     ui->paging->initPage(num, 0, page_size_);
     ui->paging->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    update_paging_and_table();
-    connect(ui->paging, &PagingWidget::pageChanged, this, &HistoryWidget::update_table);
+    updatePagingAndTable();
+    connect(ui->paging, &PagingWidget::pageChanged, this, &HistoryWidget::updateTable);
 }
 
 HistoryWidget::~HistoryWidget() {
     delete ui;
 }
 
-void HistoryWidget::update_table(int page) {
+void HistoryWidget::updateTable(int page) {
     QVector<AttendInfoItemWidget *> attendInfoItemWidgets;
     auto rs = SeetaFace::getInstance().get_query_info<Attend>(page_size_, page - 1);
     for (int i = 0; i < rs.size(); i++) {
@@ -35,18 +35,18 @@ void HistoryWidget::update_table(int page) {
 
 
 void HistoryWidget::on_tb_back_clicked() {
-    emit history_back_signal();
+    emit historyBackSignal();
 }
 
-void HistoryWidget::update_paging_and_table() {
+void HistoryWidget::updatePagingAndTable() {
     int num = SeetaFace::getInstance().get_query_num<Attend>();
     ui->paging->initPage(num, 0, page_size_);
-    update_table(0);
+    updateTable(0);
 
 }
 
-void HistoryWidget::update_history_widget() {
-    update_paging_and_table();
+void HistoryWidget::updateHistoryWidget() {
+    updatePagingAndTable();
 }
 
 

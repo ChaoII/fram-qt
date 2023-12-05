@@ -1,5 +1,4 @@
-#ifndef ATTENDINFOWIDGET_H
-#define ATTENDINFOWIDGET_H
+#pragma once
 
 #include <QWidget>
 
@@ -15,16 +14,12 @@ public:
 
     ~AttendInfoWidget();
 
-    void
-    setAttendInfo(const QString &name,
-                  const QString &time,
-                  const QPixmap &picAttendStatus,
-                  const QPixmap &picLibrary,
-                  const QPixmap &picCurrent);
-
+    void setAttendInfo(const QString &name,
+                       const QString &time,
+                       const QPixmap &pic_attend_status,
+                       const QPixmap &pic_library,
+                       const QPixmap &pic_current);
 
 private:
     Ui::AttendInfoWidget *ui;
 };
-
-#endif // ATTENDINFOWIDGET_H

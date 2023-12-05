@@ -26,7 +26,7 @@ RegisterWidget::~RegisterWidget() {
 }
 
 
-void RegisterWidget::update_frame(const QImage &img) {
+void RegisterWidget::updateFrame(const QImage &img) {
     if (img.isNull()) return;
     img_ = img;
     QImage img_scaled = img.scaled(ui->pic->size(),
@@ -38,8 +38,8 @@ void RegisterWidget::update_frame(const QImage &img) {
 
 void RegisterWidget::on_tb_back_clicked() {
     if (register_face_.empty()) {
-        clear_register_info();
-        emit register_finished_signal();
+        clearRegisterInfo();
+        emit registerFinishedSignal();
     } else {
         auto msg_box = new QMessageBox(QMessageBox::Warning,
                                        "警告", "人脸信息还未保存，"
@@ -51,8 +51,8 @@ void RegisterWidget::on_tb_back_clicked() {
         auto ret = msg_box->exec();
         qWarning() << "faces is not saved! please click the ensure button and back to main window";
         if (QMessageBox::Yes != ret) {
-            clear_register_info();
-            emit register_finished_signal();
+            clearRegisterInfo();
+            emit registerFinishedSignal();
         }
     }
 }
@@ -76,7 +76,7 @@ void RegisterWidget::on_tb_ensure_clicked() {
     }
     ui->edit_name->setText("");
     ui->edit_staff_id->setText("");
-    emit register_finished_signal();
+    emit registerFinishedSignal();
 }
 
 void RegisterWidget::initialRegisterFaceListWidget() {
@@ -94,7 +94,7 @@ void RegisterWidget::initialRegisterFaceListWidget() {
     });
 }
 
-void RegisterWidget::clear_register_info() {
+void RegisterWidget::clearRegisterInfo() {
     ui->edit_name->setText("");
     ui->edit_staff_id->setText("");
     ui->lw_faceList->clear();

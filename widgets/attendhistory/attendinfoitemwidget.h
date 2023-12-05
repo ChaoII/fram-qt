@@ -1,5 +1,4 @@
-#ifndef ATTENDINFOITEMWIDGET_H
-#define ATTENDINFOITEMWIDGET_H
+#pragma once
 
 #include <QWidget>
 
@@ -25,4 +24,3 @@ private:
     Ui::AttendInfoItemWidget *ui;
 };
 
-#endif // ATTENDINFOITEMWIDGET_H

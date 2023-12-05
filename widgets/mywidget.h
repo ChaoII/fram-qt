@@ -39,29 +39,24 @@ public:
 
     explicit MyWidget(QWidget *parent = nullptr);
 
-    void update_frame(QImage qimg, QRect rect);
-
-    void on_face_rec(const FaceInfoWrap &rec_info);
-
-    void on_update_time();
-
-    void paintEvent(QPaintEvent *event) override;
-
     ~MyWidget() override;
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
 
 signals:
 
-    void send_img_signal(QImage qimg, QRect rect);
+    void sendImageSignal(QImage qimg, QRect rect);
 
-    void run_detect_thread_signal();
+    void runDetectThreadSignal();
 
-    void stop_detect_thread_signal();
+    void stopDetectThreadSignal();
 
-    void close_detector_signal();
+    void closeDetectorSignal();
 
-    void open_detector_signal();
+    void openDetectorSignal();
 
-    void face_recognition_success_audio_signal();
+    void faceRecognitionSuccessAudioSignal();
 
 
 private slots:
@@ -74,37 +69,43 @@ private slots:
 
     void on_tb_close_clicked();
 
-    void on_receive_password_authorized();
+    void on_updateFrame(QImage qimg, QRect rect);
+
+    void on_faceRec(const FaceInfoWrap &rec_info);
+
+    void on_updateTime();
+
+    void on_receivePasswordAuthorized();
 
     void on_changeAudioPlayStatus();
 
     void on_detectNetworkConnectStatus();
 
+    void on_faceFinished();
+
+    void on_historyFinished();
+
     void mousePressEvent(QMouseEvent *event) override;
 
 private:
 
-    void init_widget();
+    void initialWidget();
 
-    void hide_all_widgets();
-
-    void on_face_finished();
-
-    void on_history_finished();
+    void hideAllWidgets();
 
 
 private:
     QImage img_;
-    QDateTime last_rec_time = QDateTime::currentDateTime();
+    QDateTime last_rec_time_ = QDateTime::currentDateTime();
     QThread face_det_thread_;
     QThread face_rec_thread_;
     QThread attend_record_thread_;
     QThread audio_play_thread_;
-    ButtonsEnum currentClickedButton_ = ButtonsEnum::None;
-    HistoryWidget *history_widget = nullptr;
-    FaceInfoWidget *face_info_widget = nullptr;
-    QProcess *pingCmd = nullptr;
-    bool isAudioFinished = true;
+    ButtonsEnum current_clicked_button_ = ButtonsEnum::None;
+    HistoryWidget *history_widget_ = nullptr;
+    FaceInfoWidget *face_info_widget_ = nullptr;
+    QProcess *ping_cmd_ = nullptr;
+    bool is_audio_finished_ = true;
     Ui::MyWidget *ui;
 
 };

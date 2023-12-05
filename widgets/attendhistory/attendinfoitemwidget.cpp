@@ -22,5 +22,7 @@ void AttendInfoItemWidget::setItem(const QString &number,
     ui->lb_staffId->setText(staffId);
     ui->lb_attendTime->setText(attendTime);
     ui->lb_picture->setPixmap(QPixmap(pictureUrl)
-                                      .scaled(ui->lb_picture->size(), Qt::KeepAspectRatio, Qt::FastTransformation));
+                                      .scaled(ui->lb_picture->size(),
+                                              Qt::KeepAspectRatio,
+                                              Qt::FastTransformation));
 }

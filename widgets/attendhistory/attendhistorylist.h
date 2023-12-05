@@ -1,5 +1,4 @@
-#ifndef TESTWIDGET_H
-#define TESTWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include "attendinfoitemwidget.h"
@@ -25,4 +24,3 @@ private:
     Ui::AttendHistoryList *ui;
 };
 
-#endif // TESTWIDGET_H

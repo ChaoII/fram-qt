@@ -11,10 +11,10 @@ FaceListItem::FaceListItem(QWidget *parent) :
     int minSize = ui->lb_checkBox->size().width() < ui->lb_checkBox->size().height()
                   ? ui->lb_checkBox->size().width()
                   : ui->lb_checkBox->size().height();
-    hintSize = int(0.6 * minSize);
+    hint_size_ = int(0.6 * minSize);
     ui->lb_checkBox->setAlignment(Qt::AlignCenter);
     ui->lb_checkBox->setPixmap(QPixmap(":/img/icon_unchecked.png")
-                                       .scaled(hintSize, hintSize,
+                                       .scaled(hint_size_, hint_size_,
                                                Qt::KeepAspectRatio,
                                                Qt::SmoothTransformation));
 
@@ -25,17 +25,17 @@ FaceListItem::~FaceListItem() {
 }
 
 void FaceListItem::setItem(const QString &number,
-                           const QString &indexId,
+                           const QString &index_id,
                            const QString &name,
-                           const QString &staffId,
-                           const QString &registerTime,
-                           const QString &pictureUrl) {
+                           const QString &staff_id,
+                           const QString &register_time,
+                           const QString &picture_url) {
     ui->lb_number->setText(number);
-    ui->lb_indexId->setText(indexId);
+    ui->lb_indexId->setText(index_id);
     ui->lb_name->setText(name);
-    ui->lb_staffId->setText(staffId);
-    ui->lb_registerTime->setText(registerTime);
-    ui->lb_picture->setPixmap(QPixmap(pictureUrl)
+    ui->lb_staffId->setText(staff_id);
+    ui->lb_registerTime->setText(register_time);
+    ui->lb_picture->setPixmap(QPixmap(picture_url)
                                       .scaled(ui->lb_picture->size(),
                                               Qt::KeepAspectRatio,
                                               Qt::FastTransformation));
@@ -45,9 +45,9 @@ bool FaceListItem::eventFilter(QObject *watched, QEvent *event) {
     //拦截发往label子控件的鼠标按下事件
     if (watched == ui->lb_checkBox) {
         if (event->type() == QEvent::MouseButtonPress) {
-            isChecked = !isChecked;
-            changeCheckBoxStatus(isChecked);
-            emit checkBoxStatusChanged_signal(isChecked, ui->lb_indexId->text());
+            is_checked_ = !is_checked_;
+            changeCheckBoxStatus(is_checked_);
+            emit checkBoxStatusChanged_signal(is_checked_, ui->lb_indexId->text());
             return true;
         }
     }
@@ -59,25 +59,25 @@ void FaceListItem::changeCheckBoxStatus(bool isCheckStatus) {
     if (isCheckStatus) {
 
         ui->lb_checkBox->setPixmap(QPixmap(":/img/icon_checked.png")
-                                           .scaled(hintSize, hintSize,
+                                           .scaled(hint_size_, hint_size_,
                                                    Qt::KeepAspectRatio,
                                                    Qt::SmoothTransformation));
     } else {
         ui->lb_checkBox->setPixmap(QPixmap(":/img/icon_unchecked.png")
-                                           .scaled(hintSize, hintSize,
+                                           .scaled(hint_size_, hint_size_,
                                                    Qt::KeepAspectRatio,
                                                    Qt::SmoothTransformation));
     }
 }
 
-bool FaceListItem::getCheckedStatus() {
-    return isChecked;
+bool FaceListItem::getCheckedStatus() const {
+    return is_checked_;
 }
 
 void FaceListItem::setCheckStatus(bool isCheckedStatus) {
-    isChecked = isCheckedStatus;
-    changeCheckBoxStatus(isChecked);
-    emit checkBoxStatusChanged_signal(isChecked, ui->lb_indexId->text());
+    is_checked_ = isCheckedStatus;
+    changeCheckBoxStatus(is_checked_);
+    emit checkBoxStatusChanged_signal(is_checked_, ui->lb_indexId->text());
 }
 
 

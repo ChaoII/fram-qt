@@ -8,9 +8,9 @@
 
 InputPage::InputPage(QWidget *parent) :
         QFrame(parent),
-        currentTimeout(INPUT_TIMEOUT),
-        counterTimer(nullptr),
-        isFirstKey(true),
+        current_timeout_(INPUT_TIMEOUT),
+        counter_timer_(nullptr),
+        is_first_key_(true),
         ui(new Ui::InputPage) {
     ui->setupUi(this);
     this->setStyleSheet(
@@ -19,14 +19,14 @@ InputPage::InputPage(QWidget *parent) :
             "QPushButton:pressed:pressed {border-image: url(:/img/icon_num_btn_hover.png); background-color:rgba(150,150,150,80)}");
     ui->le_inputContent->setPlaceholderText("请输入密码");
     ui->message->setStyleSheet("QLabel{color:rgb(255,0,0)}");
-    init();
+    initButton();
 }
 
 InputPage::~InputPage() {
     delete ui;
 }
 
-void InputPage::init() {
+void InputPage::initButton() {
     ui->pb_0->setIcon(QIcon(":/img/icon_num0.png"));
     ui->pb_1->setIcon(QIcon(":/img/icon_num1.png"));
     ui->pb_2->setIcon(QIcon(":/img/icon_num2.png"));
@@ -41,29 +41,29 @@ void InputPage::init() {
     ui->lb_timeout->setHidden(true);
     ui->le_inputContent->setStyleSheet(
             "QLineEdit { background-color:transparent; font: 36px ; color: rgb(245, 245, 245);border:0px; }");
-    ui->le_inputContent->setText(passwordContent);
-    counterTimer = new QTimer(this);
-    connect(counterTimer, &QTimer::timeout, this, &InputPage::updateCountDown);
+    ui->le_inputContent->setText(password_content_);
+    counter_timer_ = new QTimer(this);
+    connect(counter_timer_, &QTimer::timeout, this, &InputPage::updateCountDown);
     connect(this, &InputPage::reSetCountDown, this, &InputPage::onReSetCountDown);
     emit reSetCountDown(INPUT_TIMEOUT);
-    this->counterTimer->stop();
+    this->counter_timer_->stop();
     ui->lb_timeout->setHidden(false);
 }
 
 void InputPage::pressNum(int num) {
-    if (isFirstKey) {
-        isFirstKey = false;
-        passwordContent.clear();
-        passwordContent += QString::number(num);
+    if (is_first_key_) {
+        is_first_key_ = false;
+        password_content_.clear();
+        password_content_ += QString::number(num);
     } else {
-        if (passwordContent.size() >= INPUT_MAX_COUNT) {
+        if (password_content_.size() >= INPUT_MAX_COUNT) {
             ui->message->setText(QString("管理员密码最大长度为") + QString::number(INPUT_MAX_COUNT));
             return;
         }
-        passwordContent += QString::number(num);
+        password_content_ += QString::number(num);
     }
     ui->message->setText("");
-    ui->le_inputContent->setText(passwordContent);
+    ui->le_inputContent->setText(password_content_);
 }
 
 void InputPage::on_pb_1_clicked() {
@@ -112,10 +112,10 @@ void InputPage::on_pb_9_clicked() {
 }
 
 void InputPage::on_pb_clear_clicked() {
-    isFirstKey = true;
-    passwordContent.clear();
+    is_first_key_ = true;
+    password_content_.clear();
     ui->message->clear();
-    ui->le_inputContent->setText(passwordContent);
+    ui->le_inputContent->setText(password_content_);
     emit reSetCountDown(INPUT_TIMEOUT);
 }
 
@@ -125,46 +125,46 @@ void InputPage::on_pb_0_clicked() {
 }
 
 void InputPage::on_pb_ensure_clicked() {
-    if (passwordContent.trimmed() == PASSWORD) {
+    if (password_content_.trimmed() == PASSWORD) {
         emit passwordAuthorized();
         emit reSetCountDown(0);
     } else {
         ui->message->setText("密码错误！");
     }
-    passwordContent.clear();
+    password_content_.clear();
     ui->le_inputContent->clear();
     emit reSetCountDown(INPUT_TIMEOUT);
 }
 
 
 void InputPage::updateCountDown() {
-    currentTimeout -= UNIT_TIME;
-    if (currentTimeout <= 0) {
-        counterTimer->stop();
+    current_timeout_ -= UNIT_TIME;
+    if (current_timeout_ <= 0) {
+        counter_timer_->stop();
         hideInputWidget();
-        passwordContent.clear();
+        password_content_.clear();
         ui->le_inputContent->clear();
-        isFirstKey = true;
+        is_first_key_ = true;
     }
-    ui->lb_timeout->setText(QString::number(currentTimeout / UNIT_TIME));
+    ui->lb_timeout->setText(QString::number(current_timeout_ / UNIT_TIME));
 }
 
 void InputPage::onReSetCountDown(int swTimeOut) {
-    currentTimeout = swTimeOut;
-    counterTimer->start(UNIT_TIME);
-    ui->lb_timeout->setText(QString::number(currentTimeout / UNIT_TIME));
+    current_timeout_ = swTimeOut;
+    counter_timer_->start(UNIT_TIME);
+    ui->lb_timeout->setText(QString::number(current_timeout_ / UNIT_TIME));
 }
 
 void InputPage::showInputWidget() {
     this->setVisible(true);
-    passwordContent.clear();
+    password_content_.clear();
     ui->le_inputContent->clear();
     onReSetCountDown(INPUT_TIMEOUT);
 }
 
 void InputPage::hideInputWidget() {
-    counterTimer->stop();
-    passwordContent.clear();
+    counter_timer_->stop();
+    password_content_.clear();
     ui->le_inputContent->clear();
     ui->message->setText("");
     this->setVisible(false);

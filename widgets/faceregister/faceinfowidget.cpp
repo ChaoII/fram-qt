@@ -7,25 +7,25 @@ FaceInfoWidget::FaceInfoWidget(QWidget *parent) :
         QWidget(parent),
         ui(new Ui::FaceInfoWidget) {
     ui->setupUi(this);
-    hitPageSize = (this->height() - 40) / 100;
-    register_widget = new RegisterWidget();
+    hint_page_size_ = (this->height() - 40) / 100;
+    register_widget_ = new RegisterWidget();
 
 //    register_widget->setStyleSheet("#frame{border:3px solid;}");
 
 
-    layout()->addWidget(register_widget);
-    register_widget->setVisible(false);
-    connect(register_widget, &RegisterWidget::register_finished_signal, this,
-            &FaceInfoWidget::handle_register_finished);
-    paging = new PagingWidget();
-    update_paging_and_table();
-    layout()->addWidget(paging);
-    connect(paging, &PagingWidget::pageChanged, this, &FaceInfoWidget::update_table);
+    layout()->addWidget(register_widget_);
+    register_widget_->setVisible(false);
+    connect(register_widget_, &RegisterWidget::registerFinishedSignal, this,
+            &FaceInfoWidget::handleRegisterFinished);
+    paging_ = new PagingWidget();
+    updatePagingAndTable();
+    layout()->addWidget(paging_);
+    connect(paging_, &PagingWidget::pageChanged, this, &FaceInfoWidget::updateTable);
 }
 
-void FaceInfoWidget::update_register_frame(const QImage &img) {
-    if (register_widget && register_widget->isVisible()) {
-        register_widget->update_frame(img);
+void FaceInfoWidget::updateRegisterFrame(const QImage &img) {
+    if (register_widget_ && register_widget_->isVisible()) {
+        register_widget_->updateFrame(img);
     }
 }
 
@@ -33,31 +33,31 @@ FaceInfoWidget::~FaceInfoWidget() {
     delete ui;
 }
 
-void FaceInfoWidget::update_table(int page) {
-    auto Staffs = SeetaFace::getInstance().get_query_info<Staff>(hitPageSize, page - 1);
+void FaceInfoWidget::updateTable(int page) {
+    auto Staffs = SeetaFace::getInstance().get_query_info<Staff>(hint_page_size_, page - 1);
     this->ui->faceList->addItemWidgets(Staffs);
 }
 
 
-void FaceInfoWidget::update_paging_and_table() {
+void FaceInfoWidget::updatePagingAndTable() {
     int num = SeetaFace::getInstance().get_query_num<Staff>();
-    paging->initPage(num, 0, hitPageSize);
-    update_table(0);
+    paging_->initPage(num, 0, hint_page_size_);
+    updateTable(0);
 }
 
-void FaceInfoWidget::handle_register_finished() {
-    register_widget->setVisible(false);
-    paging->setVisible(true);
+void FaceInfoWidget::handleRegisterFinished() {
+    register_widget_->setVisible(false);
+    paging_->setVisible(true);
     updatePageSize();
-    update_paging_and_table();
+    updatePagingAndTable();
 }
 
 
 void FaceInfoWidget::on_tb_register_clicked() {
-    paging->setVisible(false);
-    register_widget->setVisible(true);
+    paging_->setVisible(false);
+    register_widget_->setVisible(true);
     updatePageSize();
-    update_paging_and_table();
+    updatePagingAndTable();
 }
 
 
@@ -68,12 +68,12 @@ void FaceInfoWidget::on_tb_back_clicked() {
 void FaceInfoWidget::on_tb_delete_clicked() {
     auto index_ids = this->ui->faceList->getCheckedIndexIds();
     SeetaFace::getInstance().delete_face_by_ids(index_ids);
-    update_paging_and_table();
+    updatePagingAndTable();
 }
 
 
-void FaceInfoWidget::update_register_widget() {
-    update_paging_and_table();
+void FaceInfoWidget::updateRegisterWidget() {
+    updatePagingAndTable();
 }
 
 void FaceInfoWidget::on_tb_selectAll_clicked() {
@@ -90,11 +90,11 @@ void FaceInfoWidget::on_tb_revertSelect_clicked() {
 
 
 void FaceInfoWidget::updatePageSize() {
-    hitPageSize = (ui->faceList->height() - 40) / 100;
+    hint_page_size_ = (ui->faceList->height() - 40) / 100;
 }
 
 void FaceInfoWidget::on_tb_refresh_clicked() {
-    update_paging_and_table();
+    updatePagingAndTable();
 }
 
 

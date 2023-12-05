@@ -36,7 +36,7 @@ public slots:
 
 private:
 
-    std::vector<int64_t> checkedIndexIds;
+    std::vector<int64_t> checked_index_ids_;
 
     Ui::FaceList *ui;
 };

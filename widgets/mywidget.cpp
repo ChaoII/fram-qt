@@ -8,7 +8,6 @@
 #include "ui_mywidget.h"
 #include <QPainter>
 #include <QTimer>
-#include <QHostInfo>
 #include <QMetaType>
 #include "widgets/MySplashScreen.h"
 #include "widgets/attendhistory/historywidget.h"
@@ -54,9 +53,9 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     ui->gridLayout->setAlignment(ui->mpTimeLab, Qt::AlignHCenter | Qt::AlignVCenter);
 
 
-    connect(ui->widget_input, &InputPage::passwordAuthorized, this, &MyWidget::on_receive_password_authorized);
+    connect(ui->widget_input, &InputPage::passwordAuthorized, this, &MyWidget::on_receivePasswordAuthorized);
 
-    MySplashScreen::getInstance().update_process("load outer socket component...");
+    MySplashScreen::getInstance().updateProcess("load outer socket component...");
 
     // 注册信号槽元对象
     qRegisterMetaType<FaceInfoWrap>();
@@ -65,37 +64,37 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     // socket
     auto out_socket = new OuterSocket(this);
     connect(out_socket, &OuterSocket::outer_socket_close_detector_signal,
-            [this]() { emit close_detector_signal(); });
+            [this]() { emit closeDetectorSignal(); });
     connect(out_socket, &OuterSocket::outer_socket_open_detector_signal,
-            [this]() { emit open_detector_signal(); });
+            [this]() { emit openDetectorSignal(); });
 
 
-    MySplashScreen::getInstance().update_process("load camera device and ready to read frame...");
+    MySplashScreen::getInstance().updateProcess("load camera device and ready to read frame...");
 
     // 视频解码及人脸检测线程
     auto face_det_thread = new FaceDetThread();
     face_det_thread->moveToThread(&face_det_thread_);
-    connect(face_det_thread, &FaceDetThread::img_send_signal, this, &MyWidget::update_frame);
-    connect(this, &MyWidget::run_detect_thread_signal, face_det_thread, &FaceDetThread::run_detect);
-    connect(this, &MyWidget::stop_detect_thread_signal, face_det_thread, &FaceDetThread::stop_thread);
-    connect(this, &MyWidget::close_detector_signal, face_det_thread, &FaceDetThread::close_detector);
-    connect(this, &MyWidget::open_detector_signal, face_det_thread, &FaceDetThread::open_detector);
+    connect(face_det_thread, &FaceDetThread::img_send_signal, this, &MyWidget::on_updateFrame);
+    connect(this, &MyWidget::runDetectThreadSignal, face_det_thread, &FaceDetThread::run_detect);
+    connect(this, &MyWidget::stopDetectThreadSignal, face_det_thread, &FaceDetThread::stop_thread);
+    connect(this, &MyWidget::closeDetectorSignal, face_det_thread, &FaceDetThread::close_detector);
+    connect(this, &MyWidget::openDetectorSignal, face_det_thread, &FaceDetThread::open_detector);
     connect(&face_det_thread_, &QThread::finished, face_det_thread, &FaceDetThread::deleteLater);
 
-    MySplashScreen::getInstance().update_process("load face recognition component...");
+    MySplashScreen::getInstance().updateProcess("load face recognition component...");
     // 人脸识别线程
     auto face_rec_thread = new FaceRecThread();
     face_rec_thread->moveToThread(&face_rec_thread_);
-    connect(this, &MyWidget::send_img_signal, face_rec_thread, &FaceRecThread::face_recognition);
-    connect(face_rec_thread, &FaceRecThread::face_rec_signal, this, &MyWidget::on_face_rec);
+    connect(this, &MyWidget::sendImageSignal, face_rec_thread, &FaceRecThread::face_recognition);
+    connect(face_rec_thread, &FaceRecThread::face_rec_signal, this, &MyWidget::on_faceRec);
     connect(&face_rec_thread_, &QThread::finished, face_rec_thread, &FaceRecThread::deleteLater);
 
-    MySplashScreen::getInstance().update_process("load attend data record component...");
+    MySplashScreen::getInstance().updateProcess("load attend data record component...");
 
     // 声音播放线程
     auto audio_play_thread = new AudioPlayThread();
     audio_play_thread->moveToThread(&audio_play_thread_);
-    connect(this, &MyWidget::face_recognition_success_audio_signal, audio_play_thread, &AudioPlayThread::playAudio);
+    connect(this, &MyWidget::faceRecognitionSuccessAudioSignal, audio_play_thread, &AudioPlayThread::playAudio);
     connect(audio_play_thread, &AudioPlayThread::playAudioFinished, this, &MyWidget::on_changeAudioPlayStatus);
     connect(&audio_play_thread_, &QThread::finished, audio_play_thread, &QThread::deleteLater);
 
@@ -105,41 +104,41 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     connect(face_rec_thread, &FaceRecThread::record_signal, record_thread, &RecordThread::record);
     connect(&attend_record_thread_, &QThread::finished, record_thread, &QThread::deleteLater);
 
-    MySplashScreen::getInstance().update_process("load face library component...");
+    MySplashScreen::getInstance().updateProcess("load face library component...");
 
     // 人脸库信息窗体
-    face_info_widget = new FaceInfoWidget();
-    connect(face_info_widget, &FaceInfoWidget::face_back_signal, this, &MyWidget::on_face_finished);
+    face_info_widget_ = new FaceInfoWidget();
+    connect(face_info_widget_, &FaceInfoWidget::face_back_signal, this, &MyWidget::on_faceFinished);
 
-    MySplashScreen::getInstance().update_process("load attend history component...");
+    MySplashScreen::getInstance().updateProcess("load attend history component...");
 
     // 打卡记录窗体
-    history_widget = new HistoryWidget();
-    connect(history_widget, &HistoryWidget::history_back_signal, this, &MyWidget::on_history_finished);
-    MySplashScreen::getInstance().update_process("init ui date time timer ...");
+    history_widget_ = new HistoryWidget();
+    connect(history_widget_, &HistoryWidget::historyBackSignal, this, &MyWidget::on_historyFinished);
+    MySplashScreen::getInstance().updateProcess("init ui date time timer ...");
     // 界面时间
     auto timer1 = new QTimer(this);
-    connect(timer1, &QTimer::timeout, this, &MyWidget::on_update_time);
+    connect(timer1, &QTimer::timeout, this, &MyWidget::on_updateTime);
     timer1->setInterval(1000);
     timer1->start();
-    MySplashScreen::getInstance().update_process("init record  timer ...");
+    MySplashScreen::getInstance().updateProcess("init record  timer ...");
     // 记录线程
     auto timer2 = new QTimer(this);
-    connect(timer2, &QTimer::timeout, [=]() { emit send_img_signal(QImage(), QRect()); });
+    connect(timer2, &QTimer::timeout, [=]() { emit sendImageSignal(QImage(), QRect()); });
     timer2->setInterval(Config::getInstance().get_record_interval() * 1000);
     timer2->start();
     // 检测网络情况
     auto timer3 = new QTimer(this);
     connect(timer3, &QTimer::timeout, this, &MyWidget::on_detectNetworkConnectStatus);
     timer3->start(1000);
-    pingCmd = new QProcess(this);
+    ping_cmd_ = new QProcess(this);
 
     // 屏幕休眠
 #ifdef __linux__
     auto timer4 = new QTimer(this);
     connect(timer4, &QTimer::timeout, this, [&]() {
         QDateTime cur_time = QDateTime::currentDateTime();
-        if (last_rec_time.secsTo(cur_time) > Config::getInstance().get_displayOffInterval()) {
+        if (last_rec_time_.secsTo(cur_time) > Config::getInstance().get_displayOffInterval()) {
             QProcess::execute("xset", QStringList() << "dpms" << "force" << "off");
         } else {
             QProcess::execute("xset", QStringList() << "dpms" << "force" << "on");
@@ -147,26 +146,24 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     });
     timer4->start(1000);
 #endif
-
-
     // 初始化界面
-    init_widget();
+    initialWidget();
     // 启动后台线程
     face_det_thread_.start();
     face_rec_thread_.start();
     attend_record_thread_.start();
     audio_play_thread_.start();
-    emit run_detect_thread_signal();
-    MySplashScreen::getInstance().update_process("init finished...");
+    emit runDetectThreadSignal();
+    MySplashScreen::getInstance().updateProcess("init finished...");
 }
 
-void MyWidget::update_frame(QImage qimg, QRect rect) {
+void MyWidget::on_updateFrame(QImage qimg, QRect rect) {
     if (!rect.isEmpty()) {
         QDateTime cur_time = QDateTime::currentDateTime();
         // 通过计时调整识别的频率
-        if (last_rec_time.msecsTo(cur_time) > Config::getInstance().get_rec_interval()) {
-            emit send_img_signal(qimg, rect);
-            last_rec_time = cur_time;
+        if (last_rec_time_.msecsTo(cur_time) > Config::getInstance().get_rec_interval()) {
+            emit sendImageSignal(qimg, rect);
+            last_rec_time_ = cur_time;
         }
         QPainter painter(&qimg);
         painter.setPen(QPen(QColor(Qt::green)));
@@ -175,15 +172,15 @@ void MyWidget::update_frame(QImage qimg, QRect rect) {
         Utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
     }
     ui->widget_info->setVisible(!rect.isEmpty());
-    if (face_info_widget && face_info_widget->isVisible()) {
-        face_info_widget->update_register_frame(qimg);
+    if (face_info_widget_ && face_info_widget_->isVisible()) {
+        face_info_widget_->updateRegisterFrame(qimg);
     }
     if (!ui->widget->isVisible()) return;
     img_ = qimg.scaled(size(), Qt::IgnoreAspectRatio, Qt::FastTransformation);
     update();
 }
 
-void MyWidget::on_face_rec(const FaceInfoWrap &rec_info) {
+void MyWidget::on_faceRec(const FaceInfoWrap &rec_info) {
 
     QString attend_time = rec_info.time.split("T")[1].split(".")[0];
     if (rec_info.status == RecognitionStatus::SPOOF) {
@@ -208,9 +205,9 @@ void MyWidget::on_face_rec(const FaceInfoWrap &rec_info) {
                                        QPixmap(rec_info.ret.pic_url),
                                        QPixmap::fromImage(rec_info.ret.img));
 
-        if (isAudioFinished) {
-            isAudioFinished = false;
-            emit face_recognition_success_audio_signal();
+        if (is_audio_finished_) {
+            is_audio_finished_ = false;
+            emit faceRecognitionSuccessAudioSignal();
         }
         Utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 0));
         Utils::setBackgroundColor(ui->widget_info, QColor(0, 255, 0, 40));
@@ -220,7 +217,7 @@ void MyWidget::on_face_rec(const FaceInfoWrap &rec_info) {
 }
 
 void MyWidget::on_pb_welcome_clicked() {
-    currentClickedButton_ = ButtonsEnum::WelcomeButton;
+    current_clicked_button_ = ButtonsEnum::WelcomeButton;
     if (ui->widget_input->isVisible()) {
         ui->widget_input->hideInputWidget();
         return;
@@ -229,7 +226,7 @@ void MyWidget::on_pb_welcome_clicked() {
 }
 
 void MyWidget::on_pb_register_clicked() {
-    currentClickedButton_ = ButtonsEnum::RegisterButton;
+    current_clicked_button_ = ButtonsEnum::RegisterButton;
     if (ui->widget_input->isVisible()) {
         ui->widget_input->hideInputWidget();
         return;
@@ -238,7 +235,7 @@ void MyWidget::on_pb_register_clicked() {
 }
 
 void MyWidget::on_pb_history_clicked() {
-    currentClickedButton_ = ButtonsEnum::HistoryButton;
+    current_clicked_button_ = ButtonsEnum::HistoryButton;
     if (ui->widget_input->isVisible()) {
         ui->widget_input->hideInputWidget();
         return;
@@ -247,7 +244,7 @@ void MyWidget::on_pb_history_clicked() {
 }
 
 void MyWidget::on_tb_close_clicked() {
-    currentClickedButton_ = ButtonsEnum::CloseButton;
+    current_clicked_button_ = ButtonsEnum::CloseButton;
     if (ui->widget_input->isVisible()) {
         ui->widget_input->hideInputWidget();
         return;
@@ -255,28 +252,28 @@ void MyWidget::on_tb_close_clicked() {
     ui->widget_input->showInputWidget();
 }
 
-void MyWidget::init_widget() {
-    layout()->addWidget(history_widget);
-    layout()->addWidget(face_info_widget);
-    history_widget->setVisible(false);
-    face_info_widget->setVisible(false);
+void MyWidget::initialWidget() {
+    layout()->addWidget(history_widget_);
+    layout()->addWidget(face_info_widget_);
+    history_widget_->setVisible(false);
+    face_info_widget_->setVisible(false);
     ui->widget_input->setVisible(false);
     ui->widget_info->setVisible(false);
     ui->widget->setVisible(true);
 }
 
-void MyWidget::on_face_finished() {
-    emit open_detector_signal();
-    hide_all_widgets();
+void MyWidget::on_faceFinished() {
+    emit openDetectorSignal();
+    hideAllWidgets();
     ui->widget->setVisible(true);
 }
 
-void MyWidget::on_history_finished() {
-    hide_all_widgets();
+void MyWidget::on_historyFinished() {
+    hideAllWidgets();
     ui->widget->setVisible(true);
 }
 
-void MyWidget::on_update_time() {
+void MyWidget::on_updateTime() {
     auto data_time = QDateTime::currentDateTime();
     QString date = data_time.toString("yyyy-MM-dd");
     QString time = data_time.toString("HH:mm:ss");
@@ -307,38 +304,38 @@ MyWidget::~MyWidget() {
     attend_record_thread_.quit();
     attend_record_thread_.wait();
     // 必须先将死循环退出后才能结束线程
-    emit stop_detect_thread_signal();
+    emit stopDetectThreadSignal();
     face_det_thread_.quit();
     face_det_thread_.wait();
     delete ui;
 }
 
 
-void MyWidget::hide_all_widgets() {
+void MyWidget::hideAllWidgets() {
     if (ui->widget->isVisible()) {
         ui->widget->setVisible(false);
     }
-    if (history_widget->isVisible()) {
-        history_widget->setVisible(false);
+    if (history_widget_->isVisible()) {
+        history_widget_->setVisible(false);
     }
-    if (face_info_widget->isVisible()) {
-        face_info_widget->setVisible(false);
+    if (face_info_widget_->isVisible()) {
+        face_info_widget_->setVisible(false);
     }
 }
 
-void MyWidget::on_receive_password_authorized() {
-    if (currentClickedButton_ == ButtonsEnum::HistoryButton) {
-        hide_all_widgets();
-        history_widget->setVisible(true);
-        history_widget->update_history_widget();
-    } else if (currentClickedButton_ == ButtonsEnum::RegisterButton) {
-        hide_all_widgets();
-        face_info_widget->setVisible(true);
-        face_info_widget->update_register_widget();
-        emit close_detector_signal();
-    } else if (currentClickedButton_ == ButtonsEnum::WelcomeButton) {
+void MyWidget::on_receivePasswordAuthorized() {
+    if (current_clicked_button_ == ButtonsEnum::HistoryButton) {
+        hideAllWidgets();
+        history_widget_->setVisible(true);
+        history_widget_->updateHistoryWidget();
+    } else if (current_clicked_button_ == ButtonsEnum::RegisterButton) {
+        hideAllWidgets();
+        face_info_widget_->setVisible(true);
+        face_info_widget_->updateRegisterWidget();
+        emit closeDetectorSignal();
+    } else if (current_clicked_button_ == ButtonsEnum::WelcomeButton) {
         //todo other task such as open the door
-    } else if (currentClickedButton_ == ButtonsEnum::CloseButton) {
+    } else if (current_clicked_button_ == ButtonsEnum::CloseButton) {
         close();
     } else {
         // todo
@@ -347,45 +344,38 @@ void MyWidget::on_receive_password_authorized() {
 
 
 void MyWidget::on_changeAudioPlayStatus() {
-    isAudioFinished = true;
+    is_audio_finished_ = true;
 }
 
 void MyWidget::on_detectNetworkConnectStatus() {
-    QStringList pingParameters;
-    pingParameters << Config::getInstance().get_gateway();
+    QStringList ping_parameters;
+    ping_parameters << Config::getInstance().get_gateway();
 #if defined(__linux__) || defined(__APPLE__)
-    pingParameters << "-c";
+    ping_parameters << "-c";
 #else
-    pingParameters << "-n";
+    ping_parameters << "-n";
 #endif
-    pingParameters << "1";
-    pingCmd->start("ping", pingParameters);
-    bool connectStatus = false;
+    ping_parameters << "1";
+    ping_cmd_->start("ping", ping_parameters);
+    bool connect_status = false;
 #if defined(__linux__) || defined(__APPLE__)
-    QString keyStr = "ttl";
+    QString key_str = "ttl";
 #else
-    QString keyStr = "TTL";
+    QString key_str = "TTL";
 #endif
-    if (pingCmd->waitForFinished(200)) {
-        QString res = QString::fromLocal8Bit(pingCmd->readAll());
-        if (res.indexOf(keyStr) != -1) {
-            connectStatus = true;
+    if (ping_cmd_->waitForFinished(200)) {
+        QString res = QString::fromLocal8Bit(ping_cmd_->readAll());
+        if (res.indexOf(key_str) != -1) {
+            connect_status = true;
         }
     }
-    auto pic_url = connectStatus ? ":img/icon_wifi_connect.png" : ":img/icon_wifi_disconnect.png";
+    auto pic_url = connect_status ? ":img/icon_wifi_connect.png" : ":img/icon_wifi_disconnect.png";
     ui->lb_net->setPixmap(QPixmap(pic_url));
 }
 
 void MyWidget::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        last_rec_time = QDateTime::currentDateTime();
+        last_rec_time_ = QDateTime::currentDateTime();
     }
     QWidget::mousePressEvent(event);
 }
-
-
-
-
-
-
-

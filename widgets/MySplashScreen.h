@@ -18,7 +18,7 @@ public:
 
     void setRange(int min, int max);//设置进度条大小
 
-    void update_process(const QString &msg);
+    void updateProcess(const QString &msg);
 
 private:
 
@@ -34,9 +34,9 @@ protected:
 
 private:
 
-    QProgressBar *progressBar;
+    QProgressBar *progress_bar_;
 
-    int value = 0;
+    int value_ = 0;
 
 };
 

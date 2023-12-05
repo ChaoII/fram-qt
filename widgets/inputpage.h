@@ -1,5 +1,4 @@
-#ifndef INPUTPAGE_H
-#define INPUTPAGE_H
+#pragma once
 
 #include <QFrame>
 #include <QTimer>
@@ -15,7 +14,7 @@ Q_OBJECT
 public:
     explicit InputPage(QWidget *parent = nullptr);
 
-    QString strContent() { return passwordContent; }
+    QString strContent() { return password_content_; }
 
     void showInputWidget();
 
@@ -30,7 +29,7 @@ signals:
     void reSetCountDown(int swTimeOut);
 
 private:
-    void init();
+    void initButton();
 
     void pressNum(int num);
 
@@ -65,11 +64,10 @@ private slots:
     void onReSetCountDown(int swTimeOut);
 
 private:
-    int currentTimeout;
-    QTimer *counterTimer;
-    bool isFirstKey;
-    QString passwordContent;
+    int current_timeout_;
+    QTimer *counter_timer_;
+    bool is_first_key_;
+    QString password_content_;
     Ui::InputPage *ui;
 };
 
-#endif // INPUTPAGE_H

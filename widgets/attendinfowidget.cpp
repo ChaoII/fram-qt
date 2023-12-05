@@ -13,18 +13,18 @@ AttendInfoWidget::~AttendInfoWidget() {
 
 void AttendInfoWidget::setAttendInfo(const QString &name,
                                      const QString &time,
-                                     const QPixmap &picAttendStatus,
-                                     const QPixmap &picLibrary,
-                                     const QPixmap &picCurrent) {
+                                     const QPixmap &pic_attend_status,
+                                     const QPixmap &pic_library,
+                                     const QPixmap &pic_current) {
     ui->lb_name->setText(name);
     ui->lb_attend_time->setText(time);
-    ui->lb_pic->setPixmap(picAttendStatus);
-    ui->pic_library->setPixmap(picLibrary.scaled(ui->pic_library->size(),
-                                                 Qt::KeepAspectRatio,
-                                                 Qt::SmoothTransformation));
-    ui->pic_current->setPixmap(picCurrent.scaled(ui->pic_current->size(),
-                                                 Qt::KeepAspectRatio,
-                                                 Qt::SmoothTransformation));
+    ui->lb_pic->setPixmap(pic_attend_status);
+    ui->pic_library->setPixmap(pic_library.scaled(ui->pic_library->size(),
+                                                  Qt::KeepAspectRatio,
+                                                  Qt::SmoothTransformation));
+    ui->pic_current->setPixmap(pic_current.scaled(ui->pic_current->size(),
+                                                  Qt::KeepAspectRatio,
+                                                  Qt::SmoothTransformation));
 }
 
 

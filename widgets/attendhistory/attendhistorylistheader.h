@@ -1,5 +1,4 @@
-#ifndef ATTENDHISTORYLISTHEADER_H
-#define ATTENDHISTORYLISTHEADER_H
+#pragma once
 
 #include <QWidget>
 
@@ -19,4 +18,3 @@ private:
     Ui::AttendHistoryListHeader *ui;
 };
 
-#endif // ATTENDHISTORYLISTHEADER_H

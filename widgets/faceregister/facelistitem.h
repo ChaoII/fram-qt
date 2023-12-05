@@ -13,18 +13,17 @@ public:
     explicit FaceListItem(QWidget *parent = nullptr);
 
     void setItem(const QString &number,
-                 const QString &indexId,
+                 const QString &index_id,
                  const QString &name,
-                 const QString &staffId,
-                 const QString &registerTime,
-                 const QString &pictureUrl);
+                 const QString &staff_id,
+                 const QString &register_time,
+                 const QString &picture_url);
 
-    bool getCheckedStatus();
+    [[nodiscard]] bool getCheckedStatus() const;
 
     void setCheckStatus(bool isCheckedStatus);
 
-
-    ~FaceListItem();
+    ~FaceListItem() override;
 
 signals:
 
@@ -37,8 +36,8 @@ private:
     void changeCheckBoxStatus(bool isCheckStatus);
 
 private:
-    int hintSize;
-    bool isChecked = false;
+    int hint_size_;
+    bool is_checked_ = false;
     Ui::FaceListItem *ui;
 };
 

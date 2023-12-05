@@ -18,19 +18,19 @@ Q_OBJECT
 public:
     explicit HistoryWidget(QWidget *parent = nullptr);
 
-    void update_history_widget();
+    void updateHistoryWidget();
 
-    ~HistoryWidget();
+    ~HistoryWidget() override;
 
 signals:
 
-    void history_back_signal();
+    void historyBackSignal();
 
 private:
 
-    void update_table(int page);
+    void updateTable(int page);
 
-    void update_paging_and_table();
+    void updatePagingAndTable();
 
 private slots:
 
@@ -38,10 +38,6 @@ private slots:
 
 private:
     Ui::HistoryWidget *ui;
-
-    QStandardItemModel *the_model;
-
-    QItemSelectionModel *the_select;
 
     int page_size_ = 9;
 

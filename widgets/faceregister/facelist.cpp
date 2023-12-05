@@ -15,7 +15,7 @@ FaceList::~FaceList() {
 }
 
 void FaceList::addItemWidgets(const QVector<Staff> &staffs) {
-    checkedIndexIds.clear();
+    checked_index_ids_.clear();
     deleteLayoutWidget();
     auto header = new FaceListHeader();
     header->setObjectName("header");
@@ -57,20 +57,20 @@ void FaceList::on_getCheckBoxStatusChange(bool isChecked, const QString &indexId
 
     if (isChecked) {
         // 将ID添加到集合
-        checkedIndexIds.push_back(indexId.toLongLong());
+        checked_index_ids_.push_back(indexId.toLongLong());
     } else {
         // 将ID从集合中删除
-        auto it = std::find(checkedIndexIds.begin(), checkedIndexIds.end(), indexId.toLongLong());
-        if (it == checkedIndexIds.end()) {
+        auto it = std::find(checked_index_ids_.begin(), checked_index_ids_.end(), indexId.toLongLong());
+        if (it == checked_index_ids_.end()) {
             return;
         }
-        std::swap(*it, checkedIndexIds.back());
-        checkedIndexIds.pop_back();
+        std::swap(*it, checked_index_ids_.back());
+        checked_index_ids_.pop_back();
     }
 }
 
 std::vector<int64_t> FaceList::getCheckedIndexIds() {
-    return checkedIndexIds;
+    return checked_index_ids_;
 }
 
 void FaceList::selectAll() {
@@ -85,7 +85,7 @@ void FaceList::selectAll() {
             }
         }
     }
-    qDebug() << checkedIndexIds.size();
+    qDebug() << checked_index_ids_.size();
 }
 
 void FaceList::unSelectAll() {
@@ -97,7 +97,7 @@ void FaceList::unSelectAll() {
             faceListItem->setCheckStatus(false);
         }
     }
-    qDebug() << checkedIndexIds.size();
+    qDebug() << checked_index_ids_.size();
 }
 
 void FaceList::reverseSelectAll() {
@@ -109,6 +109,6 @@ void FaceList::reverseSelectAll() {
             faceListItem->setCheckStatus(!faceListItem->getCheckedStatus());
         }
     }
-    qDebug() << checkedIndexIds.size();
+    qDebug() << checked_index_ids_.size();
 }
 

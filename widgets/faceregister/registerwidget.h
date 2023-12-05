@@ -22,11 +22,11 @@ public:
 
     ~RegisterWidget();
 
-    void update_frame(const QImage &img);
+    void updateFrame(const QImage &img);
 
 signals:
 
-    void register_finished_signal();
+    void registerFinishedSignal();
 
 private slots:
 
@@ -40,7 +40,7 @@ private:
 
     void initialRegisterFaceListWidget();
 
-    void clear_register_info();
+    void clearRegisterInfo();
 
 private:
     Ui::RegisterWidget *ui;
