@@ -6,7 +6,7 @@
 #include <QFile>
 #include <QDateTime>
 #include <QtWidgets>
-#include "widgets/MySplashScreen.h"
+#include "widgets/mysplashscreen.h"
 #include "widgets/mywidget.h"
 #include "utils/config.h"
 

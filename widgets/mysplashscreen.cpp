@@ -2,7 +2,7 @@
 // Created by AC on 2023/11/14.
 //
 
-#include "MySplashScreen.h"
+#include "mysplashscreen.h"
 #include <QtWidgets>
 
 MySplashScreen::MySplashScreen(const QPixmap &pix) : QSplashScreen(pix) {

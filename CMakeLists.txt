@@ -69,7 +69,7 @@ list(APPEND DEPENDS QxOrm)
 
 #add include directory
 include_directories(${CMAKE_SOURCE_DIR}/widgets)
-include_directories(${CMAKE_SOURCE_DIR}/customwidget)
+include_directories(${CMAKE_SOURCE_DIR}/widgets/commonwidgets)
 include_directories(${CMAKE_SOURCE_DIR}/widgets/attendhistory)
 include_directories(${CMAKE_SOURCE_DIR}/widgets/faceregister)
 
@@ -79,7 +79,7 @@ aux_source_directory(core CORE_SRC)
 aux_source_directory(widgets/faceregister REGISTER_SRC)
 aux_source_directory(widgets/attendhistory ATTEND_SRC)
 aux_source_directory(widgets WIDGETS_SRC)
-aux_source_directory(customwidget CUSTOM_WIDGETS_SRC)
+aux_source_directory(widgets/commonwidgets CUSTOM_WIDGETS_SRC)
 aux_source_directory(utils UTILS_SRC)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")

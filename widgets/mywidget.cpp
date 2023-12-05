@@ -9,7 +9,7 @@
 #include <QPainter>
 #include <QTimer>
 #include <QMetaType>
-#include "widgets/MySplashScreen.h"
+#include "widgets/mysplashscreen.h"
 #include "widgets/attendhistory/historywidget.h"
 
 

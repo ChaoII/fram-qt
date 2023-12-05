@@ -4,7 +4,7 @@
 
 #include "core/seetaface.h"
 #include "models/models.h"
-#include "widgets/MySplashScreen.h"
+#include "widgets/mysplashscreen.h"
 
 using namespace std;
 using namespace seeta;
