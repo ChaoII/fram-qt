@@ -21,6 +21,7 @@ SettingWidget::SettingWidget(QWidget *parent) :
     ui->cb_is_wriye_log->setButtonStyle(ImageSwitch::ButtonStyle::ButtonStyle2);
     ui->cb_is_frameless->setButtonStyle(ImageSwitch::ButtonStyle::ButtonStyle2);
     ui->cb_is_frameless->setFixedSize(87, 30);
+    ui->cb_vector_size->setEnabled(false);
     updateSetting();
 }
 
@@ -61,7 +62,7 @@ void SettingWidget::saveSettings() {
     QString index_file = ui->le_index_file->text();
     int vector_size = ui->cb_vector_size->currentText().toInt();
     int max_face_num = ui->csb_max_face_num->value();
-    double rec_interval =  ui->csb_rec_interval->value();
+    double rec_interval = ui->csb_rec_interval->value();
     double rec_threshold = ui->csb_rec_threshold->value();
     int record_interval = ui->csb_record_interval->value();
     QString model_dir = ui->le_model_dir->text();
