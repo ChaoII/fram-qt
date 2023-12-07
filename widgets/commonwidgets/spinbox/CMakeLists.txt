@@ -24,5 +24,5 @@ include_directories(${CMAKE_SOURCE_DIR})
 aux_source_directory(./ SWITCH_SRC)
 
 
-add_library(CustomSpinBox ${SWITCH_SRC} spinbox.ui spinbox.qrc)
+add_library(CustomSpinBox ${SWITCH_SRC} spinbox.qrc)
 target_link_libraries(CustomSpinBox ${DEPENDS})
