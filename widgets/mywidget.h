@@ -85,9 +85,7 @@ private slots:
 
     void on_detectNetworkConnectStatus();
 
-    void on_faceFinished();
-
-    void on_historyFinished();
+    void on_otherWidgetFinished();
 
     void mousePressEvent(QMouseEvent *event) override;
 

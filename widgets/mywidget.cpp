@@ -24,6 +24,11 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     this->setWindowFlags(windowFlags() | Qt::Window | Qt::WindowStaysOnTopHint);
     setWindowIcon(QIcon(":img/icon-64x64.png"));
 
+    // 当输入窗体或者其它窗体打开时，需要关闭人脸检测算法
+    connect(ui->widget_input, &InputPage::inputWidgetVisibleSignal, this, [&](bool is_visible) {
+        is_visible ? emit closeDetectorSignal() : emit openDetectorSignal();
+    });
+
     ui->mpTimeLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,200,200);}");
     ui->mpDateLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,200,200);}");
     ui->mpWeekLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,200,200);}");
@@ -108,20 +113,19 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 
     // 人脸库信息窗体
     face_info_widget_ = new FaceInfoWidget();
-    connect(face_info_widget_, &FaceInfoWidget::face_back_signal, this, &MyWidget::on_faceFinished);
+    connect(face_info_widget_, &FaceInfoWidget::face_back_signal, this, &MyWidget::on_otherWidgetFinished);
 
     MySplashScreen::getInstance().updateProcess("load attend history component...");
 
     // 打卡记录窗体
     history_widget_ = new HistoryWidget();
-    connect(history_widget_, &HistoryWidget::historyBackSignal, this, &MyWidget::on_historyFinished);
+    connect(history_widget_, &HistoryWidget::historyBackSignal, this, &MyWidget::on_otherWidgetFinished);
     MySplashScreen::getInstance().updateProcess("init ui date time timer ...");
 
     // 设置窗体
     setting_widget_ = new SettingWidget();
-    connect(setting_widget_, &SettingWidget::settingBackSignal, this, &MyWidget::on_historyFinished);
+    connect(setting_widget_, &SettingWidget::settingBackSignal, this, &MyWidget::on_otherWidgetFinished);
     connect(setting_widget_, &SettingWidget::restartProgramSignal, this, &MyWidget::close);
-
 
 
     // 界面时间
@@ -287,13 +291,8 @@ void MyWidget::initialWidget() {
     ui->widget->setVisible(true);
 }
 
-void MyWidget::on_faceFinished() {
+void MyWidget::on_otherWidgetFinished() {
     emit openDetectorSignal();
-    hideAllWidgets();
-    ui->widget->setVisible(true);
-}
-
-void MyWidget::on_historyFinished() {
     hideAllWidgets();
     ui->widget->setVisible(true);
 }
@@ -358,6 +357,7 @@ void MyWidget::on_receivePasswordAuthorized() {
         hideAllWidgets();
         history_widget_->setVisible(true);
         history_widget_->updateHistoryWidget();
+        emit closeDetectorSignal();
     } else if (current_clicked_button_ == ButtonsEnum::RegisterButton) {
         hideAllWidgets();
         face_info_widget_->setVisible(true);
@@ -370,6 +370,7 @@ void MyWidget::on_receivePasswordAuthorized() {
     } else if (current_clicked_button_ == ButtonsEnum::SettingButton) {
         hideAllWidgets();
         setting_widget_->setVisible(true);
+        emit closeDetectorSignal();
     } else {
         // todo
     }

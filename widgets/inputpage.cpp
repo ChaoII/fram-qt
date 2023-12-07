@@ -160,6 +160,7 @@ void InputPage::showInputWidget() {
     password_content_.clear();
     ui->le_inputContent->clear();
     onReSetCountDown(INPUT_TIMEOUT);
+    emit inputWidgetVisibleSignal(true);
 }
 
 void InputPage::hideInputWidget() {
@@ -168,6 +169,7 @@ void InputPage::hideInputWidget() {
     ui->le_inputContent->clear();
     ui->message->setText("");
     this->setVisible(false);
+    emit inputWidgetVisibleSignal(false);
 }
 
 

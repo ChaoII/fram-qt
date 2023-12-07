@@ -10,7 +10,7 @@ MySplashScreen::MySplashScreen(const QPixmap &pix) : QSplashScreen(pix) {
     progress_bar_ = new QProgressBar(this);
     progress_bar_->setRange(0, 15);
     progress_bar_->setTextVisible(false);
-    progress_bar_->setGeometry(0, 290, 300, 5);
+    progress_bar_->setGeometry(0, 270, 300, 5);
 }
 
 void MySplashScreen::mySleep(int ms) {
@@ -27,7 +27,7 @@ void MySplashScreen::setRange(int min, int max) {
 void MySplashScreen::updateProcess(const QString &msg) {
     QApplication::processEvents();
     progress_bar_->setValue(++value_);
-//    this->showMessage(msg, Qt::AlignLeft | Qt::AlignBottom, Qt::white);
+    this->showMessage(msg, Qt::AlignLeft | Qt::AlignBottom, Qt::white);
     mySleep(50);
     qDebug() << value_;
 }

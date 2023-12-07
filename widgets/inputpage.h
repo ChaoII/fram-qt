@@ -20,13 +20,15 @@ public:
 
     void hideInputWidget();
 
-    ~InputPage();
+    ~InputPage() override;
 
 signals:
 
     void passwordAuthorized();
 
     void reSetCountDown(int swTimeOut);
+
+    void inputWidgetVisibleSignal(bool is_visible);
 
 private:
     void initButton();
