@@ -5,7 +5,7 @@
 // You may need to build the project (run Qt uic code generator) to get "ui_SpinBox.h" resolved
 
 #include "spinboxdouble.h"
-#include "ui_SpinBoxDouble.h"
+#include "ui_spinboxdouble.h"
 
 
 SpinBoxDouble::SpinBoxDouble(QWidget *parent) :
