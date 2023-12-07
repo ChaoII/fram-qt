@@ -12,6 +12,7 @@
 #include "core/audioplaythread.h"
 #include "widgets/faceregister/faceinfowidget.h"
 #include "widgets/attendhistory/historywidget.h"
+#include "widgets/setting/settingwidget.h"
 #include <QMutex>
 #include <QProcess>
 #include <QMutexLocker>
@@ -32,6 +33,7 @@ Q_OBJECT
         HistoryButton,
         WelcomeButton,
         CloseButton,
+        SettingButton,
         None,
     };
 
@@ -69,6 +71,8 @@ private slots:
 
     void on_tb_close_clicked();
 
+    void on_tb_setting_clicked();
+
     void on_updateFrame(QImage qimg, QRect rect);
 
     void on_faceRec(const FaceInfoWrap &rec_info);
@@ -104,6 +108,7 @@ private:
     ButtonsEnum current_clicked_button_ = ButtonsEnum::None;
     HistoryWidget *history_widget_ = nullptr;
     FaceInfoWidget *face_info_widget_ = nullptr;
+    SettingWidget *setting_widget_ = nullptr;
     QProcess *ping_cmd_ = nullptr;
     bool is_audio_finished_ = true;
     bool is_display_off_ = false;

@@ -1,10 +1,8 @@
 #pragma once
 
 #include <QWidget>
-#include <QStandardItemModel>
-#include <QItemSelectionModel>
 #include "core/seetaface.h"
-#include "widgets/commonwidgets/pagingwidget.h"
+#include "widgets/commonwidgets/paging/pagingwidget.h"
 #include "widgets/attendhistory/attendhistorylist.h"
 
 

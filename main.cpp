@@ -40,7 +40,7 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 #endif
     QString logFile = Config::getInstance().get_logFile();
     if (logFile.isEmpty()) {
-        logFile = "log.txt";
+        logFile = "farmLog.txt";
     }
     QFile file(logFile);
     file.open(QIODevice::WriteOnly | QIODevice::Append);

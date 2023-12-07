@@ -68,18 +68,33 @@ list(APPEND DEPENDS QxOrm)
 
 #add include directory
 include_directories(${CMAKE_SOURCE_DIR}/widgets)
-include_directories(${CMAKE_SOURCE_DIR}/widgets/commonwidgets)
+include_directories(${CMAKE_SOURCE_DIR}/widgets/commonwidgets/paging)
 include_directories(${CMAKE_SOURCE_DIR}/widgets/attendhistory)
 include_directories(${CMAKE_SOURCE_DIR}/widgets/faceregister)
+include_directories(${CMAKE_SOURCE_DIR}/widgets/setting)
+
+include_directories(${CMAKE_SOURCE_DIR}/widgets/commonwidgets/switch)
+include_directories(${CMAKE_SOURCE_DIR}/widgets/commonwidgets/spinbox)
+include_directories(${CMAKE_SOURCE_DIR}/widgets/commonwidgets/spinboxdouble)
 
 # add src
 aux_source_directory(models MODELS_SRC)
 aux_source_directory(core CORE_SRC)
 aux_source_directory(widgets/faceregister REGISTER_SRC)
 aux_source_directory(widgets/attendhistory ATTEND_SRC)
-aux_source_directory(widgets/commonwidgets COMMON_WIDGETS_SRC)
+aux_source_directory(widgets/commonwidgets/paging PAGING_SRC)
+aux_source_directory(widgets/setting SETTING_WIDGETS_SRC)
 aux_source_directory(widgets WIDGETS_SRC)
 aux_source_directory(utils UTILS_SRC)
+
+add_subdirectory(widgets/commonwidgets/switch)
+list(APPEND DEPENDS CustomSwitch)
+
+add_subdirectory(widgets/commonwidgets/spinbox)
+list(APPEND DEPENDS CustomSpinBox)
+
+add_subdirectory(widgets/commonwidgets/spinboxdouble)
+list(APPEND DEPENDS CustomSpinBoxDouble)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     aux_source_directory(utils/wavPlayer WAVE_SRC)
@@ -94,7 +109,8 @@ set(PROJECT_SOURCES
         ${REGISTER_SRC}
         ${ATTEND_SRC}
         ${WIDGETS_SRC}
-        ${COMMON_WIDGETS_SRC}
+        ${PAGING_SRC}
+        ${SETTING_WIDGETS_SRC}
         ${UTILS_SRC}
         qrc.qrc
         main.cpp

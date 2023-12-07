@@ -41,6 +41,9 @@
     <file>img/icon_disconnect.png</file>
     <file>img/icon_wifi_connect.png</file>
     <file>img/icon_wifi_disconnect.png</file>
+    <file>img/icon_close.png</file>
+    <file>img/icon_setting.png</file>
+    <file>img/icon_save.png</file>
     <file>img/audio_thanks.wav</file>
   </qresource>
 </RCC>

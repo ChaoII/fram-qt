@@ -6,7 +6,7 @@
 #include <QItemSelectionModel>
 #include "core/seetaface.h"
 #include "registerwidget.h"
-#include "widgets/commonwidgets/pagingwidget.h"
+#include "widgets/commonwidgets/paging/pagingwidget.h"
 
 
 namespace Ui {

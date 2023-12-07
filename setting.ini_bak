@@ -15,7 +15,7 @@ record_interval = 5
 # 模型文件路径
 model_dir = "E:/develop/SeetaFace/models/"
 # 人脸识别全局线程数
-global_thread_num = 1
+face_recognition_thread_num = 1
 # socket服务端端口
 socket_port = 9088
 # 是否开启日志

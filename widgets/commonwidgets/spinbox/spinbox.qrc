@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>imagespinbox/icon_sub.png</file>
+        <file>imagespinbox/icon_add.png</file>
+    </qresource>
+</RCC>

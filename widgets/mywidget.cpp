@@ -116,18 +116,25 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     history_widget_ = new HistoryWidget();
     connect(history_widget_, &HistoryWidget::historyBackSignal, this, &MyWidget::on_historyFinished);
     MySplashScreen::getInstance().updateProcess("init ui date time timer ...");
+
+    // 设置窗体
+    setting_widget_ = new SettingWidget();
+    connect(setting_widget_, &SettingWidget::settingBackSignal, this, &MyWidget::on_historyFinished);
+    connect(setting_widget_, &SettingWidget::restartProgramSignal, this, &MyWidget::close);
+
+
+
     // 界面时间
     auto timer1 = new QTimer(this);
     connect(timer1, &QTimer::timeout, this, &MyWidget::on_updateTime);
-    timer1->setInterval(1000);
-    timer1->start();
+    timer1->start(1000);
     MySplashScreen::getInstance().updateProcess("init record  timer ...");
+
     // 记录线程
     auto timer2 = new QTimer(this);
     // 隔一段时间发送一组空的过去，避免数据堆积
     connect(timer2, &QTimer::timeout, [=]() { emit sendImageSignal(QImage(), QRect()); });
-    timer2->setInterval(Config::getInstance().get_recordInterval() * 1000);
-    timer2->start();
+    timer2->start(Config::getInstance().get_recordInterval() * 1000);
     // 检测网络情况
     auto timer3 = new QTimer(this);
     connect(timer3, &QTimer::timeout, this, &MyWidget::on_detectNetworkConnectStatus);
@@ -259,11 +266,22 @@ void MyWidget::on_tb_close_clicked() {
     ui->widget_input->showInputWidget();
 }
 
+void MyWidget::on_tb_setting_clicked() {
+    current_clicked_button_ = ButtonsEnum::SettingButton;
+    if (ui->widget_input->isVisible()) {
+        ui->widget_input->hideInputWidget();
+        return;
+    }
+    ui->widget_input->showInputWidget();
+}
+
 void MyWidget::initialWidget() {
     layout()->addWidget(history_widget_);
     layout()->addWidget(face_info_widget_);
+    layout()->addWidget(setting_widget_);
     history_widget_->setVisible(false);
     face_info_widget_->setVisible(false);
+    setting_widget_->setVisible(false);
     ui->widget_input->setVisible(false);
     ui->widget_info->setVisible(false);
     ui->widget->setVisible(true);
@@ -314,6 +332,8 @@ MyWidget::~MyWidget() {
     emit stopDetectThreadSignal();
     face_det_thread_.quit();
     face_det_thread_.wait();
+    audio_play_thread_.quit();
+    audio_play_thread_.wait();
     delete ui;
 }
 
@@ -327,6 +347,9 @@ void MyWidget::hideAllWidgets() {
     }
     if (face_info_widget_->isVisible()) {
         face_info_widget_->setVisible(false);
+    }
+    if (setting_widget_->isVisible()) {
+        setting_widget_->setVisible(false);
     }
 }
 
@@ -344,6 +367,9 @@ void MyWidget::on_receivePasswordAuthorized() {
         //todo other task such as open the door
     } else if (current_clicked_button_ == ButtonsEnum::CloseButton) {
         close();
+    } else if (current_clicked_button_ == ButtonsEnum::SettingButton) {
+        hideAllWidgets();
+        setting_widget_->setVisible(true);
     } else {
         // todo
     }
@@ -386,3 +412,5 @@ void MyWidget::mousePressEvent(QMouseEvent *event) {
     }
     QWidget::mousePressEvent(event);
 }
+
+

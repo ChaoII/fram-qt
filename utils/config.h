@@ -59,6 +59,8 @@ public:
     // Camera
     [[nodiscard]] CameraType get_cameraType() const;
 
+    [[nodiscard]] int get_cameraTypeIndex() const;
+
     [[nodiscard]] int get_cameraIndex() const;
 
     [[nodiscard]] int get_frameWidth() const;
@@ -69,6 +71,12 @@ public:
     [[nodiscard]] bool get_framelessStatus() const;
 
     [[nodiscard]] int get_displayOffInterval() const;
+
+    void updateSettings(const QString &index_file, int vector_size, int max_face_num, double rec_interval,
+                        double rec_threshold, int record_interval, int face_recognition_thread_num, int socket_port,
+                        bool is_write_log, const QString &log_file, const QString &gateway, int top_k,
+                        const QString &model_dir, int camera_type, int camera_index, int frame_width,
+                        int frame_height, bool is_frameless, int display_off_interval);
 
 private:
     explicit Config();
@@ -83,29 +91,29 @@ private:
     std::shared_ptr<QSettings> settings_;
 
     // Base
-    QString index_file;
-    int top_k;
-    int vector_size;
-    int max_face_num;
-    float rec_interval;
-    float rec_threshold;
-    int record_interval;
-    QString model_dir;
-    int face_recognition_thread_num;
-    int socket_port;
-    bool is_write_log;
-    QString log_file;
-    QString gateway;
+    QString index_file_;
+    int top_k_;
+    int vector_size_;
+    int max_face_num_;
+    float rec_interval_;
+    float rec_threshold_;
+    int record_interval_;
+    QString model_dir_;
+    int face_recognition_thread_num_;
+    int socket_port_;
+    bool is_write_log_;
+    QString log_file_;
+    QString gateway_;
 
     // Camera
-    int camera_type;
-    int camera_index;
-    int frame_width;
-    int frame_height;
+    int camera_type_;
+    int camera_index_;
+    int frame_width_;
+    int frame_height_;
 
     //Display
-    bool is_frameless;
-    int display_off_interval;
+    bool is_frameless_;
+    int display_off_interval_;
 };
 
 
