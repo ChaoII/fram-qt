@@ -26,7 +26,13 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 
     // 当输入窗体或者其它窗体打开时，需要关闭人脸检测算法
     connect(ui->widget_input, &InputPage::inputWidgetVisibleSignal, this, [&](bool is_visible) {
-        is_visible ? emit closeDetectorSignal() : emit openDetectorSignal();
+        if (is_visible) {
+            emit closeDetectorSignal();
+        } else {
+            if (ui->widget->isVisible()) {
+                emit openDetectorSignal();
+            }
+        }
     });
 
     ui->mpTimeLab->setStyleSheet("QLabel{font-size:28px;color:rgb(200,200,200);}");
