@@ -4,10 +4,10 @@
 #define INPUT_MAX_COUNT     6
 #define UNIT_TIME           (1000)            // ms
 #define INPUT_TIMEOUT       (10 * UNIT_TIME) // ms
-#define PASSWORD            "123456"
 
 InputPage::InputPage(QWidget *parent) :
         QFrame(parent),
+        password_(Config::getInstance().get_administratorPassword()),
         current_timeout_(INPUT_TIMEOUT),
         counter_timer_(nullptr),
         is_first_key_(true),
@@ -125,7 +125,7 @@ void InputPage::on_pb_0_clicked() {
 }
 
 void InputPage::on_pb_ensure_clicked() {
-    if (password_content_.trimmed() == PASSWORD) {
+    if (password_content_.trimmed() == password_) {
         emit passwordAuthorized();
         emit reSetCountDown(0);
     } else {

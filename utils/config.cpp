@@ -2,34 +2,35 @@
 
 Config::Config() {
 
-    settings_ = std::make_shared<QSettings>("setting.ini", QSettings::IniFormat);
-    settings_->beginGroup("Base");
-    top_k_ = settings_->value("top_k").toInt();
-    index_file_ = settings_->value("index_file").toString();
-    vector_size_ = settings_->value("vector_size").toInt();
-    max_face_num_ = settings_->value("max_face_num").toInt();
-    rec_interval_ = settings_->value("rec_interval").toFloat();
-    rec_threshold_ = settings_->value("rec_threshold").toFloat();
-    record_interval_ = settings_->value("record_interval").toInt();
-    model_dir_ = settings_->value("model_dir").toString();
-    face_recognition_thread_num_ = settings_->value("face_recognition_thread_num").toInt();
-    socket_port_ = settings_->value("socket_port").toInt();
-    is_write_log_ = settings_->value("is_write_log").toBool();
-    log_file_ = settings_->value("log_file").toString();
-    gateway_ = settings_->value("gateway").toString();
-    settings_->endGroup();
+    QSettings settings("setting.ini", QSettings::IniFormat);
+    settings.beginGroup("Base");
+    top_k_ = settings.value("top_k").toInt();
+    index_file_ = settings.value("index_file").toString();
+    vector_size_ = settings.value("vector_size").toInt();
+    max_face_num_ = settings.value("max_face_num").toInt();
+    rec_interval_ = settings.value("rec_interval").toFloat();
+    rec_threshold_ = settings.value("rec_threshold").toFloat();
+    record_interval_ = settings.value("record_interval").toInt();
+    model_dir_ = settings.value("model_dir").toString();
+    face_recognition_thread_num_ = settings.value("face_recognition_thread_num").toInt();
+    socket_port_ = settings.value("socket_port").toInt();
+    is_write_log_ = settings.value("is_write_log").toBool();
+    log_file_ = settings.value("log_file").toString();
+    gateway_ = settings.value("gateway").toString();
+    password_ = settings.value("password").toString();
+    settings.endGroup();
 
-    settings_->beginGroup("Camera");
-    camera_type_ = settings_->value("camera_type").toInt();
-    camera_index_ = settings_->value("camera_index").toInt();
-    frame_width_ = settings_->value("frame_width").toInt();
-    frame_height_ = settings_->value("frame_height").toInt();
-    settings_->endGroup();
+    settings.beginGroup("Camera");
+    camera_type_ = settings.value("camera_type").toInt();
+    camera_index_ = settings.value("camera_index").toInt();
+    frame_width_ = settings.value("frame_width").toInt();
+    frame_height_ = settings.value("frame_height").toInt();
+    settings.endGroup();
 
-    settings_->beginGroup("Display");
-    is_frameless_ = settings_->value("is_frameless").toBool();
-    display_off_interval_ = settings_->value("display_off_interval").toInt();
-    settings_->endGroup();
+    settings.beginGroup("Display");
+    is_frameless_ = settings.value("is_frameless").toBool();
+    display_off_interval_ = settings.value("display_off_interval").toInt();
+    settings.endGroup();
 }
 
 const QString &Config::get_indexFile() const {
@@ -112,38 +113,44 @@ int Config::get_displayOffInterval() const {
     return display_off_interval_;
 }
 
+QString Config::get_administratorPassword() const {
+    return password_;
+}
+
 void Config::updateSettings(const QString &index_file, int vector_size, int max_face_num, double rec_interval,
                             double rec_threshold, int record_interval, int face_recognition_thread_num, int socket_port,
                             bool is_write_log, const QString &log_file, const QString &gateway, int top_k,
                             const QString &model_dir, int camera_type, int camera_index, int frame_width,
                             int frame_height, bool is_frameless, int display_off_interval) {
+    QSettings settings("setting.ini", QSettings::IniFormat);
+    settings.beginGroup("Base");
+    settings.setValue("top_k", top_k);
+    settings.setValue("index_file", index_file);
+    settings.setValue("vector_size", vector_size);
+    settings.setValue("max_face_num", max_face_num);
+    settings.setValue("rec_interval", rec_interval);
+    settings.setValue("rec_threshold", rec_threshold);
+    settings.setValue("record_interval", record_interval);
+    settings.setValue("model_dir", model_dir);
+    settings.setValue("face_recognition_thread_num", face_recognition_thread_num);
+    settings.setValue("socket_port", socket_port);
+    settings.setValue("is_write_log", is_write_log);
+    settings.setValue("log_file", log_file);
+    settings.setValue("gateway", gateway);
+    settings.setValue("password", password_);
+    settings.endGroup();
 
-    settings_->beginGroup("Base");
-    settings_->setValue("top_k", top_k);
-    settings_->setValue("index_file", index_file);
-    settings_->setValue("vector_size", vector_size);
-    settings_->setValue("max_face_num", max_face_num);
-    settings_->setValue("rec_interval", rec_interval);
-    settings_->setValue("rec_threshold", rec_threshold);
-    settings_->setValue("record_interval", record_interval);
-    settings_->setValue("model_dir", model_dir);
-    settings_->setValue("face_recognition_thread_num", face_recognition_thread_num);
-    settings_->setValue("socket_port", socket_port);
-    settings_->setValue("is_write_log", is_write_log);
-    settings_->setValue("log_file", log_file);
-    settings_->setValue("gateway", gateway);
-    settings_->endGroup();
+    settings.beginGroup("Camera");
+    settings.setValue("camera_type", camera_type);
+    settings.setValue("camera_index", camera_index);
+    settings.setValue("frame_width", frame_width);
+    settings.setValue("frame_height", frame_height);
+    settings.endGroup();
 
-    settings_->beginGroup("Camera");
-    settings_->setValue("camera_type", camera_type);
-    settings_->setValue("camera_index", camera_index);
-    settings_->setValue("frame_width", frame_width);
-    settings_->setValue("frame_height", frame_height);
-    settings_->endGroup();
-
-    settings_->beginGroup("Display");
-    settings_->setValue("is_frameless", is_frameless);
-    settings_->setValue("display_off_interval", display_off_interval);
-    settings_->endGroup();
-
+    settings.beginGroup("Display");
+    settings.setValue("is_frameless", is_frameless);
+    settings.setValue("display_off_interval", display_off_interval);
+    settings.endGroup();
 }
+
+

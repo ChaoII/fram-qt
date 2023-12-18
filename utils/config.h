@@ -72,6 +72,8 @@ public:
 
     [[nodiscard]] int get_displayOffInterval() const;
 
+    [[nodiscard]] QString get_administratorPassword() const;
+
     void updateSettings(const QString &index_file, int vector_size, int max_face_num, double rec_interval,
                         double rec_threshold, int record_interval, int face_recognition_thread_num, int socket_port,
                         bool is_write_log, const QString &log_file, const QString &gateway, int top_k,
@@ -88,8 +90,6 @@ private:
     Config &operator=(const Config &) = delete;
 
 private:
-    std::shared_ptr<QSettings> settings_;
-
     // Base
     QString index_file_;
     int top_k_;
@@ -104,6 +104,7 @@ private:
     bool is_write_log_;
     QString log_file_;
     QString gateway_;
+    QString password_;
 
     // Camera
     int camera_type_;

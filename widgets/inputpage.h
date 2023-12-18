@@ -2,6 +2,7 @@
 
 #include <QFrame>
 #include <QTimer>
+#include "utils/config.h"
 
 
 namespace Ui {
@@ -66,6 +67,7 @@ private slots:
     void onReSetCountDown(int swTimeOut);
 
 private:
+    const QString password_;
     int current_timeout_;
     QTimer *counter_timer_;
     bool is_first_key_;

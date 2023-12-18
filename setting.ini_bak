@@ -24,6 +24,8 @@ is_write_log = false
 log_file = "log.txt"
 # 默认网关
 gateway = "172.168.1.254"
+# 管理员密码
+password = "098765"
 [Camera]
 # 0:usb摄像头 1：mipi摄像头
 camera_type = 0
