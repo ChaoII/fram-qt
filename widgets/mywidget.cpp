@@ -74,11 +74,10 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
 
     // socket
     auto out_socket = new OuterSocket(this);
-    connect(out_socket, &OuterSocket::outerSocketCloseDetectorSignal,
-            [this]() { emit closeDetectorSignal(); });
-    connect(out_socket, &OuterSocket::outerSocketOpenDetectorSignal,
-            [this]() { emit openDetectorSignal(); });
-
+    connect(out_socket, &OuterSocket::outerSocketCloseDetectorSignal, this,
+            [&]() { emit closeDetectorSignal(); });
+    connect(out_socket, &OuterSocket::outerSocketOpenDetectorSignal, this,
+            [&]() { emit openDetectorSignal(); });
 
     MySplashScreen::getInstance().updateProcess("load camera device and ready to read frame...");
 
@@ -88,8 +87,10 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
     connect(face_det_thread, &FaceDetThread::imgSendSignal, this, &MyWidget::on_updateFrame);
     connect(this, &MyWidget::runDetectThreadSignal, face_det_thread, &FaceDetThread::runDetect);
     connect(this, &MyWidget::stopDetectThreadSignal, face_det_thread, &FaceDetThread::stopThread);
-    connect(this, &MyWidget::closeDetectorSignal, face_det_thread, &FaceDetThread::closeDetector);
-    connect(this, &MyWidget::openDetectorSignal, face_det_thread, &FaceDetThread::openDetector);
+    connect(this, &MyWidget::closeDetectorSignal, face_det_thread, &FaceDetThread::closeDetector,
+            Qt::BlockingQueuedConnection);
+    connect(this, &MyWidget::openDetectorSignal, face_det_thread, &FaceDetThread::openDetector,
+            Qt::BlockingQueuedConnection);
     connect(&face_det_thread_, &QThread::finished, face_det_thread, &FaceDetThread::deleteLater);
 
     MySplashScreen::getInstance().updateProcess("load face recognition component...");

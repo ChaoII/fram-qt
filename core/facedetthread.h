@@ -17,6 +17,8 @@ public:
 
     ~FaceDetThread() override;
 
+    bool getDetectorStatus();
+
 signals:
 
     void imgSendSignal(QImage, QRect);

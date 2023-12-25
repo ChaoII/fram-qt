@@ -84,5 +84,9 @@ void FaceDetThread::runDetect() {
     }
 }
 
+bool FaceDetThread::getDetectorStatus() {
+    return is_detect;
+}
+
 
 
