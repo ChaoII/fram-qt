@@ -21,7 +21,7 @@ MyWidget::MyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MyWidget) {
         this->setWindowFlags(Qt::FramelessWindowHint);
         this->ui->tb_close->setVisible(true);
     }
-    this->setWindowFlags(windowFlags() | Qt::Window | Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(windowFlags() | Qt::Window);
     setWindowIcon(QIcon(":img/icon-64x64.png"));
 
     // 当输入窗体或者其它窗体打开时，需要关闭人脸检测算法
@@ -196,7 +196,12 @@ void MyWidget::on_updateFrame(QImage qimg, QRect rect) {
     } else {
         utils::setBackgroundColor(ui->widget, QColor(255, 255, 255, 0));
     }
-    ui->widget_info->setVisible(!rect.isEmpty());
+    if (rect.isEmpty()) {
+        ui->widget_info->setVisible(false);
+        ui->widget_info->clearAttendInfo();
+    } else {
+        ui->widget_info->setVisible(true);
+    }
     if (face_info_widget_ && face_info_widget_->isVisible()) {
         face_info_widget_->updateRegisterFrame(qimg);
     }
@@ -206,7 +211,6 @@ void MyWidget::on_updateFrame(QImage qimg, QRect rect) {
 }
 
 void MyWidget::on_faceRec(const FaceInfoWrap &rec_info) {
-
     QString attend_time = rec_info.time.split("T")[1].split(".")[0];
     if (rec_info.status == RecognitionStatus::SPOOF) {
         ui->widget_info->setAttendInfo("攻击人脸",
@@ -237,7 +241,7 @@ void MyWidget::on_faceRec(const FaceInfoWrap &rec_info) {
         utils::setBackgroundColor(ui->widget, QColor(255, 0, 0, 0));
         utils::setBackgroundColor(ui->widget_info, QColor(0, 255, 0, 40));
     } else {
-        qDebug() << "识别结果为【None】";
+        qWarning() << "识别结果为【None】";
     }
 }
 
@@ -340,6 +344,7 @@ MyWidget::~MyWidget() {
     face_det_thread_.wait();
     audio_play_thread_.quit();
     audio_play_thread_.wait();
+    delete ping_cmd_;
     delete ui;
 }
 
@@ -389,6 +394,7 @@ void MyWidget::on_changeAudioPlayStatus() {
 }
 
 void MyWidget::on_detectNetworkConnectStatus() {
+
     QStringList ping_parameters;
     ping_parameters << Config::getInstance().get_gateway();
 #if defined(__linux__) || defined(__APPLE__)
@@ -409,6 +415,8 @@ void MyWidget::on_detectNetworkConnectStatus() {
         if (res.indexOf(key_str) != -1) {
             connect_status = true;
         }
+    } else {
+        ping_cmd_->close();
     }
     auto pic_url = connect_status ? ":img/icon_wifi_connect.png" : ":img/icon_wifi_disconnect.png";
     ui->lb_net->setPixmap(QPixmap(pic_url));

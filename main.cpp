@@ -10,6 +10,7 @@
 #include "widgets/mywidget.h"
 #include "utils/config.h"
 
+
 void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
     static QMutex mutex;
     mutex.lock();
@@ -38,11 +39,17 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 #else
     QString message = QString("[%1]|【%2】| %3").arg(current_date_time, text, msg);
 #endif
-    QString logFile = Config::getInstance().get_logFile();
-    if (logFile.isEmpty()) {
-        logFile = "farmLog.txt";
+
+    QDateTime date_time = QDateTime::currentDateTime();
+    QString log_dir = QApplication::applicationDirPath() + "/framLog/" + date_time.toString("yyyyMM");
+    QDir dir(log_dir);
+    if (!dir.exists()) {
+        dir.mkpath(log_dir);
     }
-    QFile file(logFile);
+    QString date = QDateTime::currentDateTime().toString("dd");
+    QString base_log_file = Config::getInstance().get_logFile();
+    QString log_file = log_dir + "/" + base_log_file + "_" + date + ".txt";
+    QFile file(log_file);
     file.open(QIODevice::WriteOnly | QIODevice::Append);
     QTextStream text_stream(&file);
     text_stream << message << "\r\n";

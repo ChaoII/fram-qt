@@ -20,6 +20,8 @@ public:
                        const QPixmap &pic_library,
                        const QPixmap &pic_current);
 
+    void clearAttendInfo();
+
 private:
     Ui::AttendInfoWidget *ui;
 };
