@@ -11,7 +11,7 @@ rec_interval = 0.5
 # 人脸识别阈值
 rec_threshold = 0.6
 # 打卡缓存时间(s)
-record_interval = 5
+record_interval = 3
 # 模型文件路径
 model_dir = "E:/develop/SeetaFace/models/"
 # 人脸识别全局线程数
